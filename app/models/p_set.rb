@@ -1,0 +1,2 @@
+class PSet < ApplicationRecord
+end
