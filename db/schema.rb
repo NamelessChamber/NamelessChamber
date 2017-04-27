@@ -10,22 +10,42 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170427200938) do
+ActiveRecord::Schema.define(version: 20170427212808) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "classrooms", force: :cascade do |t|
+    t.integer  "course_id"
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_classrooms_on_course_id", using: :btree
+  end
+
+  create_table "courses", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "exercises", force: :cascade do |t|
     t.json     "data"
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "p_set_id"
+    t.integer  "user_id"
+    t.index ["p_set_id"], name: "index_exercises_on_p_set_id", using: :btree
+    t.index ["user_id"], name: "index_exercises_on_user_id", using: :btree
   end
 
   create_table "p_sets", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "user_id"
+    t.index ["user_id"], name: "index_p_sets_on_user_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|

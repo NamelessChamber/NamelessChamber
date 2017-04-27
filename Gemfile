@@ -26,6 +26,7 @@ gem 'coffee-rails', '~> 4.2'
 gem 'jquery-rails'
 gem 'react-rails'
 gem 'webpacker', github: 'rails/webpacker'
+gem 'foundation-rails'
 gem 'devise'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
