@@ -41,6 +41,17 @@
         </div>
       </div>
     </div>
+    <!-- <% unless @breadcrumbs.empty? %>
+      <div class="row">
+        <nav aria-label="You are here:" role="navigation">
+            <ul class="breadcrumbs">
+            <% @breadcrumbs.each do |label, path| %>
+              <li><%= link_to label, path %></li>
+            <% end %>
+          </ul>
+        </nav>
+      </div>
+    <% end %> -->
     <div class="row">
       <%= yield %>
     </div>

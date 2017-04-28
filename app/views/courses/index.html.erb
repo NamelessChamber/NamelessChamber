@@ -1,0 +1,50 @@
+<div class="card small-12 columns">
+  <div class="card-section">
+    <p>
+      <h2>your courses</h2>
+    </p>
+  </div>
+  <div class="card-section">
+    <table class="hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @admin_courses.each do |c| %>
+          <tr>
+            <td><%= link_to c.name, course_path(c.id) %></td>
+            <td><%= c.created_at %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="card small-12 columns">
+  <div class="card-section">
+    <p>
+      <h2>all courses</h2>
+    </p>
+  </div>
+  <div class="card-section">
+    <table class="hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @courses.each do |c| %>
+          <tr>
+            <td><%= link_to c.name, course_path(c.id) %></td>
+            <td><%= c.created_at %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

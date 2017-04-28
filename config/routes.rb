@@ -2,8 +2,8 @@ Rails.application.routes.draw do
   devise_for :users
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
-  resource :courses do
-    resource :classes
+  resources :courses do
+    resources :classes
   end
 
   root to: 'home#index'
