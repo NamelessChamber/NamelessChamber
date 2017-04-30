@@ -8,4 +8,12 @@ class ApplicationController < ActionController::Base
       format.any  { head :not_found }
     end
   end
+
+  def find_or_404(&block)
+    begin
+      block.call
+    rescue ActiveRecord::RecordNotFound
+      not_found
+    end
+  end
 end

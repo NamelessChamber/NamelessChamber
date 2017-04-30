@@ -26,5 +26,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :course_users
+  has_many :classroom_users
   has_many :courses, :through => :course_users
+  has_many :classrooms, :through => :classroom_users
 end

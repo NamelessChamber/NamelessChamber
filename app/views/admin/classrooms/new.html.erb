@@ -1,0 +1,12 @@
+<div class="card small-12 columns">
+  <div class="card-section">
+    <h3>Create a new classroom for <i><%= @course.name %></i></h3>
+  </div>
+  <div class="card-section">
+    <%= form_for @classroom, url: {action: 'create'} do |f| %>
+      <%= f.label :name %>
+      <%= f.text_field :name %>
+      <%= f.submit 'Create', class: 'button' %>
+    <% end %>
+  </div>
+</div>
