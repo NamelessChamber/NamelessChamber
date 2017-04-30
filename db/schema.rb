@@ -10,10 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170430185654) do
+ActiveRecord::Schema.define(version: 20170430191503) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "classroom_psets", force: :cascade do |t|
+    t.integer  "classroom_id"
+    t.integer  "p_set_id"
+    t.date     "start_date"
+    t.date     "end_date"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["classroom_id"], name: "index_classroom_psets_on_classroom_id", using: :btree
+    t.index ["p_set_id"], name: "index_classroom_psets_on_p_set_id", using: :btree
+  end
 
   create_table "classroom_users", force: :cascade do |t|
     t.integer  "user_id"
