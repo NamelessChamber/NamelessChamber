@@ -11,7 +11,10 @@ Rails.application.routes.draw do
       resources :exercise_subcategories
     end
 
-    resources :p_sets
+    resources :p_sets do
+      get 'score', to: 'admin/p_sets#show_score'
+      put 'score', to: 'admin/p_sets#udpate_score'
+    end
   end
 
   root to: 'home#index'

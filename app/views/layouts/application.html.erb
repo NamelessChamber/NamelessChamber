@@ -9,6 +9,12 @@
     <%= stylesheet_link_tag    "application" %>
     <%= javascript_include_tag "application", 'data-turbolinks-track' => true %>
     <%= javascript_pack_tag "application" %>
+    <% unless @js_packs.empty? %>
+      <% @js_packs.each do |pack| %>
+        <%= javascript_pack_tag pack %>
+      <% end %>
+    <% end %>
+    <%= javascript_pack_tag "application" %>
     <%= csrf_meta_tags %>
   </head>
 

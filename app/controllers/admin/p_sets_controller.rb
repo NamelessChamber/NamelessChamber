@@ -24,6 +24,7 @@ class Admin::PSetsController < ApplicationController
       .includes(:exercise_category)
       .first
     @exercise_category = @exercise_subcategory.exercise_category
+    @js_packs = ['admin/p_set']
   end
 
   def update
@@ -36,5 +37,18 @@ class Admin::PSetsController < ApplicationController
     ))
 
     redirect_to edit_admin_p_set_path(@p_set)
+  end
+
+  def show_score
+  end
+
+  def update_score
+    find_or_404 do
+      @p_set = PSet.find(params[:id])
+    end
+
+    @p_set.update_attributes(params[:p_set].permit(
+      :data
+    ))
   end
 end
