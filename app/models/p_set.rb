@@ -9,6 +9,7 @@
 #  user_id                    :integer
 #  exercise_subcategory_id    :integer
 #  exercise_subcategory_level :integer          default("1")
+#  data                       :json
 #
 
 class PSet < ApplicationRecord
