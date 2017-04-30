@@ -4,9 +4,21 @@
   </div>
   <div class="card-section">
     <%= form_for @classroom, url: {action: 'create'} do |f| %>
-      <%= f.label :name %>
-      <%= f.text_field :name %>
-      <%= f.submit 'Create', class: 'button' %>
+      <div class="small-12 columns">
+        <%= f.label :name %>
+        <%= f.text_field :name %>
+      </div>
+      <div class="small-6 columns">
+        <%= f.label :start_date %>
+        <%= date_field(:classroom, :start_date) %>
+      </div>
+      <div class="small-6 columns">
+        <%= f.label :end_date %>
+        <%= date_field(:classroom, :end_date) %>
+      </div>
+      <div class="small-12 columns">
+        <%= f.submit 'Create', class: 'button' %>
+      </div>
     <% end %>
   </div>
 </div>

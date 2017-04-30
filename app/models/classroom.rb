@@ -7,6 +7,8 @@
 #  name       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  start_date :date
+#  end_date   :date
 #
 
 class Classroom < ApplicationRecord

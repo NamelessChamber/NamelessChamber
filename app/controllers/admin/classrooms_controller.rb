@@ -7,8 +7,10 @@ class Admin::ClassroomsController < ApplicationController
     @classroom = Classroom.new(course: @course)
   end
 
-  def created
-    p = params.require(:name).merge(course: @course)
+  def create
+    p = params[:classroom].permit(
+      :name, :start_date, :end_date
+      ).merge(course: @course)
     classroom = Classroom.create(p)
     redirect_to edit_admin_course_classroom_path(classroom)
   end
