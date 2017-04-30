@@ -16,4 +16,10 @@ class ApplicationController < ActionController::Base
       not_found
     end
   end
+
+  def assert_course_admin!
+    if current_user.nil? || current_user.courses.empty?
+      redirect_to root_path
+    end
+  end
 end

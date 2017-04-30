@@ -9,4 +9,5 @@
 #
 
 class ExerciseCategory < ApplicationRecord
+  has_many :exercise_subcategories
 end

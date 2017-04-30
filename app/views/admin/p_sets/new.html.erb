@@ -1,0 +1,38 @@
+<div class="card small-12 columns">
+  <div class="card-section">
+    <div class="row">
+      <div class="small-12 medium-9 large-9 columns">
+        <h2>Create an exercise in a category</h2>
+      </div>
+      <div class="small-12 medium-3 large-3 columns">
+        <ul class="menu align-right">
+          <li class="menu-item">
+            <%= link_to 'Create new category', new_admin_exercise_category_path, class: 'button' %>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="card-section">
+    <ul class="accordion" data-accordion>
+      <% @exercise_categories.each do |category| %>
+        <li class="accordion-item" data-accordion-item>
+          <%= link_to category.name, '#', class: 'accordion-title' %>
+          <div class="accordion-content" data-tab-content>
+            <%= link_to 'Create new subcategory', new_admin_exercise_category_exercise_subcategory_path(category), class: 'button' %>
+            <ul>
+              <% category.exercise_subcategories.each do |subcategory| %>
+                <li>
+                  <%= form_tag admin_p_sets_path, method: 'post' do %>
+                    <%= hidden_field :p_set, :exercise_category_id, value: subcategory.id %>
+                    <%= submit_tag subcategory.name, class: 'success button tiny' %>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

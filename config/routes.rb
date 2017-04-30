@@ -6,6 +6,12 @@ Rails.application.routes.draw do
     resources :courses do
       resources :classrooms
     end
+
+    resources :exercise_categories do
+      resources :exercise_subcategories
+    end
+
+    resources :p_sets
   end
 
   root to: 'home#index'

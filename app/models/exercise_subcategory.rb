@@ -10,4 +10,5 @@
 #
 
 class ExerciseSubcategory < ApplicationRecord
+  belongs_to :exercise_category
 end

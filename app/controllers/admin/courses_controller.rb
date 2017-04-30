@@ -1,4 +1,6 @@
 class Admin::CoursesController < ApplicationController
+  before_action :assert_course_admin!
+
   def index
     if user_signed_in?
       @courses = Course

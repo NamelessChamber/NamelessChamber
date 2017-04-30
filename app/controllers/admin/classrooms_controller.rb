@@ -1,5 +1,6 @@
 class Admin::ClassroomsController < ApplicationController
   before_action :find_course
+  before_action :assert_course_admin!
 
   def new
     # confirm user is an admin of the course in precondition
