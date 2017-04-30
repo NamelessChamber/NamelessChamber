@@ -1,0 +1,13 @@
+<div class="card small-12 columns">
+  <div class="card-section">
+    Editing PSet in:
+    <i><%= @exercise_category.name %>, <%= @exercise_subcategory.name %></i>
+  </div>
+  <div class="card-section">
+    <%= form_for @p_set, url: {action: 'update'} do |f| %>
+      <%= f.label :name %>
+      <%= f.text_field :name, placeholder: 'Name' %>
+      <%= f.submit 'Save', class: 'button' %>
+    <% end %>
+  </div>
+</div>

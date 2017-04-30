@@ -23,9 +23,9 @@
             <ul>
               <% category.exercise_subcategories.each do |subcategory| %>
                 <li>
-                  <%= form_tag admin_p_sets_path, method: 'post' do %>
-                    <%= hidden_field :p_set, :exercise_subcategory_id, value: subcategory.id %>
-                    <%= submit_tag subcategory.name, class: 'success button tiny' %>
+                  <%= form_for @p_set, url: {action: 'create'} do |f| %>
+                    <%= f.hidden_field :exercise_subcategory_id, value: subcategory.id %>
+                    <%= f.submit subcategory.name, class: 'success button tiny' %>
                   <% end %>
                 </li>
               <% end %>

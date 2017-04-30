@@ -15,5 +15,26 @@ class Admin::PSetsController < ApplicationController
   end
 
   def edit
+    find_or_404 do
+      @p_set = PSet.find(params[:id])
+    end
+
+    @exercise_subcategory = ExerciseSubcategory
+      .where(id: @p_set.exercise_subcategory_id)
+      .includes(:exercise_category)
+      .first
+    @exercise_category = @exercise_subcategory.exercise_category
+  end
+
+  def update
+    find_or_404 do
+      @p_set = PSet.find(params[:id])
+    end
+
+    @p_set.update_attributes(params[:p_set].permit(
+      :name
+    ))
+
+    redirect_to edit_admin_p_set_path(@p_set)
   end
 end
