@@ -24,7 +24,7 @@
               <% category.exercise_subcategories.each do |subcategory| %>
                 <li>
                   <%= form_tag admin_p_sets_path, method: 'post' do %>
-                    <%= hidden_field :p_set, :exercise_category_id, value: subcategory.id %>
+                    <%= hidden_field :p_set, :exercise_subcategory_id, value: subcategory.id %>
                     <%= submit_tag subcategory.name, class: 'success button tiny' %>
                   <% end %>
                 </li>
