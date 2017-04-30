@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170430183758) do
+ActiveRecord::Schema.define(version: 20170430184341) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,9 +74,12 @@ ActiveRecord::Schema.define(version: 20170430183758) do
 
   create_table "p_sets", force: :cascade do |t|
     t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
     t.integer  "user_id"
+    t.integer  "exercise_subcategory_id"
+    t.integer  "exercise_subcategory_level", default: 1
+    t.index ["exercise_subcategory_id"], name: "index_p_sets_on_exercise_subcategory_id", using: :btree
     t.index ["user_id"], name: "index_p_sets_on_user_id", using: :btree
   end
 
