@@ -31,8 +31,8 @@
         <tbody>
           <% @course.classrooms.each do |classroom| %>
             <tr>
-              <td><%= @clasroom.name %></td>
-              <td><%= @clasroom.created_at %></td>
+              <td><%= classroom.name %></td>
+              <td><%= classroom.created_at %></td>
             </tr>
           <% end %>
         </tbody>

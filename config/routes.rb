@@ -12,8 +12,8 @@ Rails.application.routes.draw do
     end
 
     resources :p_sets do
-      get 'score', to: 'admin/p_sets#show_score'
-      put 'score', to: 'admin/p_sets#udpate_score'
+      get 'data', to: 'p_sets#show_data'
+      put 'data', to: 'p_sets#update_data'
     end
   end
 

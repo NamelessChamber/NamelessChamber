@@ -16,5 +16,5 @@ class Classroom < ApplicationRecord
   has_many :classroom_users
   has_many :users, :through => :classroom_users
   has_many :classroom_psets
-  has_many :classrooms, :through => :classroom_psets
+  has_many :p_sets, :through => :classroom_psets
 end
