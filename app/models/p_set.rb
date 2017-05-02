@@ -35,12 +35,14 @@ class PSet < ApplicationRecord
         '1r', '1/2r', '1/4r', '1/8r', '1/16r', '1/32r'
       ]),
       harmony: initialize_pairs([
-        '1', '1/2', '1/4', '1/8', '1/16', '1/32',
-        '1r', '1/2r', '1/4r', '1/8r', '1/16r', '1/32r'
+        'I', 'ii', 'iii', 'IV', 'V', 'vi', 'viio',
+        'vio', 'i', 'II', 'iio', 'III', 'III+', 'iv',
+        'v', 'VI', 'VII', 'VII+', 'N6', 'Gr+6', 'Fr+6',
+        'It+6', 'V/V', 'V/ii', 'V/iii', 'V/vi', 'V/IV',
+        'V/viio', 'viioi/ii', 'viioi/iii'
       ]),
       inversion: initialize_pairs([
-        '1', '1/2', '1/4', '1/8', '1/16', '1/32',
-        '1r', '1/2r', '1/4r', '1/8r', '1/16r', '1/32r'
+        '6', '6/4', '4/3', '4/2', '6/3', '6/5', '7'
       ]),
       accidental: initialize_pairs([
         'C', 'D', 'E', 'F', 'G', 'A', 'B',

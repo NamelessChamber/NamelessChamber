@@ -27,30 +27,29 @@ class BoolOptionsEditor extends React.Component {
   }
 
   render() {
-    let checkboxes = this.props.options.map((pair) => {
+    const checkboxes = this.props.options.map((pair) => {
       let [option, value] = pair;
-      return [(
-        <input type="checkbox"
-               key={option + '_box'}
-               id={option}
-               name={option}
-               checked={value}
-               onChange={this.handleChange.bind(this)} />
-      ), (
-        <label key={option} htmlFor={option}>
-          {option}
-        </label>
-      )];
+      const optionStyle = {display: 'inline-block'};
+      const id = `${this.props.name}_${option}`;
+      return (
+        <div style={optionStyle} key={id}>
+          <input type="checkbox"
+                 id={id}
+                 name={option}
+                 checked={value}
+                 onChange={this.handleChange.bind(this)} />
+          <label htmlFor={id}>
+            {option}
+          </label>
+        </div>
+      );
     });
-    checkboxes = _.flatten(checkboxes);
 
     return (
-      <div className="row">
-        <fieldset className="large-6 columns">
-          <legend>{this.props.name}</legend>
-          {checkboxes}
-        </fieldset>
-      </div>
+      <fieldset className="column column-block">
+        <legend>{this.props.name}</legend>
+        {checkboxes}
+      </fieldset>
     );
   }
 }
@@ -81,12 +80,23 @@ class PSetOptionsEditor extends React.Component {
   }
 
   render() {
-    let {solfege} = this.state;
+    const boolSets =
+      ['Solfege', 'Rhythm', 'Harmony', 'Inversion', 'Accidental'];
+    let boolEditors = boolSets.map((name, i) => {
+      const prop = name.toLowerCase();
+      const options = this.state[prop];
+      const changeFn = this.onOptionsChange.bind(this, prop);
+      return (
+        <BoolOptionsEditor key={i}
+                           options={options}
+                           name={name}
+                           onChange={changeFn} />
+      );
+    });
+
     return (
-      <div className="row">
-        <BoolOptionsEditor options={solfege}
-                           name="Solfege"
-                           onChange={this.onOptionsChange.bind(this, 'solfege')} />
+      <div className="row large-up-3">
+        {boolEditors}
       </div>
     );
   }
