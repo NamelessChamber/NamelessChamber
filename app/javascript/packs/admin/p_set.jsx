@@ -57,26 +57,39 @@ class BoolOptionsEditor extends React.Component {
 class PSetOptionsEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = props.data;
+    this.state = props.pSet;
+
+    this.onNameChange = this.onNameChange.bind(this);
   }
 
   static propTypes = {
-    data: PropTypes.object.isRequired,
+    pSet: PropTypes.object.isRequired,
     url: PropTypes.string.isRequired
+  }
+
+  postUpdate(newState) {
+    const params = {
+      method: 'put',
+      dataType: 'json',
+      data: {p_set: newState}
+    };
+    $.ajax(this.props.url, params).then((data) => {
+      this.setState(data);
+    });
   }
 
   onOptionsChange(option, values) {
     const update = {[option]: values};
-    const newState = Object.assign({}, this.state, update);
+    const newData = Object.assign({}, this.state.data, update);
+    const newState = Object.assign({}, this.state, {data: newData});
     this.setState(newState);
-    const params = {
-      method: 'put',
-      dataType: 'json',
-      data: {data: JSON.stringify(newState)}
-    };
-    $.ajax(this.props.url, params).then((data) => {
-      this.setState(data);
-    })
+    this.postUpdate(newState);
+  }
+
+  onNameChange(event) {
+    const newState = Object.assign({}, this.state, {name: event.target.value});
+    this.setState(newState);
+    this.postUpdate(newState);
   }
 
   render() {
@@ -84,7 +97,7 @@ class PSetOptionsEditor extends React.Component {
       ['Solfege', 'Rhythm', 'Harmony', 'Inversion', 'Accidental'];
     let boolEditors = boolSets.map((name, i) => {
       const prop = name.toLowerCase();
-      const options = this.state[prop];
+      const options = this.state.data[prop];
       const changeFn = this.onOptionsChange.bind(this, prop);
       return (
         <BoolOptionsEditor key={i}
@@ -95,30 +108,37 @@ class PSetOptionsEditor extends React.Component {
     });
 
     return (
-      <div className="row large-up-3">
-        {boolEditors}
-      </div>
+      <form>
+        <div className="row">
+          <div className="small-8">
+            <label htmlFor="name">
+              Name
+              <input name="name"
+                     type="text"
+                     value={this.state.name}
+                     onChange={this.onNameChange} />
+            </label>
+          </div>
+        </div>
+        <div className="row large-up-3">
+          {boolEditors}
+        </div>
+        <div className="row">
+        </div>
+      </form>
     );
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // csrf
-  const token = $('meta[name="csrf-token"]').attr('content');
-  $.ajaxSetup({
-    beforeSend: (xhr) => {
-      xhr.setRequestHeader('X-CSRF-Token', token);
-    }
-  });
-
   let {pathname} = window.location;
   let parts = pathname.split('/');
   let id = parts[3];
-  let url = `/admin/p_sets/${id}/data.json`;
+  let url = `/admin/p_sets/${id}.json`;
 
   $.ajax(url, {method: 'get'}).then((data) => {
     ReactDOM.render(
-      <PSetOptionsEditor data={data}
+      <PSetOptionsEditor pSet={data}
                          url={url} />,
       document.getElementById('p_set_options'),
     );

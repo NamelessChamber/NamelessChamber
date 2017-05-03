@@ -20,6 +20,8 @@ class PSet < ApplicationRecord
 
   before_create :add_default_metadata
 
+  serialize :data, JSON
+
   def initialize_pairs(items)
     items.map { |item| [item, false] }
   end

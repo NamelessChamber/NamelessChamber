@@ -6,3 +6,11 @@
 //
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
+
+// csrf
+const token = $('meta[name="csrf-token"]').attr('content');
+$.ajaxSetup({
+  beforeSend: (xhr) => {
+    xhr.setRequestHeader('X-CSRF-Token', token);
+  }
+});
