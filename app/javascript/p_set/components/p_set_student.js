@@ -61,6 +61,8 @@ export default class PSetStudentComponent extends React.Component {
                     <option value="r">r</option>
                     <option value="d">d</option>
                   </select>
+                  <br />
+                  <input type="submit" className="button" value="Add" />
                 </form>
               </div>
               <div className="column column-block">
