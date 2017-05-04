@@ -14,7 +14,9 @@ const devServer = safeLoad(readFileSync(join(configPath, 'development.server.yml
 const ifHasCDN = env.ASSET_HOST !== undefined && env.NODE_ENV === 'production'
 const devServerUrl = `http://${devServer.host}:${devServer.port}/${paths.entry}/`
 const publicUrl = ifHasCDN ? `${env.ASSET_HOST}/${paths.entry}/` : `/${paths.entry}/`
-const publicPath = env.NODE_ENV !== 'production' ? devServerUrl : publicUrl
+// const publicPath = env.NODE_ENV !== 'production' ? devServerUrl : publicUrl
+// this fix allows for my proxy server to not interfere
+const publicPath = env.NODE_ENV !== 'production' ? `/${paths.entry}/` : publicUrl
 
 module.exports = {
   devServer,

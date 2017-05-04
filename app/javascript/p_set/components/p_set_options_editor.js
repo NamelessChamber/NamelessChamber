@@ -1,65 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDOM from 'react-dom';
-import _ from 'lodash';
 
-class BoolOptionsEditor extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+import BoolOptionsEditor from './bool_options_editor';
 
-  static propTypes = {
-    options: PropTypes.array.isRequired,
-    name: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired
-  }
+import '../styles/p_set_options_editor.css';
 
-  handleChange(event) {
-    const {target} = event;
-    const newValue = target.checked;
-    const name = target.name;
-    this.props.onChange(
-      this.props.options.map((pair) => {
-        let [option, value] = pair;
-        return (option === name) ? [option, newValue] : pair;
-      })
-    );
-  }
-
-  render() {
-    const checkboxes = this.props.options.map((pair) => {
-      let [option, value] = pair;
-      const optionStyle = {display: 'inline-block'};
-      const id = `${this.props.name}_${option}`;
-      return (
-        <div style={optionStyle} key={id}>
-          <input type="checkbox"
-                 id={id}
-                 name={option}
-                 checked={value}
-                 onChange={this.handleChange.bind(this)} />
-          <label htmlFor={id}>
-            {option}
-          </label>
-        </div>
-      );
-    });
-
-    return (
-      <fieldset className="column column-block">
-        <legend>{this.props.name}</legend>
-        {checkboxes}
-      </fieldset>
-    );
-  }
-}
-
-class PSetOptionsEditor extends React.Component {
+export default class PSetOptionsEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = props.pSet;
 
     this.onNameChange = this.onNameChange.bind(this);
+    this.onMeterChange = this.onMeterChange.bind(this);
   }
 
   static propTypes = {
@@ -68,6 +20,7 @@ class PSetOptionsEditor extends React.Component {
   }
 
   postUpdate(newState) {
+    this.setState(newState);
     const params = {
       method: 'put',
       dataType: 'json',
@@ -82,13 +35,18 @@ class PSetOptionsEditor extends React.Component {
     const update = {[option]: values};
     const newData = Object.assign({}, this.state.data, update);
     const newState = Object.assign({}, this.state, {data: newData});
-    this.setState(newState);
     this.postUpdate(newState);
   }
 
   onNameChange(event) {
     const newState = Object.assign({}, this.state, {name: event.target.value});
-    this.setState(newState);
+    this.postUpdate(newState);
+  }
+
+  onMeterChange(event) {
+    const {name, value} = event.target;
+    const newState = Object.assign({}, this.state);
+    newState.data.meter[name] = value;
     this.postUpdate(newState);
   }
 
@@ -110,7 +68,7 @@ class PSetOptionsEditor extends React.Component {
     return (
       <form>
         <div className="row">
-          <div className="small-8">
+          <div className="small-8 columns">
             <label htmlFor="name">
               Name
               <input name="name"
@@ -124,23 +82,27 @@ class PSetOptionsEditor extends React.Component {
           {boolEditors}
         </div>
         <div className="row">
+          <div className="small-6 columns">
+              <label>
+                <p>Meter</p>
+                <input type="number"
+                       name="top"
+                       className="meter-input"
+                       value={this.state.data.meter.top}
+                       onChange={this.onMeterChange} />
+                /
+                <input type="number"
+                       name="bottom"
+                       className="meter-input"
+                       value={this.state.data.meter.bottom}
+                       onChange={this.onMeterChange} />
+              </label>
+          </div>
+          <div className="small-6 columns">
+
+          </div>
         </div>
       </form>
     );
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  let {pathname} = window.location;
-  let parts = pathname.split('/');
-  let id = parts[3];
-  let url = `/admin/p_sets/${id}.json`;
-
-  $.ajax(url, {method: 'get'}).then((data) => {
-    ReactDOM.render(
-      <PSetOptionsEditor pSet={data}
-                         url={url} />,
-      document.getElementById('p_set_options'),
-    );
-  });
-})

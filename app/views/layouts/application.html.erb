@@ -11,7 +11,8 @@
     <%= javascript_pack_tag "application" %>
     <% unless @js_packs.nil? || @js_packs.empty? %>
       <% @js_packs.each do |pack| %>
-        <script src="/packs/<%= pack %>.js"></script>
+        <%= javascript_pack_tag pack %>
+        <%= stylesheet_pack_tag pack %>
       <% end %>
     <% end %>
     <%= csrf_meta_tags %>
