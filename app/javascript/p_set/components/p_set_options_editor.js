@@ -1,22 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import BoolOptionsEditor from './bool_options_editor';
 
 import '../styles/p_set_options_editor.css';
 
+function pSetUrl(id) {
+  return `/admin/p_sets/${id}.json`;
+}
+
 export default class PSetOptionsEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = props.pSet;
-
     this.onNameChange = this.onNameChange.bind(this);
     this.onMeterChange = this.onMeterChange.bind(this);
   }
 
   static propTypes = {
-    pSet: PropTypes.object.isRequired,
-    url: PropTypes.string.isRequired
+    match: PropTypes.object.isRequired
+  }
+
+  componentDidMount() {
+    const { p_set_id } = this.props.match.params;
+    const params = {method: 'get', dataType: 'json'};
+    $.ajax(pSetUrl(p_set_id), params).then((data) => {
+      this.setState(data);
+    });
   }
 
   postUpdate(newState) {
@@ -51,6 +61,12 @@ export default class PSetOptionsEditor extends React.Component {
   }
 
   render() {
+    if (_.isUndefined(this.state) || _.isNull(this.state)) {
+      return (
+        <form></form>
+      );
+    }
+
     const boolSets =
       ['Solfege', 'Rhythm', 'Harmony', 'Inversion', 'Accidental'];
     let boolEditors = boolSets.map((name, i) => {
