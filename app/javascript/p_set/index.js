@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom';
 import PSetOptionsEditor from './components/p_set_options_editor';
-import VexflowComponent from './components/vexflow';
+import PSetStudentComponent from './components/p_set_student';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 function init() {
@@ -15,7 +15,7 @@ function init() {
         <Switch>
           <Route path="/admin/p_sets/:p_set_id/edit"
                  component={PSetOptionsEditor} />
-          <Route path="/" component={VexflowComponent} />
+          <Route path="/" component={PSetStudentComponent} />
         </Switch>
       </BrowserRouter>,
       document.getElementById('app-root'),
