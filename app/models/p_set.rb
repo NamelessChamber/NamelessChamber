@@ -33,8 +33,8 @@ class PSet < ApplicationRecord
         'meh', 'seh', 'leh', 'teh'
       ]),
       rhythm: initialize_pairs([
-        '1', '1/2', '1/4', '1/8', '1/16', '1/32',
-        '1r', '1/2r', '1/4r', '1/8r', '1/16r', '1/32r'
+        '1', '2', '4', '8', '16', '32',
+        '1r', '2r', '4r', '8r', '16r', '32r'
       ]),
       harmony: initialize_pairs([
         'I', 'ii', 'iii', 'IV', 'V', 'vi', 'viio',
