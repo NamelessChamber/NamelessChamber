@@ -17,11 +17,20 @@ export default class VexflowComponent extends React.Component {
     score: PropTypes.array.isRequired,
     answer: PropTypes.array.isRequired,
     meter: PropTypes.object.isRequired,
-    clef: PropTypes.string.isRequired
+    clef: PropTypes.string.isRequired,
+    rhythmic: PropTypes.bool
+  }
+
+  static defaultProps = {
+    rhythmic: false
   }
 
   meterToString() {
     return `${this.props.meter.top}/${this.props.meter.bottom}`;
+  }
+
+  defaultLineForStave() {
+    return ['b/4'];
   }
 
   convertNote(note) {
@@ -29,11 +38,22 @@ export default class VexflowComponent extends React.Component {
 
     if (type === 'note') {
       const { keys, duration } = note;
-      return new VF.StaveNote({
+
+      const staveNote = new VF.StaveNote({
         duration: duration,
-        keys: keys,
+        keys: this.props.rhythmic ? this.defaultLineForStave() : keys,
         clef: this.props.clef
       });
+
+      if (note.dotted) {
+        staveNote.addDotToAll();
+      }
+
+      if (note.accidental) {
+        staveNote.addAccidental(0, new VF.Accidental(note.accidental));
+      }
+
+      return staveNote;
     } else if (type === 'barline') {
       let { barType } = note;
       barType = VF.Barline.type[barType];
@@ -92,7 +112,9 @@ export default class VexflowComponent extends React.Component {
 
     const context = this.renderer.getContext();
     context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
-    this.stave = new VF.Stave(0, 0, containerWidth);
+    const staveOptions = this.props.rhythmic ?
+      {num_lines: 0} : undefined;
+    this.stave = new VF.Stave(0, 0, containerWidth, staveOptions);
     this.stave.setContext(context);
 
     this.redrawVexflow();
