@@ -5,6 +5,12 @@ import Vex from 'vexflow';
 
 const VF = Vex.Flow;
 
+const BAR_TYPES = {
+  single: VF.Barline.type.SINGLE,
+  double: VF.Barline.type.DOUBLE,
+  end: VF.Barline.type.END,
+};
+
 export default class VexflowComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -54,10 +60,6 @@ export default class VexflowComponent extends React.Component {
       }
 
       return staveNote;
-    } else if (type === 'barline') {
-      let { barType } = note;
-      barType = VF.Barline.type[barType];
-      return new VF.Barline(barType);
     } else if (type === 'beam') {
       let {notes} = note;
       notes = notes.map(this.convertNote);
@@ -66,7 +68,7 @@ export default class VexflowComponent extends React.Component {
     }
   }
 
-  scoreToVoice() {
+  scoreToVoice(score, width) {
     const context = this.renderer.getContext();
 
     const voice = new VF.Voice({
@@ -75,7 +77,7 @@ export default class VexflowComponent extends React.Component {
     })
     voice.setMode(VF.Voice.Mode.SOFT);
 
-    const results = _.flattenDeep(this.props.score.map(this.convertNote));
+    const results = _.flattenDeep(score.map(this.convertNote));
     const [notes, beams] = _.partition(results, (x) => {
       return x instanceof VF.StaveNote;
     });
@@ -83,24 +85,60 @@ export default class VexflowComponent extends React.Component {
     voice.addTickables(notes);
     const formatter = new VF.Formatter()
       .joinVoices([voice])
-      .format([voice], 400);
+      .format([voice], width);
 
     return [voice, beams];
   }
 
   redrawVexflow() {
     const context = this.renderer.getContext();
+    const staveOptions = this.props.rhythmic ?
+      {num_lines: 0} : undefined;
 
-    // reset major pros
-    this.stave.addClef(this.props.clef)
-    this.stave.addTimeSignature(this.meterToString());
-    this.stave.resetLines();
+    function scoreLength(score) {
+      return score.reduce((acc, item) => {
+        if (item.type === 'note') {
+          return acc + 1;
+        } else if (item.type === 'beam') {
+          return acc + scoreLength(item.notes);
+        }
+      }, 0);
+    }
 
-    const [voice, beams] = this.scoreToVoice();
-    voice.draw(context, this.stave);
-    beams.forEach((b) => b.setContext(context).draw());
+    this.staves = [];
+    let lastStave = null;
+    let widthOffset = 0;
 
-    this.stave.draw();
+    this.props.score.forEach((score, i) => {
+      const { notes } = score;
+      let width = scoreLength(notes) * 50;
+
+      if (i === 0) {
+        // clef
+        width += 50;
+      }
+
+      const stave = new VF.Stave(widthOffset, 0, width, staveOptions);
+      stave.setContext(context);
+
+      if (score.endBar) {
+        stave.setEndBarType(BAR_TYPES[score.endBar]);
+      }
+
+      if (i === 0) {
+        stave.addClef(this.props.clef).addTimeSignature(this.meterToString());
+      }
+
+      const [voice, beams] = this.scoreToVoice(notes, width);
+      console.log(voice);
+      voice.draw(context, stave);
+      beams.forEach((b) => b.setContext(context).draw());
+
+      stave.draw();
+
+      widthOffset += width;
+      this.staves.push(stave);
+    });
   }
 
   componentDidMount() {
@@ -112,10 +150,6 @@ export default class VexflowComponent extends React.Component {
 
     const context = this.renderer.getContext();
     context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
-    const staveOptions = this.props.rhythmic ?
-      {num_lines: 0} : undefined;
-    this.stave = new VF.Stave(0, 0, containerWidth, staveOptions);
-    this.stave.setContext(context);
 
     this.redrawVexflow();
   }

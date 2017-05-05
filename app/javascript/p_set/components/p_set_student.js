@@ -3,24 +3,65 @@ import PropTypes from 'prop-types';
 
 import VexflowComponent from './vexflow';
 
-const data = {
+const vexData = {
   score: [
-    {type: 'note', keys: ['b/4'], duration: 'hr'},
-    // {type: 'barline', barType: 'SINGLE'},
-    {type: 'note', keys: ['b/4'], duration: 'hr'},
-    // {type: 'barline', barType: 'SINGLE'},
-    {type: 'beam', notes: [
-      {type: 'note', keys: ['f/4'], duration: '8'},
-      {type: 'note', keys: ['a/4'], duration: '8'}
-    ]},
-    {type: 'beam', notes: [
-      {type: 'note', keys: ['b/4'], duration: '8'},
-      {type: 'note', keys: ['b/4'], duration: '8'}
-    ]}
+    {
+      clef: true,
+      endBar: 'single',
+      notes: [
+        {type: 'note', keys: ['b/4'], duration: 'hr'},
+      ]
+    },
+    {
+      endBar: 'double',
+      notes: [
+        {type: 'note', keys: ['b/4'], duration: 'hr'},
+      ]
+    },
+    {
+      endBar: 'single',
+      notes: [
+        {type: 'beam', notes: [
+          {type: 'note', keys: ['f/4'], duration: '8'},
+          {type: 'note', keys: ['a/4'], duration: '8'}
+        ]},
+        {type: 'beam', notes: [
+          {type: 'note', keys: ['a/4'], duration: '8'},
+          {type: 'note', keys: ['a/4'], duration: '8'}
+        ]},
+      ]
+    },
+    {
+      endBar: 'single',
+      notes: [
+        {type: 'beam', notes: [
+          {type: 'note', keys: ['a/4'], duration: '8', dotted: true},
+          {type: 'note', keys: ['b/4'], duration: '16'}
+        ]},
+        {type: 'note', keys: ['c/5'], duration: '4'},
+      ]
+    },
+    {
+      endBar: 'end',
+      notes: [
+        {type: 'beam', notes: [
+          {type: 'note', keys: ['d/5'], duration: '8'},
+          {type: 'note', keys: ['e/5'], duration: '8'}
+        ]},
+        {type: 'beam', notes: [
+          {type: 'note', keys: ['f/5'], duration: '8'},
+          {type: 'note', keys: ['b/4'], duration: '8', accidental: 'n'}
+        ]},
+      ]
+    }
   ],
+  rhythm: ['8', '4', '2', '1', '8r', '4r', '2r', '1r'],
+  solfege: ['d', 'r', 'm', 'f', 's', 'l', 't'],
   answer: [],
   meter: {top: 2, bottom: 4},
-  clef: 'treble'
+  measures: 10,
+  clef: 'treble',
+  rhythmic: false
 };
 
 export default class PSetStudentComponent extends React.Component {
@@ -33,18 +74,15 @@ export default class PSetStudentComponent extends React.Component {
       <div className="small-12">
         <div className="row">
           <div className="small-12 large-8 small-centered">
-            <h3>Practice PSet: Melody Entry</h3>
-            <p>
-              Key: <i>Example key</i>
-            </p>
+            <h3>Practice PSet: Rhytmic Entry</h3>
           </div>
         </div>
         <div className="row">
           <div className="small-12 large-8 small-centered">
-            <VexflowComponent {...data} />
+            <VexflowComponent {...vexData} />
           </div>
         </div>
-        <div className="row">
+        {/* <div className="row">
           <div className="small-12 large-8 large-centered">
             <div className="row large-up-6">
               <div className="column column-block">
@@ -97,7 +135,7 @@ export default class PSetStudentComponent extends React.Component {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
