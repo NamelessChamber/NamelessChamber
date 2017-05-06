@@ -128,6 +128,10 @@ export default class VexflowComponent extends React.Component {
         stave.setEndBarType(BAR_TYPES[score.endBar]);
       }
 
+      if (props.keySignature) {
+        stave.addKeySignature(props.keySignature);
+      }
+
       if (i === props.currentMeasure) {
         stave.setSection('▼', 0);
       }

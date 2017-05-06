@@ -8,7 +8,6 @@ export default class RhythmicEntryComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.setCurrentMeasure = this.setCurrentMeasure.bind(this);
     this.state = {
       currentMeasure: 0,
     };
@@ -27,11 +26,9 @@ export default class RhythmicEntryComponent extends React.Component {
     let { currentMeasure } = this.state;
 
     if (increment) {
-      console.log('increment');
       const scoreLength = this.props.score.length - 1;
       currentMeasure = Math.min(scoreLength, currentMeasure + 1);
     } else {
-      console.log('decrement');
       currentMeasure = Math.max(0, currentMeasure - 1);
     }
 
@@ -40,18 +37,35 @@ export default class RhythmicEntryComponent extends React.Component {
     });
   }
 
+  appendNote(duration, e) {
+    e.preventDefault();
+
+    const newNote = {
+      type: 'note',
+      duration: duration,
+      keys: ['b/4']
+    };
+
+    const newScore = _.cloneDeep(this.props.score);
+    const measure = newScore[this.state.currentMeasure];
+    measure.notes.push(newNote);
+
+    this.props.updateScore(newScore);
+  }
+
   render() {
     const [notes, rests] = _.partition(this.props.options, ([note, _]) => {
       return !note.endsWith('r');
     });
-    function makeButton(duration) {
-      return (
+    const makeButton = (duration) => {
+        return (
         <input key={duration}
                type="submit"
                className="button"
-               value={duration} />
+               value={duration}
+               onClick={this.appendNote.bind(this, duration)} />
       );
-    }
+    };
     const noteButtons =
       notes.filter((x) => x[1]).map(([d, _]) => makeButton(d));
     const restButtons =
