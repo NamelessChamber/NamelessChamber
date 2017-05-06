@@ -90,6 +90,7 @@ export default class VexflowComponent extends React.Component {
 
   redrawVexflow(props) {
     const context = this.renderer.getContext();
+    context.clear();
     const staveOptions = props.rhythmic ?
       {num_lines: 0} : undefined;
 
