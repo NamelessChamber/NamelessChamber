@@ -12,6 +12,8 @@ export default class RhythmicEntryComponent extends React.Component {
       currentMeasure: 0,
       dotted: false
     };
+
+    this.getErrors = this.getErrors.bind();
   }
 
   static propTypes = {
@@ -19,7 +21,9 @@ export default class RhythmicEntryComponent extends React.Component {
     score: PropTypes.array.isRequired,
     meter: PropTypes.object.isRequired,
     clef: PropTypes.string.isRequired,
-    updateScore: PropTypes.func.isRequired
+    updateScore: PropTypes.func.isRequired,
+    solution: PropTypes.array.isRequired,
+    save: PropTypes.func.isRequired
   }
 
   setCurrentMeasure(increment, e) {
@@ -73,6 +77,10 @@ export default class RhythmicEntryComponent extends React.Component {
 
     this.props.updateScore(newScore);
     this.setState({dotted: false});
+  }
+
+  getErrors() {
+    const measure = newScore[currentMeasure];
   }
 
   render() {
@@ -152,7 +160,10 @@ export default class RhythmicEntryComponent extends React.Component {
             <div className="large-4 columns">
               <fieldset>
                 <legend>Proceed to Melody</legend>
-                <input type="submit" className="button" value="Save and Continue" />
+                <input type="submit"
+                  className="button"
+                  value="Save and Continue"
+                  onClick={this.props.save}/>
               </fieldset>
             </div>
           </div>

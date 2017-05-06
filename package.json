@@ -26,6 +26,7 @@
     "react-router-dom": "^4.1.1",
     "sass-loader": "^6.0.3",
     "style-loader": "^0.16.1",
+    "tonal": "^0.69.6",
     "vexflow": "^1.2.27",
     "webpack": "^2.4.1",
     "webpack-manifest-plugin": "^1.1.0",

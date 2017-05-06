@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
+import MelodicEntryComponent from './melodic_entry';
 
 const vexData = {
   score: [
@@ -24,12 +25,17 @@ const vexData = {
       ]
     },
     {
-      endBar: 'end',
+      endBar: 'single',
       notes: [
         {type: 'note', keys: ['d/5'], duration: '8'},
         {type: 'note', keys: ['e/5'], duration: '8'},
         {type: 'note', keys: ['f/5'], duration: '8'},
         {type: 'note', keys: ['b/4'], duration: '8', accidental: 'n'},
+      ]
+    },
+    {
+      endBar: 'single',
+      notes: [
       ]
     }
   ],
@@ -38,9 +44,10 @@ const vexData = {
     ['16r', true], ['8r', true], ['4r', true], ['2r', true], ['1r', true]
   ],
   solfege: [
-    ['d', true], ['r', true], ['m', true], ['f', true], ['s', true],
-    ['l', true], ['t', true]
+    ['t', true], ['l', true], ['s', true], ['fi', true], ['f', true],
+    ['m', true], ['r', true], ['d', true]
   ],
+  key: ['E', 'F', 'G'],
   answer: [
     {endBar: 'single', notes: []},
     {endBar: 'single', notes: []},
@@ -61,10 +68,12 @@ export default class PSetStudentComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      vexData
+      vexData,
+      rhythmic: false
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
+    this.saveAndToggle = this.saveAndToggle.bind(this);
   }
 
   handleScoreUpdate(score) {
@@ -74,24 +83,45 @@ export default class PSetStudentComponent extends React.Component {
     });
   }
 
+  saveAndToggle() {
+    this.setState({
+      rhythmic: !this.state.rhythmic
+    });
+  }
+
   render() {
-    return (
-      <div className="small-12">
-        <div className="row">
-          <div className="small-12 large-8 small-centered">
-            <h3>Practice PSet: Rhythmic Entry</h3>
-          </div>
-        </div>
-        <div className="row">
-          <div className="small-12 large-8 small-centered">
-            <VexflowComponent {...this.state.vexData} />
-          </div>
-        </div>
+    let entryComponent = null;
+
+    if (this.state.rhythmic) {
+      entryComponent = (
         <RhythmicEntryComponent options={this.state.vexData.rhythm}
                                 score={this.state.vexData.answer}
                                 clef={this.state.vexData.clef}
                                 meter={this.state.vexData.meter}
-                                updateScore={this.handleScoreUpdate} />
+                                solution={this.state.vexData.score}
+                                updateScore={this.handleScoreUpdate}
+                                save={this.saveAndToggle} />
+      );
+    } else {
+      entryComponent = (
+        <MelodicEntryComponent options={this.state.vexData.rhythm}
+                               score={this.state.vexData.answer}
+                               clef={this.state.vexData.clef}
+                               meter={this.state.vexData.meter}
+                               solution={this.state.vexData.score}
+                               updateScore={this.handleScoreUpdate}
+                               save={this.saveAndToggle} />
+      );
+    }
+
+    return (
+      <div className="small-12">
+        <div className="row">
+          <div className="small-12 large-8 small-centered">
+            <h3>Practice PSet: {this.state.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
+          </div>
+        </div>
+
         {/* <div className="row">
           <div className="small-12 large-8 large-centered">
             <div className="row large-up-6">

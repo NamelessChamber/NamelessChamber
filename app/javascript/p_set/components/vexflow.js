@@ -26,7 +26,8 @@ export default class VexflowComponent extends React.Component {
     rhythmic: PropTypes.bool,
     currentMeasure: PropTypes.number,
     startMeasure: PropTypes.number,
-    numMeasures: PropTypes.number
+    numMeasures: PropTypes.number,
+    keySignature: PropTypes.string
   }
 
   static defaultProps = {
