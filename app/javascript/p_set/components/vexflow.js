@@ -24,11 +24,15 @@ export default class VexflowComponent extends React.Component {
     meter: PropTypes.object.isRequired,
     clef: PropTypes.string.isRequired,
     rhythmic: PropTypes.bool,
-    currentMeasure: PropTypes.number
+    currentMeasure: PropTypes.number,
+    startMeasure: PropTypes.number,
+    numMeasures: PropTypes.number
   }
 
   static defaultProps = {
-    rhythmic: false
+    rhythmic: false,
+    startMeasure: 4,
+    numMeasures: 4
   }
 
   meterToString() {
@@ -108,9 +112,15 @@ export default class VexflowComponent extends React.Component {
     let lastStave = null;
     let widthOffset = 0;
 
-    props.score.forEach((score, i) => {
+    const scoreSlice = _.slice(
+      props.score,
+      props.startMeasure,
+      props.startMeasure + props.numMeasures
+    );
+    scoreSlice.forEach((score, i) => {
+      i += props.startMeasure;
       const { notes } = score;
-      let width = scoreLength(notes) * 50;
+      let width = scoreLength(notes) * 40;
       if (width === 0) {
         width = 50;
       }
@@ -129,9 +139,11 @@ export default class VexflowComponent extends React.Component {
       }
 
 
+      let section = `${i + 1}`;
       if (i === props.currentMeasure) {
-        stave.setSection('▼', 0);
+        section = `▼${section}`;
       }
+      stave.setSection(section, 0);
 
       if (i === 0) {
         stave.addClef(props.clef).addTimeSignature(this.meterToString());

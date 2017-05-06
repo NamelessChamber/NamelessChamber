@@ -4,13 +4,13 @@ import _ from 'lodash';
 
 import VexflowComponent from './vexflow';
 
-export default class RhythmicEntryComponent extends React.Component {
+export default class MelodicEntryComponent extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       currentMeasure: 0,
-      dotted: false
+      currentNote: 0
     };
   }
 
@@ -93,8 +93,6 @@ export default class RhythmicEntryComponent extends React.Component {
     const restButtons =
       rests.filter((x) => x[1]).map(([d, _]) => makeButton(d));
 
-    const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
-
     return (
       <div className="row">
         <div className="small-12 large-8 large-centered">
@@ -104,13 +102,12 @@ export default class RhythmicEntryComponent extends React.Component {
                               clef={this.props.clef}
                               rhythmic={false}
                               keySignature={'F'}
-                              currentMeasure={this.state.currentMeasure}
-                              startMeasure={startMeasure} />
+                              currentMeasure={this.state.currentMeasure} />
           </div>
           <div className="row">
             <div className="large-4 columns">
               <fieldset>
-                <legend>Measure ({this.state.currentMeasure + 1}/{this.props.score.length})</legend>
+                <legend>Measure ({this.state.currentMeasure + 1})</legend>
                 <input type="submit"
                        className="button"
                        value="Prev"
