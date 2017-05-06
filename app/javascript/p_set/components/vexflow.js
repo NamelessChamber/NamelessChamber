@@ -21,10 +21,10 @@ export default class VexflowComponent extends React.Component {
 
   static propTypes = {
     score: PropTypes.array.isRequired,
-    answer: PropTypes.array.isRequired,
     meter: PropTypes.object.isRequired,
     clef: PropTypes.string.isRequired,
-    rhythmic: PropTypes.bool
+    rhythmic: PropTypes.bool,
+    currentMeasure: PropTypes.number
   }
 
   static defaultProps = {
@@ -77,10 +77,8 @@ export default class VexflowComponent extends React.Component {
     })
     voice.setMode(VF.Voice.Mode.SOFT);
 
-    const results = _.flattenDeep(score.map(this.convertNote));
-    const [notes, beams] = _.partition(results, (x) => {
-      return x instanceof VF.StaveNote;
-    });
+    const notes = _.flattenDeep(score.map(this.convertNote));
+    const beams = VF.Beam.generateBeams(notes);
 
     voice.addTickables(notes);
     const formatter = new VF.Formatter()
@@ -90,9 +88,9 @@ export default class VexflowComponent extends React.Component {
     return [voice, beams];
   }
 
-  redrawVexflow() {
+  redrawVexflow(props) {
     const context = this.renderer.getContext();
-    const staveOptions = this.props.rhythmic ?
+    const staveOptions = props.rhythmic ?
       {num_lines: 0} : undefined;
 
     function scoreLength(score) {
@@ -109,36 +107,47 @@ export default class VexflowComponent extends React.Component {
     let lastStave = null;
     let widthOffset = 0;
 
-    this.props.score.forEach((score, i) => {
+    props.score.forEach((score, i) => {
       const { notes } = score;
       let width = scoreLength(notes) * 50;
+      if (width === 0) {
+        width = 50;
+      }
+      let offsetIncrement = width;
 
       if (i === 0) {
         // clef
-        width += 50;
+        offsetIncrement += 50;
       }
 
-      const stave = new VF.Stave(widthOffset, 0, width, staveOptions);
+      const stave = new VF.Stave(widthOffset, 0, offsetIncrement, staveOptions);
       stave.setContext(context);
 
       if (score.endBar) {
         stave.setEndBarType(BAR_TYPES[score.endBar]);
       }
 
+      if (i === props.currentMeasure) {
+        stave.setSection('▼', 0);
+      }
+
       if (i === 0) {
-        stave.addClef(this.props.clef).addTimeSignature(this.meterToString());
+        stave.addClef(props.clef).addTimeSignature(this.meterToString());
       }
 
       const [voice, beams] = this.scoreToVoice(notes, width);
-      console.log(voice);
       voice.draw(context, stave);
       beams.forEach((b) => b.setContext(context).draw());
 
       stave.draw();
 
-      widthOffset += width;
+      widthOffset += offsetIncrement;
       this.staves.push(stave);
     });
+  }
+
+  componentWillReceiveProps(newProps) {
+    this.redrawVexflow(newProps);
   }
 
   componentDidMount() {
@@ -151,7 +160,7 @@ export default class VexflowComponent extends React.Component {
     const context = this.renderer.getContext();
     context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
 
-    this.redrawVexflow();
+    this.redrawVexflow(this.props);
   }
 
   render() {

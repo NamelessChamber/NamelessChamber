@@ -2,62 +2,55 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import VexflowComponent from './vexflow';
+import RhythmicEntryComponent from './rhythmic_entry';
 
 const vexData = {
   score: [
     {
-      clef: true,
       endBar: 'single',
       notes: [
-        {type: 'note', keys: ['b/4'], duration: 'hr'},
-      ]
-    },
-    {
-      endBar: 'double',
-      notes: [
-        {type: 'note', keys: ['b/4'], duration: 'hr'},
+        {type: 'note', keys: ['f/4'], duration: '8'},
+        {type: 'note', keys: ['a/4'], duration: '8'},
+        {type: 'note', keys: ['a/4'], duration: '8'},
+        {type: 'note', keys: ['a/4'], duration: '8'},
       ]
     },
     {
       endBar: 'single',
       notes: [
-        {type: 'beam', notes: [
-          {type: 'note', keys: ['f/4'], duration: '8'},
-          {type: 'note', keys: ['a/4'], duration: '8'}
-        ]},
-        {type: 'beam', notes: [
-          {type: 'note', keys: ['a/4'], duration: '8'},
-          {type: 'note', keys: ['a/4'], duration: '8'}
-        ]},
-      ]
-    },
-    {
-      endBar: 'single',
-      notes: [
-        {type: 'beam', notes: [
-          {type: 'note', keys: ['a/4'], duration: '8', dotted: true},
-          {type: 'note', keys: ['b/4'], duration: '16'}
-        ]},
+        {type: 'note', keys: ['a/4'], duration: '8', dotted: true},
+        {type: 'note', keys: ['b/4'], duration: '16'},
         {type: 'note', keys: ['c/5'], duration: '4'},
       ]
     },
     {
       endBar: 'end',
       notes: [
-        {type: 'beam', notes: [
-          {type: 'note', keys: ['d/5'], duration: '8'},
-          {type: 'note', keys: ['e/5'], duration: '8'}
-        ]},
-        {type: 'beam', notes: [
-          {type: 'note', keys: ['f/5'], duration: '8'},
-          {type: 'note', keys: ['b/4'], duration: '8', accidental: 'n'}
-        ]},
+        {type: 'note', keys: ['d/5'], duration: '8'},
+        {type: 'note', keys: ['e/5'], duration: '8'},
+        {type: 'note', keys: ['f/5'], duration: '8'},
+        {type: 'note', keys: ['b/4'], duration: '8', accidental: 'n'},
       ]
     }
   ],
-  rhythm: ['8', '4', '2', '1', '8r', '4r', '2r', '1r'],
-  solfege: ['d', 'r', 'm', 'f', 's', 'l', 't'],
-  answer: [],
+  rhythm: [
+    ['8', true], ['4', true], ['2', true], ['1', true], ['8r', true],
+    ['4r', true], ['2r', true], ['1r', true]
+  ],
+  solfege: [
+    ['d', true], ['r', true], ['m', true], ['f', true], ['s', true],
+    ['l', true], ['t', true]
+  ],
+  answer: [
+    {endBar: 'single', notes: []},
+    {endBar: 'single', notes: []},
+    {endBar: 'single', notes: []},
+    {endBar: 'single', notes: []},
+    {endBar: 'single', notes: []},
+    {endBar: 'single', notes: []},
+    {endBar: 'single', notes: []},
+    {endBar: 'end', notes: []},
+  ],
   meter: {top: 2, bottom: 4},
   measures: 10,
   clef: 'treble',
@@ -67,6 +60,18 @@ const vexData = {
 export default class PSetStudentComponent extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      vexData
+    };
+
+    this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
+  }
+
+  handleScoreUpdate(score) {
+    const newVexData = Object.assign({}, this.state.vexData);
+    this.setState({
+      vexData: Object.assign(newVexData, {answer: score})
+    });
   }
 
   render() {
@@ -74,14 +79,19 @@ export default class PSetStudentComponent extends React.Component {
       <div className="small-12">
         <div className="row">
           <div className="small-12 large-8 small-centered">
-            <h3>Practice PSet: Rhytmic Entry</h3>
+            <h3>Practice PSet: Rhythmic Entry</h3>
           </div>
         </div>
         <div className="row">
           <div className="small-12 large-8 small-centered">
-            <VexflowComponent {...vexData} />
+            <VexflowComponent {...this.state.vexData} />
           </div>
         </div>
+        <RhythmicEntryComponent options={this.state.vexData.rhythm}
+                                score={this.state.vexData.answer}
+                                clef={this.state.vexData.clef}
+                                meter={this.state.vexData.meter}
+                                updateScore={this.handleScoreUpdate} />
         {/* <div className="row">
           <div className="small-12 large-8 large-centered">
             <div className="row large-up-6">
