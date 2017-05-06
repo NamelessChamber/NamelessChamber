@@ -118,7 +118,7 @@ export default class VexflowComponent extends React.Component {
 
       if (i === 0) {
         // clef
-        offsetIncrement += 50;
+        offsetIncrement += 100;
       }
 
       const stave = new VF.Stave(widthOffset, 0, offsetIncrement, staveOptions);
@@ -128,9 +128,6 @@ export default class VexflowComponent extends React.Component {
         stave.setEndBarType(BAR_TYPES[score.endBar]);
       }
 
-      if (props.keySignature) {
-        stave.addKeySignature(props.keySignature);
-      }
 
       if (i === props.currentMeasure) {
         stave.setSection('▼', 0);
@@ -138,6 +135,9 @@ export default class VexflowComponent extends React.Component {
 
       if (i === 0) {
         stave.addClef(props.clef).addTimeSignature(this.meterToString());
+        if (props.keySignature) {
+          stave.addKeySignature(props.keySignature);
+        }
       }
 
       const [voice, beams] = this.scoreToVoice(notes, width);

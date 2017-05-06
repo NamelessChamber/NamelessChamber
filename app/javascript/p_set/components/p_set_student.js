@@ -34,8 +34,8 @@ const vexData = {
     }
   ],
   rhythm: [
-    ['8', true], ['4', true], ['2', true], ['1', true], ['8r', true],
-    ['4r', true], ['2r', true], ['1r', true]
+    ['16', true], ['8', true], ['4', true], ['2', true], ['1', true],
+    ['16r', true], ['8r', true], ['4r', true], ['2r', true], ['1r', true]
   ],
   solfege: [
     ['d', true], ['r', true], ['m', true], ['f', true], ['s', true],

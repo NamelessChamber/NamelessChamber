@@ -10,6 +10,7 @@ export default class RhythmicEntryComponent extends React.Component {
 
     this.state = {
       currentMeasure: 0,
+      dotted: false
     };
   }
 
@@ -43,7 +44,8 @@ export default class RhythmicEntryComponent extends React.Component {
     const newNote = {
       type: 'note',
       duration: duration,
-      keys: ['b/4']
+      keys: ['b/4'],
+      dotted: this.state.dotted
     };
 
     const newScore = _.cloneDeep(this.props.score);
@@ -51,6 +53,26 @@ export default class RhythmicEntryComponent extends React.Component {
     measure.notes.push(newNote);
 
     this.props.updateScore(newScore);
+    this.setState({dotted: false});
+  }
+
+  toggleDotted(event) {
+    const { checked } = event.target;
+    this.setState({
+      dotted: checked
+    });
+  }
+
+  removeNote(event) {
+    event.preventDefault();
+
+    const newScore = _.cloneDeep(this.props.score);
+    const { currentMeasure } = this.state;
+    const measure = newScore[currentMeasure];
+    measure.notes = _.dropRight(measure.notes);
+
+    this.props.updateScore(newScore);
+    this.setState({dotted: false});
   }
 
   render() {
@@ -79,6 +101,7 @@ export default class RhythmicEntryComponent extends React.Component {
                               meter={this.props.meter}
                               clef={this.props.clef}
                               rhythmic={false}
+                              keySignature={'F'}
                               currentMeasure={this.state.currentMeasure} />
           </div>
           <div className="row">
@@ -97,7 +120,11 @@ export default class RhythmicEntryComponent extends React.Component {
               <fieldset>
                 <legend>Notes</legend>
                 <p>
-                  <input type="checkbox" value="dotted" id="dotted" />
+                  <input type="checkbox"
+                    value="dotted"
+                    id="dotted"
+                    checked={this.state.dotted}
+                    onChange={this.toggleDotted.bind(this)} />
                   <label htmlFor="dotted">Dot note</label>
                 </p>
                 {noteButtons}
@@ -107,7 +134,11 @@ export default class RhythmicEntryComponent extends React.Component {
                 {restButtons}
               </fieldset>
               <fieldset>
-                <input type="submit" className="button" value="Undo" />
+                <legend>Delete</legend>
+                <input type="submit"
+                  className="button"
+                  value="Delete"
+                  onClick={this.removeNote.bind(this)} />
               </fieldset>
             </div>
             <div className="large-4 columns">
