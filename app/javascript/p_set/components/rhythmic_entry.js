@@ -48,7 +48,6 @@ export default class RhythmicEntryComponent extends React.Component {
     const newNote = {
       type: 'note',
       duration: duration,
-      keys: ['b/4'],
       dotted: this.state.dotted
     };
 
@@ -110,7 +109,7 @@ export default class RhythmicEntryComponent extends React.Component {
             <VexflowComponent score={this.props.score}
                               meter={this.props.meter}
                               clef={this.props.clef}
-                              rhythmic={false}
+                              rhythmic={true}
                               currentMeasure={this.state.currentMeasure}
                               startMeasure={startMeasure} />
           </div>

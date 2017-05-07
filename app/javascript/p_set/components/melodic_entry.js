@@ -2,20 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
-import tonal from 'tonal';
-import { fromSemitones } from 'tonal-interval';
-
 import VexflowComponent from './vexflow';
-
-const SolfegeMap = {
-  d: 0, r: 2, m: 4, f: 5, s: 7, l: 9, t: 11,
-  di: 1, ri: 3, fi: 6, si: 8, li: 10,
-  ra: 1, meh: 3, seh: 6, leh: 8, teh: 10
-};
-
-const transposeNote = (note, octave, semis) => {
-  return tonal.transpose(`${note}${octave}`, fromSemitones(semis));
-};
 
 const clefToOctave = (clef) => {
   if (clef === 'treble') {
@@ -32,7 +19,8 @@ export default class MelodicEntryComponent extends React.Component {
     this.state = {
       currentMeasure: 0,
       currentNote: 0,
-      octave: clefToOctave(props.clef)
+      octave: clefToOctave(props.clef),
+      key: 'F'
     };
   }
 
@@ -89,9 +77,9 @@ export default class MelodicEntryComponent extends React.Component {
       octave = Math.max(1, octave - 1);
     }
 
-    const newScore = _.deepCopy(this.props.score);
+    const newScore = _.cloneDeep(this.props.score);
     const note = this.currentNote(newScore);
-    note.octave = note.octave;
+    note.octave = octave;
 
     this.props.updateScore(newScore);
 
@@ -111,7 +99,7 @@ export default class MelodicEntryComponent extends React.Component {
     const newScore = _.cloneDeep(this.props.score);
     const note = this.currentNote(newScore);
     note.solfege = solfege;
-    note.octave = note.octave;
+    note.octave = this.state.octave;
 
     this.props.updateScore(newScore);
   }
@@ -123,8 +111,11 @@ export default class MelodicEntryComponent extends React.Component {
     const note = measureNotes[this.state.currentNote];
     const noteDisplay = `Note (${this.state.currentNote + 1}/${measureNotes.length})`;
     const solfege = this.props.options.filter(([_, v]) => v).map(([v, _]) => v);
-    const selectedSolfege = _.isUndefined(note) ?
-      null : note.solfege;
+    let selectedSolfege = _.isUndefined(note) ?
+      undefined : note.solfege;
+    if (_.isUndefined(selectedSolfege)) {
+      selectedSolfege = '';
+    }
     const solfegeOptions = solfege.map((s) => {
       return (
         <option key={s} value={s}>{s}</option>
@@ -183,7 +174,7 @@ export default class MelodicEntryComponent extends React.Component {
                 <legend>Solfege</legend>
                 <select multiple
                         style={{width: '75px', height: '230px'}}
-                        value={note.solfege}
+                        value={[selectedSolfege]}
                         onChange={this.noteChange.bind(this)}>
                   {solfegeOptions}
                 </select>

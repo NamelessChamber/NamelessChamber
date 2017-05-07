@@ -2,13 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import Vex from 'vexflow';
+import tonal from 'tonal';
+import { fromSemitones } from 'tonal-interval';
+import _ from 'lodash';
 
 const VF = Vex.Flow;
 
-const BAR_TYPES = {
-  single: VF.Barline.type.SINGLE,
-  double: VF.Barline.type.DOUBLE,
-  end: VF.Barline.type.END,
+const SolfegeMap = {
+  d: 0, r: 2, m: 4, f: 5, s: 7, l: 9, t: 11,
+  di: 1, ri: 3, fi: 6, si: 8, li: 10,
+  ra: 1, meh: 3, seh: 6, leh: 8, teh: 10
+};
+
+const transposeNote = (note, octave, solfege) => {
+  note = note.toUpperCase();
+  const semis = SolfegeMap[solfege];
+  return tonal.transpose(`${note}${octave}`, fromSemitones(semis));
 };
 
 export default class VexflowComponent extends React.Component {
@@ -32,7 +41,7 @@ export default class VexflowComponent extends React.Component {
 
   static defaultProps = {
     rhythmic: false,
-    startMeasure: 4,
+    startMeasure: 0,
     numMeasures: 4
   }
 
@@ -41,14 +50,28 @@ export default class VexflowComponent extends React.Component {
   }
 
   defaultLineForStave() {
-    return ['b/4'];
+    const { clef } = this.props;
+    if (clef === 'treble') {
+      return ['b/4'];
+    } else if (clef === 'bass') {
+      return ['f/3'];
+    } else {
+      return ['c/4'];
+    }
   }
 
   convertNote(props, highlight, note, i) {
     const { type } = note;
 
     if (type === 'note') {
-      const { keys, duration } = note;
+      const { solfege, octave, duration } = note;
+      let keys = this.defaultLineForStave();
+      if (!_.isUndefined(solfege) && !_.isUndefined(octave)) {
+        const note = transposeNote(props.keySignature, octave, solfege);
+        let [, finalNote, finalOctave] = /([^\d]+)(\d+)/.exec(note);
+        finalNote = finalNote.toLowerCase();
+        keys = [`${finalNote}/${finalOctave}`];
+      }
 
       const staveNote = new VF.StaveNote({
         duration: duration,
@@ -103,8 +126,8 @@ export default class VexflowComponent extends React.Component {
   redrawVexflow(props) {
     const context = this.renderer.getContext();
     context.clear();
-    const staveOptions = props.rhythmic ?
-      {num_lines: 0} : undefined;
+    // const staveOptions = props.rhythmic ?
+    //   {num_lines: 0} : undefined;
 
     function scoreLength(score) {
       return score.reduce((acc, item) => {
@@ -139,11 +162,11 @@ export default class VexflowComponent extends React.Component {
         offsetIncrement += 100;
       }
 
-      const stave = new VF.Stave(widthOffset, 0, offsetIncrement, staveOptions);
+      const stave = new VF.Stave(widthOffset, 0, offsetIncrement);
       stave.setContext(context);
 
       if (score.endBar) {
-        stave.setEndBarType(BAR_TYPES[score.endBar]);
+        stave.setEndBarType(VF.Barline.type.END);
       }
 
 
