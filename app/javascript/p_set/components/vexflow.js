@@ -151,7 +151,7 @@ export default class VexflowComponent extends React.Component {
     scoreSlice.forEach((score, i) => {
       i += props.startMeasure;
       const { notes } = score;
-      let width = scoreLength(notes) * 40;
+      let width = scoreLength(notes) * 45;
       if (width === 0) {
         width = 50;
       }
@@ -209,7 +209,7 @@ export default class VexflowComponent extends React.Component {
     const containerWidth = e.offsetWidth;
 
     this.renderer = new VF.Renderer(e, VF.Renderer.Backends.SVG);
-    this.renderer.resize(containerWidth, 200);
+    this.renderer.resize(containerWidth, 150);
 
     const context = this.renderer.getContext();
     context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
