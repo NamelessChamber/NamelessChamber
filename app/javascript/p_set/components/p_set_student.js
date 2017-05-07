@@ -47,7 +47,7 @@ const vexData = {
     ['t', true], ['l', true], ['s', true], ['fi', true], ['f', true],
     ['m', true], ['r', true], ['d', true]
   ],
-  key: ['E', 'F', 'G'],
+  keys: ['E', 'F', 'G'],
   answer: [
     {endBar: 'single', notes: []},
     {endBar: 'single', notes: []},
@@ -111,6 +111,7 @@ export default class PSetStudentComponent extends React.Component {
         <MelodicEntryComponent options={this.state.vexData.solfege}
                                score={this.state.vexData.answer}
                                clef={this.state.vexData.clef}
+                               keys={this.state.vexData.keys}
                                meter={this.state.vexData.meter}
                                solution={this.state.vexData.score}
                                updateScore={this.handleScoreUpdate}

@@ -20,7 +20,7 @@ export default class MelodicEntryComponent extends React.Component {
       currentMeasure: 0,
       currentNote: 0,
       octave: clefToOctave(props.clef),
-      key: 'F'
+      key: props.keys[0] || 'C'
     };
   }
 
@@ -29,7 +29,8 @@ export default class MelodicEntryComponent extends React.Component {
     score: PropTypes.array.isRequired,
     meter: PropTypes.object.isRequired,
     clef: PropTypes.string.isRequired,
-    updateScore: PropTypes.func.isRequired
+    updateScore: PropTypes.func.isRequired,
+    keys: PropTypes.array.isRequired
   }
 
   setCurrentMeasure(increment, e) {
@@ -104,6 +105,11 @@ export default class MelodicEntryComponent extends React.Component {
     this.props.updateScore(newScore);
   }
 
+  updateKey(e) {
+    const key = e.target.value;
+    this.setState({key});
+  }
+
   render() {
     const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
     const measure = this.props.score[this.state.currentMeasure];
@@ -119,6 +125,12 @@ export default class MelodicEntryComponent extends React.Component {
     const solfegeOptions = solfege.map((s) => {
       return (
         <option key={s} value={s}>{s}</option>
+      );
+    });
+
+    const keyOptions = this.props.keys.map((key) => {
+      return (
+        <option key={key} value={key}>{key}</option>
       );
     });
 
@@ -158,6 +170,13 @@ export default class MelodicEntryComponent extends React.Component {
                        className="button"
                        value="Next"
                        onClick={this.setCurrentNote.bind(this, true)} />
+              </fieldset>
+              <fieldset>
+                <legend>Key</legend>
+                <select value={this.state.key}
+                        onChange={this.updateKey.bind(this)}>
+                  {keyOptions}
+                </select>
               </fieldset>
               <fieldset>
                 <legend>Octave {this.state.octave}</legend>
