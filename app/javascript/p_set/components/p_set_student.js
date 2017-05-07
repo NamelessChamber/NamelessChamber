@@ -149,6 +149,7 @@ export default class PSetStudentComponent extends React.Component {
   }
 
   saveAndRender() {
+    alert('Mind our dust! Thanks for completing the exercise. Please leave any feedback in the survey!');
   }
 
   render() {

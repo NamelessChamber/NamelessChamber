@@ -51,7 +51,6 @@ export default class VexflowComponent extends React.Component {
 
   defaultLineForStave(props) {
     const { clef } = props;
-    console.log('default line for', clef);
     if (clef === 'treble') {
       return ['b/4'];
     } else if (clef === 'bass') {
