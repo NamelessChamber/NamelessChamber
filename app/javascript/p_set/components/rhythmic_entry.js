@@ -12,8 +12,6 @@ export default class RhythmicEntryComponent extends React.Component {
       currentMeasure: 0,
       dotted: false
     };
-
-    this.getErrors = this.getErrors.bind();
   }
 
   static propTypes = {
@@ -79,7 +77,25 @@ export default class RhythmicEntryComponent extends React.Component {
   }
 
   getErrors() {
-    const measure = newScore[currentMeasure];
+    const measure = this.props.score[this.state.currentMeasure];
+    const { notes } = measure;
+    const solutionMeasure = this.props.solution[this.state.currentMeasure];
+    const solutionNotes = solutionMeasure.notes;
+    if (notes.length > 0) {
+      if (notes.length > solutionNotes.length) {
+        return 'Too many notes!';
+      }
+
+      const note = _.last(notes);
+      const solution = solutionNotes[notes.length - 1];
+
+      let error = '';
+      if (note.duration !== solution.duration) {
+        error += 'Wrong note type/duration! ';
+      }
+
+      return error;
+    }
   }
 
   render() {
@@ -101,6 +117,8 @@ export default class RhythmicEntryComponent extends React.Component {
       rests.filter((x) => x[1]).map(([d, _]) => makeButton(d));
 
     const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
+
+    const errors = this.getErrors();
 
     return (
       <div className="row">
@@ -152,7 +170,7 @@ export default class RhythmicEntryComponent extends React.Component {
             </div>
             <div className="large-4 columns">
               <fieldset>
-                <legend>Thing</legend>
+                <legend>{errors}</legend>
               </fieldset>
             </div>
             <div className="large-4 columns">

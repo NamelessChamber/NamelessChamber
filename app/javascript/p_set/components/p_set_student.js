@@ -1,44 +1,81 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 
 const vexData = {
-  score: [
-    {
-      endBar: 'single',
-      notes: [
-        {type: 'note', keys: ['f/4'], duration: '8'},
-        {type: 'note', keys: ['a/4'], duration: '8'},
-        {type: 'note', keys: ['a/4'], duration: '8'},
-        {type: 'note', keys: ['a/4'], duration: '8'},
-      ]
-    },
-    {
-      endBar: 'single',
-      notes: [
-        {type: 'note', keys: ['a/4'], duration: '8', dotted: true},
-        {type: 'note', keys: ['b/4'], duration: '16'},
-        {type: 'note', keys: ['c/5'], duration: '4'},
-      ]
-    },
-    {
-      endBar: 'single',
-      notes: [
-        {type: 'note', keys: ['d/5'], duration: '8'},
-        {type: 'note', keys: ['e/5'], duration: '8'},
-        {type: 'note', keys: ['f/5'], duration: '8'},
-        {type: 'note', keys: ['b/4'], duration: '8', accidental: 'n'},
-      ]
-    },
-    {
-      endBar: 'single',
-      notes: [
-      ]
-    }
-  ],
+  score: {
+    key: 'F',
+    treble: [
+      {
+        endBar: 'single',
+        notes: [
+          {type: 'note', duration: '8', solfege: 'd'},
+          {type: 'note', duration: '8'},
+          {type: 'note', duration: '8'},
+          {type: 'note', duration: '8'},
+        ]
+      },
+      {
+        endBar: 'single',
+        notes: [
+          {type: 'note', keys: ['a/4'], duration: '8', dotted: true},
+          {type: 'note', keys: ['b/4'], duration: '16'},
+          {type: 'note', keys: ['c/5'], duration: '4'},
+        ]
+      },
+      {
+        endBar: 'single',
+        notes: [
+          {type: 'note', keys: ['d/5'], duration: '8'},
+          {type: 'note', keys: ['e/5'], duration: '8'},
+          {type: 'note', keys: ['f/5'], duration: '8'},
+          {type: 'note', keys: ['b/4'], duration: '8', accidental: 'n'},
+        ]
+      },
+      {
+        endBar: 'single',
+        notes: [
+        ]
+      }
+    ],
+    bass: [
+      {
+        endBar: 'single',
+        notes: [
+          {type: 'note', duration: '8', solfege: 'd'},
+          {type: 'note', duration: '8'},
+          {type: 'note', duration: '8'},
+          {type: 'note', duration: '8'},
+        ]
+      },
+      {
+        endBar: 'single',
+        notes: [
+          {type: 'note', keys: ['a/4'], duration: '8', dotted: true},
+          {type: 'note', keys: ['b/4'], duration: '16'},
+          {type: 'note', keys: ['c/5'], duration: '4'},
+        ]
+      },
+      {
+        endBar: 'single',
+        notes: [
+          {type: 'note', keys: ['d/5'], duration: '8'},
+          {type: 'note', keys: ['e/5'], duration: '8'},
+          {type: 'note', keys: ['f/5'], duration: '8'},
+          {type: 'note', keys: ['b/4'], duration: '8', accidental: 'n'},
+        ]
+      },
+      {
+        endBar: 'single',
+        notes: [
+        ]
+      }
+    ]
+  },
   rhythm: [
     ['16', true], ['8', true], ['4', true], ['2', true], ['1', true],
     ['16r', true], ['8r', true], ['4r', true], ['2r', true], ['1r', true]
@@ -48,19 +85,31 @@ const vexData = {
     ['m', true], ['r', true], ['d', true]
   ],
   keys: ['E', 'F', 'G'],
-  answer: [
-    {endBar: 'single', notes: []},
-    {endBar: 'single', notes: []},
-    {endBar: 'single', notes: []},
-    {endBar: 'single', notes: []},
-    {endBar: 'single', notes: []},
-    {endBar: 'single', notes: []},
-    {endBar: 'single', notes: []},
-    {endBar: 'end', notes: []},
-  ],
+  answer: {
+    treble: [
+      {endBar: 'single', notes: []},
+      {endBar: 'single', notes: []},
+      {endBar: 'single', notes: []},
+      {endBar: 'single', notes: []},
+      {endBar: 'single', notes: []},
+      {endBar: 'single', notes: []},
+      {endBar: 'single', notes: []},
+      {endBar: 'end', notes: []},
+    ],
+    bass: [
+      {endBar: 'single', notes: []},
+      {endBar: 'single', notes: []},
+      {endBar: 'single', notes: []},
+      {endBar: 'single', notes: []},
+      {endBar: 'single', notes: []},
+      {endBar: 'single', notes: []},
+      {endBar: 'single', notes: []},
+      {endBar: 'end', notes: []},
+    ]
+  },
   meter: {top: 2, bottom: 4},
   measures: 10,
-  clef: 'treble',
+  clefs: ['treble', 'bass'],
   rhythmic: false
 };
 
@@ -69,7 +118,8 @@ export default class PSetStudentComponent extends React.Component {
     super(props);
     this.state = {
       vexData,
-      rhythmic: true
+      rhythmic: true,
+      clef: _.first(vexData.clefs)
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
@@ -78,9 +128,11 @@ export default class PSetStudentComponent extends React.Component {
   }
 
   handleScoreUpdate(score) {
-    const newVexData = Object.assign({}, this.state.vexData);
+    const newVexData = _.cloneDeep(this.state.vexData);
+    const { answer } = newVexData;
+    Object.assign(answer, {[this.state.clef]: score});
     this.setState({
-      vexData: Object.assign(newVexData, {answer: score})
+      vexData: newVexData
     });
   }
 
@@ -90,30 +142,46 @@ export default class PSetStudentComponent extends React.Component {
     });
   }
 
+  changeClef(e) {
+    const clef = e.target.value;
+
+    this.setState({clef});
+  }
+
   saveAndRender() {
   }
 
   render() {
     let entryComponent = null;
 
+    const { clef } = this.state;
+    const score = this.state.vexData.answer[clef];
+    const solution = this.state.vexData.score[clef];
+
+    const staveOptions = this.state.vexData.clefs.map((clef) => {
+      return (
+        <option key={clef} value={clef}>{_.capitalize(clef)}</option>
+      );
+    });
+
     if (this.state.rhythmic) {
       entryComponent = (
         <RhythmicEntryComponent options={this.state.vexData.rhythm}
-                                score={this.state.vexData.answer}
-                                clef={this.state.vexData.clef}
+                                score={score}
+                                clef={this.state.clef}
                                 meter={this.state.vexData.meter}
-                                solution={this.state.vexData.score}
+                                solution={solution}
                                 updateScore={this.handleScoreUpdate}
                                 save={this.saveAndToggle} />
       );
     } else {
       entryComponent = (
         <MelodicEntryComponent options={this.state.vexData.solfege}
-                               score={this.state.vexData.answer}
-                               clef={this.state.vexData.clef}
+                               score={score}
+                               clef={this.state.clef}
                                keys={this.state.vexData.keys}
                                meter={this.state.vexData.meter}
-                               solution={this.state.vexData.score}
+                               solution={solution}
                                updateScore={this.handleScoreUpdate}
                                save={this.saveAndToggle}
                                complete={this.saveAndRender} />
@@ -124,64 +192,21 @@ export default class PSetStudentComponent extends React.Component {
       <div className="small-12">
         <div className="row">
           <div className="small-12 large-8 small-centered">
-            <h3>Practice PSet: {this.state.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
+            <h3>Ishara Dication #3: {this.state.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
+          </div>
+        </div>
+        <div className="row">
+          <div className="small-12 large-8 small-centered">
+            <fieldset>
+              <legend>Stave</legend>
+              <select onChange={this.changeClef.bind(this)}
+                      value={this.state.clef}>
+                {staveOptions}
+              </select>
+            </fieldset>
           </div>
         </div>
         {entryComponent}
-        {/* <div className="row">
-          <div className="small-12 large-8 large-centered">
-            <div className="row large-up-6">
-              <div className="column column-block">
-                <form>
-                  <select multiple style={{width: '40px', height: '230px'}}>
-                    <option value="si">si</option>
-                    <option value="fi">fi</option>
-                    <option value="ri">ri</option>
-                    <option value="di">di</option>
-                    <option value="t">t</option>
-                    <option value="l">l</option>
-                    <option value="s">s</option>
-                    <option value="m">m</option>
-                    <option value="r">r</option>
-                    <option value="d">d</option>
-                  </select>
-                  <br />
-                  <input type="submit" className="button" value="Add" />
-                </form>
-              </div>
-              <div className="column column-block">
-                <form>
-                  <legend>
-                    Octave (3)
-                    <p>
-                      <input type="submit" className="button" value="+" />
-                    </p>
-                    <p>
-                      <input type="submit" className="button" value="-" />
-                    </p>
-                    <p>
-                      <input type="submit" className="button" value="Undo" />
-                    </p>
-                  </legend>
-                </form>
-              </div>
-              <div className="column column-block">
-                Current note: 5
-              </div>
-              <div className="column column-block">
-                &nbsp;
-              </div>
-              <div className="column column-block">
-                &nbsp;
-              </div>
-              <div className="column column-block">
-                <form>
-                  <input type="submit" className="button" value="Save" />
-                </form>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
     );
   }

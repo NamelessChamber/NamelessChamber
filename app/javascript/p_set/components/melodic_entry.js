@@ -27,6 +27,7 @@ export default class MelodicEntryComponent extends React.Component {
   static propTypes = {
     options: PropTypes.array.isRequired,
     score: PropTypes.array.isRequired,
+    solution: PropTypes.array.isRequired,
     meter: PropTypes.object.isRequired,
     clef: PropTypes.string.isRequired,
     updateScore: PropTypes.func.isRequired,
@@ -89,6 +90,34 @@ export default class MelodicEntryComponent extends React.Component {
     });
   }
 
+  getErrors() {
+    const measure = this.props.score[this.state.currentMeasure];
+    const { notes } = measure;
+    const solutionMeasure = this.props.solution[this.state.currentMeasure];
+    const solutionNotes = solutionMeasure.notes;
+    if (notes.length > 0) {
+      if (notes.length > solutionNotes.length) {
+        return 'Too many notes!';
+      }
+
+      const note = notes[this.state.currentNote];
+      const solution = solutionNotes[this.state.currentNote];
+
+      let error = '';
+      if (note.solfege !== solution.solfege) {
+        error += 'Wrong solfege selection. ';
+      }
+      if (note.octave !== solution.octave) {
+        error += 'Wrong octave selection. ';
+      }
+      if (note.duration !== solution.duration) {
+        error += 'Wrong note duration!';
+      }
+
+      return error;
+    }
+  }
+
   currentNote(score) {
     const measure = score[this.state.currentMeasure];
     const { notes } = measure;
@@ -133,6 +162,8 @@ export default class MelodicEntryComponent extends React.Component {
         <option key={key} value={key}>{key}</option>
       );
     });
+
+    const errors = this.getErrors();
 
     return (
       <div className="row">
@@ -201,7 +232,7 @@ export default class MelodicEntryComponent extends React.Component {
             </div>
             <div className="large-4 columns">
               <fieldset>
-                <legend>Thing</legend>
+                <legend>{errors}</legend>
               </fieldset>
             </div>
             <div className="large-4 columns">

@@ -49,12 +49,13 @@ export default class VexflowComponent extends React.Component {
     return `${this.props.meter.top}/${this.props.meter.bottom}`;
   }
 
-  defaultLineForStave() {
-    const { clef } = this.props;
+  defaultLineForStave(props) {
+    const { clef } = props;
+    console.log('default line for', clef);
     if (clef === 'treble') {
       return ['b/4'];
     } else if (clef === 'bass') {
-      return ['f/3'];
+      return ['d/3'];
     } else {
       return ['c/4'];
     }
@@ -65,8 +66,9 @@ export default class VexflowComponent extends React.Component {
 
     if (type === 'note') {
       const { solfege, octave, duration } = note;
-      let keys = this.defaultLineForStave();
+      let keys = this.defaultLineForStave(props);
       if (!_.isUndefined(solfege) && !_.isUndefined(octave)) {
+        console.log('transposing note');
         const note = transposeNote(props.keySignature, octave, solfege);
         let [, finalNote, finalOctave] = /([^\d]+)(\d+)/.exec(note);
         finalNote = finalNote.toLowerCase();
@@ -75,7 +77,7 @@ export default class VexflowComponent extends React.Component {
 
       const staveNote = new VF.StaveNote({
         duration: duration,
-        keys: props.rhythmic ? this.defaultLineForStave() : keys,
+        keys: props.rhythmic ? this.defaultLineForStave(props) : keys,
         clef: props.clef
       });
 
@@ -126,8 +128,6 @@ export default class VexflowComponent extends React.Component {
   redrawVexflow(props) {
     const context = this.renderer.getContext();
     context.clear();
-    // const staveOptions = props.rhythmic ?
-    //   {num_lines: 0} : undefined;
 
     function scoreLength(score) {
       return score.reduce((acc, item) => {
