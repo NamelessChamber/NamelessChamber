@@ -16,7 +16,6 @@ export default class VexflowComponent extends React.Component {
     super(props);
 
     this.renderer = null;
-    this.convertNote = this.convertNote.bind(this);
   }
 
   static propTypes = {
@@ -27,7 +26,8 @@ export default class VexflowComponent extends React.Component {
     currentMeasure: PropTypes.number,
     startMeasure: PropTypes.number,
     numMeasures: PropTypes.number,
-    keySignature: PropTypes.string
+    keySignature: PropTypes.string,
+    currentNote: PropTypes.number
   }
 
   static defaultProps = {
@@ -44,7 +44,7 @@ export default class VexflowComponent extends React.Component {
     return ['b/4'];
   }
 
-  convertNote(note) {
+  convertNote(props, highlight, note, i) {
     const { type } = note;
 
     if (type === 'note') {
@@ -52,9 +52,17 @@ export default class VexflowComponent extends React.Component {
 
       const staveNote = new VF.StaveNote({
         duration: duration,
-        keys: this.props.rhythmic ? this.defaultLineForStave() : keys,
-        clef: this.props.clef
+        keys: props.rhythmic ? this.defaultLineForStave() : keys,
+        clef: props.clef
       });
+
+      if (highlight && _.isNumber(props.currentNote)) {
+        if (i === props.currentNote) {
+          const annotation = new VF.Annotation('▲')
+            .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
+          staveNote.addModifier(0, annotation);
+        }
+      }
 
       if (note.dotted) {
         staveNote.addDotToAll();
@@ -65,15 +73,10 @@ export default class VexflowComponent extends React.Component {
       }
 
       return staveNote;
-    } else if (type === 'beam') {
-      let {notes} = note;
-      notes = notes.map(this.convertNote);
-      const beam = new VF.Beam(notes);
-      return [notes, beam];
     }
   }
 
-  scoreToVoice(score, width) {
+  scoreToVoice(props, score, width, highlight) {
     const context = this.renderer.getContext();
 
     const voice = new VF.Voice({
@@ -82,7 +85,11 @@ export default class VexflowComponent extends React.Component {
     })
     voice.setMode(VF.Voice.Mode.SOFT);
 
-    const notes = _.flattenDeep(score.map(this.convertNote));
+    const notes = _.flattenDeep(
+      score.map(
+        this.convertNote.bind(this, props, highlight)
+      )
+    );
     const beams = VF.Beam.generateBeams(notes);
 
     voice.addTickables(notes);
@@ -141,7 +148,9 @@ export default class VexflowComponent extends React.Component {
 
 
       let section = `${i + 1}`;
+      let highlight = false;
       if (i === props.currentMeasure) {
+        highlight = true
         section = `▼${section}`;
       }
       stave.setSection(section, 0);
@@ -153,7 +162,7 @@ export default class VexflowComponent extends React.Component {
         }
       }
 
-      const [voice, beams] = this.scoreToVoice(notes, width);
+      const [voice, beams] = this.scoreToVoice(props, notes, width, highlight);
       voice.draw(context, stave);
       beams.forEach((b) => b.setContext(context).draw());
 
@@ -162,6 +171,10 @@ export default class VexflowComponent extends React.Component {
       widthOffset += offsetIncrement;
       this.staves.push(stave);
     });
+  }
+
+  shouldComponentUpdate() {
+    return true;
   }
 
   componentWillReceiveProps(newProps) {
@@ -173,7 +186,7 @@ export default class VexflowComponent extends React.Component {
     const containerWidth = e.offsetWidth;
 
     this.renderer = new VF.Renderer(e, VF.Renderer.Backends.SVG);
-    this.renderer.resize(containerWidth, 150);
+    this.renderer.resize(containerWidth, 200);
 
     const context = this.renderer.getContext();
     context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");

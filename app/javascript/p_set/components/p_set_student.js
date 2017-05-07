@@ -69,11 +69,12 @@ export default class PSetStudentComponent extends React.Component {
     super(props);
     this.state = {
       vexData,
-      rhythmic: false
+      rhythmic: true
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
     this.saveAndToggle = this.saveAndToggle.bind(this);
+    this.saveAndRender = this.saveAndRender.bind(this);
   }
 
   handleScoreUpdate(score) {
@@ -87,6 +88,9 @@ export default class PSetStudentComponent extends React.Component {
     this.setState({
       rhythmic: !this.state.rhythmic
     });
+  }
+
+  saveAndRender() {
   }
 
   render() {
@@ -104,13 +108,14 @@ export default class PSetStudentComponent extends React.Component {
       );
     } else {
       entryComponent = (
-        <MelodicEntryComponent options={this.state.vexData.rhythm}
+        <MelodicEntryComponent options={this.state.vexData.solfege}
                                score={this.state.vexData.answer}
                                clef={this.state.vexData.clef}
                                meter={this.state.vexData.meter}
                                solution={this.state.vexData.score}
                                updateScore={this.handleScoreUpdate}
-                               save={this.saveAndToggle} />
+                               save={this.saveAndToggle}
+                               complete={this.saveAndRender} />
       );
     }
 
@@ -121,7 +126,7 @@ export default class PSetStudentComponent extends React.Component {
             <h3>Practice PSet: {this.state.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
           </div>
         </div>
-
+        {entryComponent}
         {/* <div className="row">
           <div className="small-12 large-8 large-centered">
             <div className="row large-up-6">

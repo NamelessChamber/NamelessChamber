@@ -111,7 +111,6 @@ export default class RhythmicEntryComponent extends React.Component {
                               meter={this.props.meter}
                               clef={this.props.clef}
                               rhythmic={false}
-                              keySignature={'F'}
                               currentMeasure={this.state.currentMeasure}
                               startMeasure={startMeasure} />
           </div>

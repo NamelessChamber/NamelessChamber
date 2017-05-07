@@ -2,7 +2,28 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
+import tonal from 'tonal';
+import { fromSemitones } from 'tonal-interval';
+
 import VexflowComponent from './vexflow';
+
+const SolfegeMap = {
+  d: 0, r: 2, m: 4, f: 5, s: 7, l: 9, t: 11,
+  di: 1, ri: 3, fi: 6, si: 8, li: 10,
+  ra: 1, meh: 3, seh: 6, leh: 8, teh: 10
+};
+
+const transposeNote = (note, octave, semis) => {
+  return tonal.transpose(`${note}${octave}`, fromSemitones(semis));
+};
+
+const clefToOctave = (clef) => {
+  if (clef === 'treble') {
+    return 4;
+  } else if (clef === 'bass') {
+    return 3;
+  }
+};
 
 export default class MelodicEntryComponent extends React.Component {
   constructor(props) {
@@ -10,7 +31,8 @@ export default class MelodicEntryComponent extends React.Component {
 
     this.state = {
       currentMeasure: 0,
-      currentNote: 0
+      currentNote: 0,
+      octave: clefToOctave(props.clef)
     };
   }
 
@@ -34,64 +56,80 @@ export default class MelodicEntryComponent extends React.Component {
     }
 
     this.setState({
-      currentMeasure
+      currentMeasure,
+      currentNote: 0
     });
   }
 
-  appendNote(duration, e) {
+  setCurrentNote(increment, e) {
     e.preventDefault();
+    let { currentNote } = this.state;
+    const measure = this.props.score[this.state.currentMeasure];
+    const { notes } = measure;
 
-    const newNote = {
-      type: 'note',
-      duration: duration,
-      keys: ['b/4'],
-      dotted: this.state.dotted
-    };
+    if (increment) {
+      const measureLength = notes.length - 1;
+      currentNote = Math.min(measureLength, currentNote + 1);
+      currentNote = Math.max(currentNote, 0);
+    } else {
+      currentNote = Math.max(0, currentNote - 1);
+    }
 
-    const newScore = _.cloneDeep(this.props.score);
-    const measure = newScore[this.state.currentMeasure];
-    measure.notes.push(newNote);
-
-    this.props.updateScore(newScore);
-    this.setState({dotted: false});
-  }
-
-  toggleDotted(event) {
-    const { checked } = event.target;
     this.setState({
-      dotted: checked
+      currentNote
     });
   }
 
-  removeNote(event) {
-    event.preventDefault();
+  setOctave(increment, e) {
+    let { octave } = this.state;
 
-    const newScore = _.cloneDeep(this.props.score);
-    const { currentMeasure } = this.state;
-    const measure = newScore[currentMeasure];
-    measure.notes = _.dropRight(measure.notes);
+    if (increment) {
+      octave += 1;
+    } else {
+      octave = Math.max(1, octave - 1);
+    }
+
+    const newScore = _.deepCopy(this.props.score);
+    const note = this.currentNote(newScore);
+    note.octave = note.octave;
 
     this.props.updateScore(newScore);
-    this.setState({dotted: false});
+
+    this.setState({
+      octave
+    });
+  }
+
+  currentNote(score) {
+    const measure = score[this.state.currentMeasure];
+    const { notes } = measure;
+    return notes[this.state.currentNote];
+  }
+
+  noteChange(e) {
+    const solfege = e.target.value;
+    const newScore = _.cloneDeep(this.props.score);
+    const note = this.currentNote(newScore);
+    note.solfege = solfege;
+    note.octave = note.octave;
+
+    this.props.updateScore(newScore);
   }
 
   render() {
-    const [notes, rests] = _.partition(this.props.options, ([note, _]) => {
-      return !note.endsWith('r');
-    });
-    const makeButton = (duration) => {
-        return (
-        <input key={duration}
-               type="submit"
-               className="button"
-               value={duration}
-               onClick={this.appendNote.bind(this, duration)} />
+    const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
+    const measure = this.props.score[this.state.currentMeasure];
+    const measureNotes = measure.notes;
+    const note = measureNotes[this.state.currentNote];
+    const noteDisplay = `Note (${this.state.currentNote + 1}/${measureNotes.length})`;
+    const solfege = this.props.options.filter(([_, v]) => v).map(([v, _]) => v);
+    const selectedSolfege = _.isUndefined(note) ?
+      null : note.solfege;
+    const solfegeOptions = solfege.map((s) => {
+      return (
+        <option key={s} value={s}>{s}</option>
       );
-    };
-    const noteButtons =
-      notes.filter((x) => x[1]).map(([d, _]) => makeButton(d));
-    const restButtons =
-      rests.filter((x) => x[1]).map(([d, _]) => makeButton(d));
+    });
 
     return (
       <div className="row">
@@ -101,8 +139,10 @@ export default class MelodicEntryComponent extends React.Component {
                               meter={this.props.meter}
                               clef={this.props.clef}
                               rhythmic={false}
-                              keySignature={'F'}
-                              currentMeasure={this.state.currentMeasure} />
+                              keySignature={this.state.key}
+                              currentMeasure={this.state.currentMeasure}
+                              startMeasure={startMeasure}
+                              currentNote={this.state.currentNote} />
           </div>
           <div className="row">
             <div className="large-4 columns">
@@ -118,27 +158,35 @@ export default class MelodicEntryComponent extends React.Component {
                        onClick={this.setCurrentMeasure.bind(this, true)} />
               </fieldset>
               <fieldset>
-                <legend>Notes</legend>
-                <p>
-                  <input type="checkbox"
-                    value="dotted"
-                    id="dotted"
-                    checked={this.state.dotted}
-                    onChange={this.toggleDotted.bind(this)} />
-                  <label htmlFor="dotted">Dot note</label>
-                </p>
-                {noteButtons}
-              </fieldset>
-              <fieldset>
-                <legend>Rests</legend>
-                {restButtons}
-              </fieldset>
-              <fieldset>
-                <legend>Delete</legend>
+                <legend>{noteDisplay}</legend>
                 <input type="submit"
-                  className="button"
-                  value="Delete"
-                  onClick={this.removeNote.bind(this)} />
+                       className="button"
+                       value="Prev"
+                       onClick={this.setCurrentNote.bind(this, false)} />
+                <input type="submit"
+                       className="button"
+                       value="Next"
+                       onClick={this.setCurrentNote.bind(this, true)} />
+              </fieldset>
+              <fieldset>
+                <legend>Octave {this.state.octave}</legend>
+                <input type="submit"
+                       className="button"
+                       value="Down"
+                       onClick={this.setOctave.bind(this, false)} />
+                <input type="submit"
+                       className="button"
+                       value="Up"
+                       onClick={this.setOctave.bind(this, true)} />
+              </fieldset>
+              <fieldset>
+                <legend>Solfege</legend>
+                <select multiple
+                        style={{width: '75px', height: '230px'}}
+                        value={note.solfege}
+                        onChange={this.noteChange.bind(this)}>
+                  {solfegeOptions}
+                </select>
               </fieldset>
             </div>
             <div className="large-4 columns">
@@ -148,8 +196,15 @@ export default class MelodicEntryComponent extends React.Component {
             </div>
             <div className="large-4 columns">
               <fieldset>
-                <legend>Proceed to Melody</legend>
-                <input type="submit" className="button" value="Save and Continue" />
+                <legend>Return</legend>
+                <input type="submit"
+                       className="button"
+                       value="Back to Rhythm"
+                       onClick={this.props.save} />
+              </fieldset>
+              <fieldset>
+                <legend>Complete</legend>
+                <input type="submit" className="button" value="Complete" />
               </fieldset>
             </div>
           </div>
