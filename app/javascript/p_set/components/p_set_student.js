@@ -48,6 +48,11 @@ let bass = bassDurations.map((measure, i, arr) => {
     })
   };
 });
+[[0, 0], [1, 0], [6, 0], [7, 1]].forEach(([x, y]) => {
+  bass[x].notes[y].octave = 3;
+});
+treble[2].notes[2].octave = 5;
+treble[6].notes[5].octave = 3;
 
 const vexData = {
   score: {
