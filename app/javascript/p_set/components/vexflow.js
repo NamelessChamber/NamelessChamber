@@ -164,9 +164,8 @@ export default class VexflowComponent extends React.Component {
       stave.setContext(context);
 
       if (score.endBar) {
-        stave.setEndBarType(VF.Barline.type.END);
+        stave.setEndBarType(VF.Barline.type[score.endBar.toUpperCase()]);
       }
-
 
       let section = `${i + 1}`;
       let highlight = false;

@@ -6,8 +6,6 @@ import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 
-// d-m-m-m-m-f-s-l-t-d-fi-l-s-r-f-f-f-f-s-l-s-f-m-f-r-d-r-t-r-d
-
 let trebleScore = 'd-m-m-m-m-f-s-l-t-d-fi-l-s-r-f-f-f-f-s-l-s-f-m-f-r-d-r-t-r-d';
 trebleScore = trebleScore.split('-').map((note) => {
   return {type: 'note', solfege: note, octave: 4};
@@ -31,8 +29,8 @@ let treble = trebleDurations.map((measure, i, arr) => {
   };
 });
 let bassScore = 'd-d-t-l-s-s-s-d-s-s-d';
-bassScore = bassScore.split('-').map((note) => {
-  return {type: 'note', solfege: note, octave: 3};
+bassScore = bassScore.split('-').map((note, i) => {
+  return {type: 'note', solfege: note, octave: 2};
 });
 let bassDurations = [[2], [4, 4], [2], [2], [2], [2], [4, 4], [4, 4]];
 let bass = bassDurations.map((measure, i, arr) => {
@@ -109,12 +107,20 @@ export default class PSetStudentComponent extends React.Component {
   }
 
   handleScoreUpdate(score) {
-    const newVexData = _.cloneDeep(this.state.vexData);
-    const { answer } = newVexData;
-    Object.assign(answer, {[this.state.clef]: score});
-    this.setState({
-      vexData: newVexData
-    });
+    if (_.isArray(score)) {
+      const newVexData = _.cloneDeep(this.state.vexData);
+      const { answer } = newVexData;
+      Object.assign(answer, {[this.state.clef]: score});
+      this.setState({
+        vexData: newVexData
+      });
+    } else {
+      const newVexData = _.cloneDeep(this.state.vexData);
+      Object.assign(newVexData, {answer: score});
+      this.setState({
+        vexData: newVexData
+      });
+    }
   }
 
   saveAndToggle() {
@@ -159,7 +165,7 @@ export default class PSetStudentComponent extends React.Component {
     } else {
       entryComponent = (
         <MelodicEntryComponent options={this.state.vexData.solfege}
-                               score={score}
+                               score={this.state.vexData.answer}
                                clef={this.state.clef}
                                keys={this.state.vexData.keys}
                                meter={this.state.vexData.meter}

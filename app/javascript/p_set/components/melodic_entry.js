@@ -26,7 +26,7 @@ export default class MelodicEntryComponent extends React.Component {
 
   static propTypes = {
     options: PropTypes.array.isRequired,
-    score: PropTypes.array.isRequired,
+    score: PropTypes.object.isRequired,
     solution: PropTypes.array.isRequired,
     meter: PropTypes.object.isRequired,
     clef: PropTypes.string.isRequired,
@@ -34,12 +34,16 @@ export default class MelodicEntryComponent extends React.Component {
     keys: PropTypes.array.isRequired
   }
 
+  getScore() {
+    return this.props.score[this.props.clef];
+  }
+
   setCurrentMeasure(increment, e) {
     e.preventDefault();
     let { currentMeasure } = this.state;
 
     if (increment) {
-      const scoreLength = this.props.score.length - 1;
+      const scoreLength = this.getScore().length - 1;
       currentMeasure = Math.min(scoreLength, currentMeasure + 1);
     } else {
       currentMeasure = Math.max(0, currentMeasure - 1);
@@ -54,7 +58,7 @@ export default class MelodicEntryComponent extends React.Component {
   setCurrentNote(increment, e) {
     e.preventDefault();
     let { currentNote } = this.state;
-    const measure = this.props.score[this.state.currentMeasure];
+    const measure = this.getScore()[this.state.currentMeasure];
     const { notes } = measure;
 
     if (increment) {
@@ -79,11 +83,13 @@ export default class MelodicEntryComponent extends React.Component {
       octave = Math.max(1, octave - 1);
     }
 
-    const newScore = _.cloneDeep(this.props.score);
+    const newScore = _.cloneDeep(this.getScore());
     const note = this.currentNote(newScore);
     note.octave = octave;
+    const newAnswer =
+      Object.assign({}, this.props.score, {[this.props.clef]: newScore});
 
-    this.props.updateScore(newScore);
+    this.props.updateScore(newAnswer);
 
     this.setState({
       octave
@@ -91,7 +97,7 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   getErrors() {
-    const measure = this.props.score[this.state.currentMeasure];
+    const measure = this.getScore()[this.state.currentMeasure];
     const { notes } = measure;
     const solutionMeasure = this.props.solution[this.state.currentMeasure];
     const solutionNotes = solutionMeasure.notes;
@@ -126,22 +132,26 @@ export default class MelodicEntryComponent extends React.Component {
 
   noteChange(e) {
     const solfege = e.target.value;
-    const newScore = _.cloneDeep(this.props.score);
+    const newScore = _.cloneDeep(this.getScore());
     const note = this.currentNote(newScore);
     note.solfege = solfege;
     note.octave = this.state.octave;
+    const newAnswer =
+      Object.assign({}, this.props.score, {[this.props.clef]: newScore});
 
-    this.props.updateScore(newScore);
+    this.props.updateScore(newAnswer);
   }
 
   updateKey(e) {
     const key = e.target.value;
-    this.setState({key});
+    const newScore = _.cloneDeep(this.props.score);
+    newScore.key = key;
+    this.props.updateScore(newScore);
   }
 
   render() {
     const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
-    const measure = this.props.score[this.state.currentMeasure];
+    const measure = this.getScore()[this.state.currentMeasure];
     const measureNotes = measure.notes;
     const note = measureNotes[this.state.currentNote];
     const noteDisplay = `Note (${this.state.currentNote + 1}/${measureNotes.length})`;
@@ -169,11 +179,11 @@ export default class MelodicEntryComponent extends React.Component {
       <div className="row">
         <div className="small-12 large-8 large-centered">
           <div>
-            <VexflowComponent score={this.props.score}
+            <VexflowComponent score={this.getScore()}
                               meter={this.props.meter}
                               clef={this.props.clef}
                               rhythmic={false}
-                              keySignature={this.state.key}
+                              keySignature={this.props.score.key}
                               currentMeasure={this.state.currentMeasure}
                               startMeasure={startMeasure}
                               currentNote={this.state.currentNote} />
@@ -204,7 +214,7 @@ export default class MelodicEntryComponent extends React.Component {
               </fieldset>
               <fieldset>
                 <legend>Key</legend>
-                <select value={this.state.key}
+                <select value={this.props.score.key}
                         onChange={this.updateKey.bind(this)}>
                   {keyOptions}
                 </select>
@@ -245,7 +255,10 @@ export default class MelodicEntryComponent extends React.Component {
               </fieldset>
               <fieldset>
                 <legend>Complete</legend>
-                <input type="submit" className="button" value="Complete" />
+                <input type="submit"
+                  className="button"
+                  value="Complete"
+                  onClick={this.props.complete} />
               </fieldset>
             </div>
           </div>
