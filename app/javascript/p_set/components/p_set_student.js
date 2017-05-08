@@ -6,75 +6,56 @@ import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 
+// d-m-m-m-m-f-s-l-t-d-fi-l-s-r-f-f-f-f-s-l-s-f-m-f-r-d-r-t-r-d
+
+let trebleScore = 'd-m-m-m-m-f-s-l-t-d-fi-l-s-r-f-f-f-f-s-l-s-f-m-f-r-d-r-t-r-d';
+trebleScore = trebleScore.split('-').map((note) => {
+  return {type: 'note', solfege: note, octave: 4};
+});
+let trebleDurations = [[8, 8, 8, 8], ['8', 16, 4], [8, 8, 8, 8], [4, 4],
+                       [8, 8, 8, 8], [16, 16, 16, 16, 4], [8, 16, 16, 8, 16, 16],
+                       [4, 4]];
+let treble = trebleDurations.map((measure, i, arr) => {
+  return {
+    endBar: i === (arr.length - 1) ? 'end' : 'single',
+    notes: measure.map((duration) => {
+      const note = trebleScore.shift();
+      if (_.isNumber(duration)) {
+        note.duration = duration.toString();
+      } else {
+        note.duration = duration;
+        note.dotted = true
+      }
+      return note;
+    })
+  };
+});
+let bassScore = 'd-d-t-l-s-s-s-d-s-s-d';
+bassScore = bassScore.split('-').map((note) => {
+  return {type: 'note', solfege: note, octave: 3};
+});
+let bassDurations = [[2], [4, 4], [2], [2], [2], [2], [4, 4], [4, 4]];
+let bass = bassDurations.map((measure, i, arr) => {
+  return {
+    endBar: i === (arr.length - 1) ? 'end' : 'single',
+    notes: measure.map((duration) => {
+      const note = bassScore.shift();
+      if (_.isNumber(duration)) {
+        note.duration = duration.toString();
+      } else {
+        note.duration = duration;
+        note.dotted = true
+      }
+      return note;
+    })
+  };
+});
+
 const vexData = {
   score: {
     key: 'F',
-    treble: [
-      {
-        endBar: 'single',
-        notes: [
-          {type: 'note', duration: '8', solfege: 'd'},
-          {type: 'note', duration: '8'},
-          {type: 'note', duration: '8'},
-          {type: 'note', duration: '8'},
-        ]
-      },
-      {
-        endBar: 'single',
-        notes: [
-          {type: 'note', keys: ['a/4'], duration: '8', dotted: true},
-          {type: 'note', keys: ['b/4'], duration: '16'},
-          {type: 'note', keys: ['c/5'], duration: '4'},
-        ]
-      },
-      {
-        endBar: 'single',
-        notes: [
-          {type: 'note', keys: ['d/5'], duration: '8'},
-          {type: 'note', keys: ['e/5'], duration: '8'},
-          {type: 'note', keys: ['f/5'], duration: '8'},
-          {type: 'note', keys: ['b/4'], duration: '8', accidental: 'n'},
-        ]
-      },
-      {
-        endBar: 'single',
-        notes: [
-        ]
-      }
-    ],
-    bass: [
-      {
-        endBar: 'single',
-        notes: [
-          {type: 'note', duration: '8', solfege: 'd'},
-          {type: 'note', duration: '8'},
-          {type: 'note', duration: '8'},
-          {type: 'note', duration: '8'},
-        ]
-      },
-      {
-        endBar: 'single',
-        notes: [
-          {type: 'note', keys: ['a/4'], duration: '8', dotted: true},
-          {type: 'note', keys: ['b/4'], duration: '16'},
-          {type: 'note', keys: ['c/5'], duration: '4'},
-        ]
-      },
-      {
-        endBar: 'single',
-        notes: [
-          {type: 'note', keys: ['d/5'], duration: '8'},
-          {type: 'note', keys: ['e/5'], duration: '8'},
-          {type: 'note', keys: ['f/5'], duration: '8'},
-          {type: 'note', keys: ['b/4'], duration: '8', accidental: 'n'},
-        ]
-      },
-      {
-        endBar: 'single',
-        notes: [
-        ]
-      }
-    ]
+    treble,
+    bass
   },
   rhythm: [
     ['16', true], ['8', true], ['4', true], ['2', true], ['1', true],
@@ -193,7 +174,7 @@ export default class PSetStudentComponent extends React.Component {
       <div className="small-12">
         <div className="row">
           <div className="small-12 large-8 small-centered">
-            <h3>Ishara Dication #3: {this.state.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
+            <h3>Demo Dication: {this.state.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
           </div>
         </div>
         <div className="row">

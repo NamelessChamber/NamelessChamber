@@ -66,8 +66,7 @@ export default class VexflowComponent extends React.Component {
     if (type === 'note') {
       const { solfege, octave, duration } = note;
       let keys = this.defaultLineForStave(props);
-      if (!_.isUndefined(solfege) && !_.isUndefined(octave)) {
-        console.log('transposing note');
+      if (!props.rhythmic && !_.isUndefined(solfege) && !_.isUndefined(octave)) {
         const note = transposeNote(props.keySignature, octave, solfege);
         let [, finalNote, finalOctave] = /([^\d]+)(\d+)/.exec(note);
         finalNote = finalNote.toLowerCase();
