@@ -26,6 +26,7 @@
     "react-router-dom": "^4.1.1",
     "sass-loader": "^6.0.3",
     "style-loader": "^0.16.1",
+    "teoria": "^2.2.2",
     "tonal": "^0.69.6",
     "vexflow": "^1.2.27",
     "webpack": "^2.4.1",

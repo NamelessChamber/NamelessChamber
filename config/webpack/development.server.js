@@ -12,6 +12,11 @@ module.exports = merge(devConfig, {
     compress: true,
     historyApiFallback: true,
     contentBase: resolve(paths.output, paths.entry),
-    publicPath
+    publicPath,
+    proxy: {
+      '!(/packs/**)': {
+        target: 'http://localhost:3000'
+      }
+    }
   }
 })

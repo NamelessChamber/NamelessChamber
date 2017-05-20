@@ -3,15 +3,60 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import Vex from 'vexflow';
 import tonal from 'tonal';
+import teoria from 'teoria';
 import { fromSemitones } from 'tonal-interval';
 import _ from 'lodash';
 
 const VF = Vex.Flow;
 
-const SolfegeMap = {
-  d: 0, r: 2, m: 4, f: 5, s: 7, l: 9, t: 11,
-  di: 1, ri: 3, fi: 6, si: 8, li: 10,
-  ra: 1, meh: 3, seh: 6, leh: 8, teh: 10
+// lifted from teoria... sadly not exposed
+const intervalSolfege = {
+  'dd1': 'daw',
+  'd1': 'de',
+  'P1': 'do',
+  'A1': 'di',
+  'AA1': 'dai',
+  'd2': 'raw',
+  'm2': 'ra',
+  'M2': 're',
+  'A2': 'ri',
+  'AA2': 'rai',
+  'd3': 'maw',
+  'm3': 'me',
+  'M3': 'mi',
+  'A3': 'mai',
+  'dd4': 'faw',
+  'd4': 'fe',
+  'P4': 'fa',
+  'A4': 'fi',
+  'AA4': 'fai',
+  'dd5': 'saw',
+  'd5': 'se',
+  'P5': 'so',
+  'A5': 'si',
+  'AA5': 'sai',
+  'd6': 'law',
+  'm6': 'le',
+  'M6': 'la',
+  'A6': 'li',
+  'AA6': 'lai',
+  'd7': 'taw',
+  'm7': 'te',
+  'M7': 'ti',
+  'A7': 'tai',
+  'dd8': 'daw',
+  'd8': 'de',
+  'P8': 'do',
+  'A8': 'di',
+  'AA8': 'dai'
+};
+
+const solfegeInterval = _.invert(intervalSolfege);
+
+const getNote = (tonic, octave, solfege) => {
+  const interval = solfegeInterval[solfege];
+  return teoria.note(`${tonic}${octave}`)
+    .interval(interval);
 };
 
 const transposeNote = (note, octave, solfege) => {
