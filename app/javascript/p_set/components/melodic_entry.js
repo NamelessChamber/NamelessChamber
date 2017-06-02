@@ -176,7 +176,7 @@ export default class MelodicEntryComponent extends React.Component {
 
     return (
       <div className="row">
-        <div className="small-12 large-8 large-centered">
+        <div className="small-12">
           <div>
             <VexflowComponent score={this.props.stave.answer}
                               meter={this.props.meter}
@@ -239,10 +239,10 @@ export default class MelodicEntryComponent extends React.Component {
                        onClick={this.props.save} />
               </fieldset>
               <fieldset>
-                <legend>Complete</legend>
+                <legend>Save</legend>
                 <input type="submit"
                   className="button"
-                  value="Complete"
+                  value="Save"
                   onClick={this.props.complete} />
               </fieldset>
             </div>

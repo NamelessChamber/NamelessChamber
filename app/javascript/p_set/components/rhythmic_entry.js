@@ -183,7 +183,7 @@ export default class RhythmicEntryComponent extends React.Component {
 
     return (
       <div className="row">
-        <div className="small-12 large-8 large-centered">
+        <div className="small-12">
           <div>
             <VexflowComponent score={this.props.stave.answer}
                               meter={this.props.meter}

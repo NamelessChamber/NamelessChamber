@@ -136,10 +136,9 @@ export default class PSetStudentComponent extends React.Component {
     });
   }
 
-  changeClef(e) {
-    const clef = e.target.value;
-
-    this.setState({clef});
+  changeStave(stave, e) {
+    e.preventDefault();
+    this.setState({stave});
   }
 
   saveAndRender() {
@@ -155,6 +154,62 @@ export default class PSetStudentComponent extends React.Component {
     const staveOptions = vexData.staves.map((stave, i) => {
       return (
         <option key={i} value={i}>{_.capitalize(stave.clef)} ({stave.name})</option>
+      );
+    });
+
+    const staveComplete = (stave) => {
+      return _.every(stave.answer, (measure) => {
+        return _.every(measure.notes, (note) => {
+          return _.endsWith(note.duration, 'r') ||
+                 (!_.isUndefined(note.solfege) && !_.isUndefined(note.octave));
+        });
+      });
+    };
+
+    const entryComponents = vexData.staves.map((stave, i) => {
+      let body = null;
+      if (i !== this.state.stave) {
+        body = (
+          <VexflowComponent score={stave.answer}
+                            meter={vexData.meter}
+                            clef={stave.clef}
+                            rhythmic={!staveComplete(stave)}
+                            tonic={stave.tonic}
+                            scale={stave.scale}
+                            startMeasure={0} />
+        );
+      } else {
+        if (this.state.rhythmic) {
+          body = (
+            <RhythmicEntryComponent options={vexData.options.rhythm}
+                                    stave={stave}
+                                    meter={vexData.meter}
+                                    updateScore={this.handleScoreUpdate}
+                                    save={this.saveAndToggle} />
+          );
+        } else {
+          body = (
+            <MelodicEntryComponent options={vexData.options.solfege}
+                                   meter={vexData.meter}
+                                   stave={stave}
+                                   updateScore={this.handleScoreUpdate}
+                                   save={this.saveAndToggle}
+                                   complete={this.saveAndRender} />
+          );
+        }
+      }
+
+      return (
+        <div key={i} className="row">
+          <div className="small-12 large-8 small-centered">
+            <h3>
+              <a href="#" onClick={this.changeStave.bind(this, i)}>
+                {stave.name} {i === this.state.stave ? '(Editing)' : ''}
+              </a>
+            </h3>
+            {body}
+          </div>
+        </div>
       );
     });
 
@@ -185,17 +240,8 @@ export default class PSetStudentComponent extends React.Component {
           </div>
         </div>
         <div className="row">
-          <div className="small-12 large-8 small-centered">
-            <fieldset>
-              <legend>Stave</legend>
-              <select onChange={this.changeClef.bind(this)}
-                      value={this.state.clef}>
-                {staveOptions}
-              </select>
-            </fieldset>
-          </div>
+          {entryComponents}
         </div>
-        {entryComponent}
       </div>
     );
   }
