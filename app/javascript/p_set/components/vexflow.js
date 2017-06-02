@@ -164,6 +164,12 @@ export default class VexflowComponent extends React.Component {
         clef: props.clef
       });
 
+      if (!props.rhythmic && (_.isUndefined(solfege) || _.isUndefined(octave))) {
+        const annotation = new VF.Annotation('x')
+          .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
+        staveNote.addModifier(0, annotation);
+      }
+
       if (highlight && _.isNumber(props.currentNote)) {
         if (i === props.currentNote) {
           const annotation = new VF.Annotation('▲')
