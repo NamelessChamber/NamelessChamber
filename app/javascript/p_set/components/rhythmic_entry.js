@@ -218,20 +218,17 @@ export default class RhythmicEntryComponent extends React.Component {
               </fieldset>
             </div>
             <div className="large-4 columns">
-              <fieldset>
-                <legend>Measure ({this.state.currentMeasure + 1}/{this.props.stave.answer.length})</legend>
-                <input type="submit"
-                       className="button"
-                       value="Prev"
-                       onClick={this.setCurrentMeasure.bind(this, false)} />
-                <input type="submit"
-                       className="button"
-                       value="Next"
-                       onClick={this.setCurrentMeasure.bind(this, true)} />
-              </fieldset>
-              <fieldset>
+              <ul>
+                <li><b>Right/left</b> arrows change current measure</li>
+                <li><b>Up/down</b> arrows select note duration</li>
+                <li><b>Enter</b> adds a note of selected duration</li>
+                <li><b>Space</b> adds a rest of selected duration</li>
+                <li><b>d</b> adds a dot to the last note in a measure</li>
+                <li><b>Shift+d</b> removes a dot from the last note in a measure</li>
+              </ul>
+              <div>
                 <legend>{errors}</legend>
-              </fieldset>
+              </div>
             </div>
             <div className="large-4 columns">
               <fieldset>

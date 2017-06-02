@@ -207,31 +207,14 @@ export default class MelodicEntryComponent extends React.Component {
               </fieldset>
             </div>
             <div className="large-4 columns">
-             <fieldset>
-                <legend>{noteDisplay}</legend>
-                <input type="submit"
-                       className="button"
-                       value="Prev"
-                       onClick={this.setCurrentNote.bind(this, false)} />
-                <input type="submit"
-                       className="button"
-                       value="Next"
-                       onClick={this.setCurrentNote.bind(this, true)} />
-              </fieldset>
-              <fieldset>
-                <legend>Octave {this.state.octave}</legend>
-                <input type="submit"
-                       className="button"
-                       value="Down"
-                       onClick={this.setOctave.bind(this, false)} />
-                <input type="submit"
-                       className="button"
-                       value="Up"
-                       onClick={this.setOctave.bind(this, true)} />
-              </fieldset>
-              <fieldset>
-                <legend>{errors}</legend>
-              </fieldset>
+              <ul>
+                <li><b>Right/left</b> arrows change current note</li>
+                <li><b>Up/down</b> arrows select solfege</li>
+                <li><b>+/-</b> raise or lower an octave</li>
+              </ul>
+              <div>
+                <legend>{ /* errors */ }</legend>
+              </div>
             </div>
             <div className="large-4 columns">
               <fieldset>
