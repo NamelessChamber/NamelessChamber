@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import Vex from 'vexflow';
-import tonal from 'tonal';
 import teoria from 'teoria';
 import { fromSemitones } from 'tonal-interval';
 import _ from 'lodash';
@@ -51,18 +50,57 @@ const intervalSolfege = {
   'AA8': 'dai'
 };
 
+window.teoria = teoria;
+
 const solfegeInterval = _.invert(intervalSolfege);
+
+const noteEq = (n1, n2) => {
+  return _.isEqual(n1.coord, n2.coord);
+};
+
+const noteRelEq = (n1, n2) => {
+  const [n1o, n1f] = n1.coord;
+  const [n2o, n2f] = n2.coord;
+  const semisDiff = ((n1o - n2o) * 12) + ((n1f - n2f) * 7);
+  return semisDiff % 12 == 0;
+};
 
 const getNote = (tonic, octave, solfege) => {
   const interval = solfegeInterval[solfege];
-  return teoria.note(`${tonic}${octave}`)
-    .interval(interval);
+  const note = teoria.note(`${tonic}`);
+
+  note.coord[0] += octave;
+  return note.interval(interval);
 };
 
-const transposeNote = (note, octave, solfege) => {
-  note = note.toUpperCase();
-  const semis = SolfegeMap[solfege];
-  return tonal.transpose(`${note}${octave}`, fromSemitones(semis));
+const getVFScaleName = (tonic, scale) => {
+  const note = teoria.note(tonic);
+  let res = note.name() + note.accidental();
+  res = res.toUpperCase();
+
+  if (_.includes(['minor', 'aeolian'], scale)) {
+    res += 'm';
+  }
+
+  return res;
+};
+
+const getAccidentalToRender = (scale, note) => {
+  const simpleNoteName = note.name() + note.accidental();
+  const notInScale = _.isUndefined(
+    _.find(scale.notes(), _.bind(noteRelEq, this, note))
+  );
+  
+  if (notInScale) {
+    const accidental = note.accidental();
+    if (accidental === '') {
+      return 'n';
+    } else {
+      return accidental;
+    }
+  } else {
+    return null;
+  }
 };
 
 export default class VexflowComponent extends React.Component {
@@ -80,7 +118,8 @@ export default class VexflowComponent extends React.Component {
     currentMeasure: PropTypes.number,
     startMeasure: PropTypes.number,
     numMeasures: PropTypes.number,
-    keySignature: PropTypes.string,
+    tonic: PropTypes.string,
+    scale: PropTypes.string,
     currentNote: PropTypes.number
   }
 
@@ -111,11 +150,12 @@ export default class VexflowComponent extends React.Component {
     if (type === 'note') {
       const { solfege, octave, duration } = note;
       let keys = this.defaultLineForStave(props);
+      let accidental = null;
       if (!props.rhythmic && !_.isUndefined(solfege) && !_.isUndefined(octave)) {
-        const note = transposeNote(props.keySignature, octave, solfege);
-        let [, finalNote, finalOctave] = /([^\d]+)(\d+)/.exec(note);
-        finalNote = finalNote.toLowerCase();
-        keys = [`${finalNote}/${finalOctave}`];
+        const tNote = getNote(props.tonic, octave, solfege);
+        const scale = teoria.scale(props.tonic, props.scale);
+        keys = [`${tNote.name()}/${tNote.octave()}`];
+        accidental = getAccidentalToRender(scale, tNote);
       }
 
       const staveNote = new VF.StaveNote({
@@ -136,8 +176,8 @@ export default class VexflowComponent extends React.Component {
         staveNote.addDotToAll();
       }
 
-      if (note.accidental) {
-        staveNote.addAccidental(0, new VF.Accidental(note.accidental));
+      if (!_.isNull(accidental)) {
+        staveNote.addAccidental(0, new VF.Accidental(accidental));
       }
 
       return staveNote;
@@ -222,8 +262,10 @@ export default class VexflowComponent extends React.Component {
 
       if (i === 0) {
         stave.addClef(props.clef).addTimeSignature(this.meterToString());
-        if (props.keySignature) {
-          stave.addKeySignature(props.keySignature);
+        if (!( _.isUndefined(props.tonic) ||
+               _.isUndefined(props.scale) )) {
+          const keySignature = getVFScaleName(props.tonic, props.scale);
+          stave.addKeySignature(keySignature);
         }
       }
 

@@ -16,11 +16,9 @@ export default class RhythmicEntryComponent extends React.Component {
 
   static propTypes = {
     options: PropTypes.array.isRequired,
-    score: PropTypes.array.isRequired,
-    meter: PropTypes.object.isRequired,
-    clef: PropTypes.string.isRequired,
+    stave: PropTypes.object.isRequired,
     updateScore: PropTypes.func.isRequired,
-    solution: PropTypes.array.isRequired,
+    meter: PropTypes.object.isRequired,
     save: PropTypes.func.isRequired
   }
 
@@ -29,7 +27,7 @@ export default class RhythmicEntryComponent extends React.Component {
     let { currentMeasure } = this.state;
 
     if (increment) {
-      const scoreLength = this.props.score.length - 1;
+      const scoreLength = this.props.stave.answer.length - 1;
       currentMeasure = Math.min(scoreLength, currentMeasure + 1);
     } else {
       currentMeasure = Math.max(0, currentMeasure - 1);
@@ -49,11 +47,11 @@ export default class RhythmicEntryComponent extends React.Component {
       dotted: this.state.dotted
     };
 
-    const newScore = _.cloneDeep(this.props.score);
-    const measure = newScore[this.state.currentMeasure];
+    const newAnswer = _.cloneDeep(this.props.stave.answer);
+    const measure = newAnswer[this.state.currentMeasure];
     measure.notes.push(newNote);
 
-    this.props.updateScore(newScore);
+    this.props.updateScore(newAnswer);
     this.setState({dotted: false});
   }
 
@@ -67,19 +65,20 @@ export default class RhythmicEntryComponent extends React.Component {
   removeNote(event) {
     event.preventDefault();
 
-    const newScore = _.cloneDeep(this.props.score);
+    const newAnswer = _.cloneDeep(this.props.stave.answer);
     const { currentMeasure } = this.state;
-    const measure = newScore[currentMeasure];
+    const measure = newAnswer[currentMeasure];
     measure.notes = _.dropRight(measure.notes);
 
-    this.props.updateScore(newScore);
+    this.props.updateScore(newAnswer);
     this.setState({dotted: false});
   }
 
   getErrors() {
-    const measure = this.props.score[this.state.currentMeasure];
+    const { stave } = this.props;
+    const measure = stave.answer[this.state.currentMeasure];
     const { notes } = measure;
-    const solutionMeasure = this.props.solution[this.state.currentMeasure];
+    const solutionMeasure = stave.solution[this.state.currentMeasure];
     const solutionNotes = solutionMeasure.notes;
     if (notes.length > 0) {
       if (notes.length > solutionNotes.length) {
@@ -124,9 +123,9 @@ export default class RhythmicEntryComponent extends React.Component {
       <div className="row">
         <div className="small-12 large-8 large-centered">
           <div>
-            <VexflowComponent score={this.props.score}
+            <VexflowComponent score={this.props.stave.answer}
                               meter={this.props.meter}
-                              clef={this.props.clef}
+                              clef={this.props.stave.clef}
                               rhythmic={true}
                               currentMeasure={this.state.currentMeasure}
                               startMeasure={startMeasure} />
@@ -134,7 +133,7 @@ export default class RhythmicEntryComponent extends React.Component {
           <div className="row">
             <div className="large-4 columns">
               <fieldset>
-                <legend>Measure ({this.state.currentMeasure + 1}/{this.props.score.length})</legend>
+                <legend>Measure ({this.state.currentMeasure + 1}/{this.props.stave.answer.length})</legend>
                 <input type="submit"
                        className="button"
                        value="Prev"

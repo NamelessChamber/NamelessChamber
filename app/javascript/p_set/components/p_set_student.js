@@ -6,9 +6,9 @@ import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 
-let trebleScore = 'd-m-m-m-m-f-s-l-t-d-fi-l-s-r-f-f-f-f-s-l-s-f-m-f-r-d-r-t-r-d';
+let trebleScore = 'do-mi-mi-mi-mi-fa-so-le-ti-do-fi-la-so-re-fa-fa-fa-fa-so-la-so-fa-mi-fa-re-do-re-ti-re-do';
 trebleScore = trebleScore.split('-').map((note) => {
-  return {type: 'note', solfege: note, octave: 4};
+  return {type: 'note', solfege: note, octave: 0 /* 4 */};
 });
 let trebleDurations = [[8, 8, 8, 8], ['8', 16, 4], [8, 8, 8, 8], [4, 4],
                        [8, 8, 8, 8], [16, 16, 16, 16, 4], [8, 16, 16, 8, 16, 16],
@@ -28,9 +28,9 @@ let treble = trebleDurations.map((measure, i, arr) => {
     })
   };
 });
-let bassScore = 'd-d-t-l-s-s-s-d-s-s-d';
+let bassScore = 'do-do-ti-la-so-so-so-do-so-so-do';
 bassScore = bassScore.split('-').map((note, i) => {
-  return {type: 'note', solfege: note, octave: 2};
+  return {type: 'note', solfege: note, octave: 0 /* 2 */};
 });
 let bassDurations = [[2], [4, 4], [2], [2], [2], [2], [4, 4], [4, 4]];
 let bass = bassDurations.map((measure, i, arr) => {
@@ -49,61 +49,72 @@ let bass = bassDurations.map((measure, i, arr) => {
   };
 });
 [[0, 0], [1, 0], [6, 0], [7, 1]].forEach(([x, y]) => {
-  bass[x].notes[y].octave = 3;
+  bass[x].notes[y].octave = 1;
 });
-treble[2].notes[2].octave = 5;
-treble[6].notes[5].octave = 3;
+treble[2].notes[2].octave = 1;
+treble[6].notes[5].octave = -1;
 
-const vexData = {
-  score: {
-    key: 'F',
-    treble,
-    bass
-  },
-  rhythm: [
-    ['16', true], ['8', true], ['4', true], ['2', true], ['1', true],
-    ['16r', true], ['8r', true], ['4r', true], ['2r', true], ['1r', true]
-  ],
-  solfege: [
-    ['t', true], ['l', true], ['s', true], ['fi', true], ['f', true],
-    ['m', true], ['r', true], ['d', true]
-  ],
-  keys: ['E', 'F', 'G'],
-  answer: {
-    treble: [
-      {endBar: 'single', notes: []},
-      {endBar: 'single', notes: []},
-      {endBar: 'single', notes: []},
-      {endBar: 'single', notes: []},
-      {endBar: 'single', notes: []},
-      {endBar: 'single', notes: []},
-      {endBar: 'single', notes: []},
-      {endBar: 'end', notes: []},
+const pSetData = {
+  options: {
+    rhythm: [
+      ['16', true], ['8', true], ['4', true], ['2', true], ['1', true],
+      ['16r', true], ['8r', true], ['4r', true], ['2r', true], ['1r', true]
     ],
-    bass: [
-      {endBar: 'single', notes: []},
-      {endBar: 'single', notes: []},
-      {endBar: 'single', notes: []},
-      {endBar: 'single', notes: []},
-      {endBar: 'single', notes: []},
-      {endBar: 'single', notes: []},
-      {endBar: 'single', notes: []},
-      {endBar: 'end', notes: []},
-    ]
+    solfege: [
+      ['ti', true], ['la', true], ['so', true], ['fi', true], ['fa', true],
+      ['me', true], ['re', true], ['do', true]
+    ],
+    keys: ['E', 'F', 'G'],
+    key: 'F'
   },
+  staves: [
+    {
+      clef: 'treble',
+      name: 'Lead',
+      tonic: 'f4',
+      scale: 'major',
+      solution: treble,
+      answer: [
+        {endBar: 'single', notes: []},
+        {endBar: 'single', notes: []},
+        {endBar: 'single', notes: []},
+        {endBar: 'single', notes: []},
+        {endBar: 'single', notes: []},
+        {endBar: 'single', notes: []},
+        {endBar: 'single', notes: []},
+        {endBar: 'end', notes: []},
+      ]
+    },
+    {
+      clef: 'bass',
+      name: 'Bass',
+      tonic: 'f2',
+      scale: 'major',
+      solution: bass,
+      answer: [
+        {endBar: 'single', notes: []},
+        {endBar: 'single', notes: []},
+        {endBar: 'single', notes: []},
+        {endBar: 'single', notes: []},
+        {endBar: 'single', notes: []},
+        {endBar: 'single', notes: []},
+        {endBar: 'single', notes: []},
+        {endBar: 'end', notes: []},
+      ]
+    }
+
+  ],
   meter: {top: 2, bottom: 4},
   measures: 10,
-  clefs: ['treble', 'bass'],
-  rhythmic: false
 };
 
 export default class PSetStudentComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      vexData,
+      vexData: pSetData,
       rhythmic: true,
-      clef: _.first(vexData.clefs)
+      stave: 0
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
@@ -111,21 +122,13 @@ export default class PSetStudentComponent extends React.Component {
     this.saveAndRender = this.saveAndRender.bind(this);
   }
 
-  handleScoreUpdate(score) {
-    if (_.isArray(score)) {
-      const newVexData = _.cloneDeep(this.state.vexData);
-      const { answer } = newVexData;
-      Object.assign(answer, {[this.state.clef]: score});
-      this.setState({
-        vexData: newVexData
-      });
-    } else {
-      const newVexData = _.cloneDeep(this.state.vexData);
-      Object.assign(newVexData, {answer: score});
-      this.setState({
-        vexData: newVexData
-      });
-    }
+  handleScoreUpdate(answer) {
+    const newVexData = _.cloneDeep(this.state.vexData);
+    const stave = newVexData.staves[this.state.stave];
+    Object.assign(stave, {answer});
+    this.setState({
+      vexData: newVexData
+    });
   }
 
   saveAndToggle() {
@@ -147,34 +150,28 @@ export default class PSetStudentComponent extends React.Component {
   render() {
     let entryComponent = null;
 
-    const { clef } = this.state;
-    const score = this.state.vexData.answer[clef];
-    const solution = this.state.vexData.score[clef];
+    const { vexData } = this.state;
+    const stave = vexData.staves[this.state.stave];
 
-    const staveOptions = this.state.vexData.clefs.map((clef) => {
+    const staveOptions = vexData.staves.map((stave, i) => {
       return (
-        <option key={clef} value={clef}>{_.capitalize(clef)}</option>
+        <option key={i} value={i}>{_.capitalize(stave.clef)} ({stave.name})</option>
       );
     });
 
     if (this.state.rhythmic) {
       entryComponent = (
-        <RhythmicEntryComponent options={this.state.vexData.rhythm}
-                                score={score}
-                                clef={this.state.clef}
-                                meter={this.state.vexData.meter}
-                                solution={solution}
+        <RhythmicEntryComponent options={vexData.options.rhythm}
+                                stave={stave}
+                                meter={vexData.meter}
                                 updateScore={this.handleScoreUpdate}
                                 save={this.saveAndToggle} />
       );
     } else {
       entryComponent = (
-        <MelodicEntryComponent options={this.state.vexData.solfege}
-                               score={this.state.vexData.answer}
-                               clef={this.state.clef}
-                               keys={this.state.vexData.keys}
-                               meter={this.state.vexData.meter}
-                               solution={solution}
+        <MelodicEntryComponent options={vexData.options.solfege}
+                               meter={vexData.meter}
+                               stave={stave}
                                updateScore={this.handleScoreUpdate}
                                save={this.saveAndToggle}
                                complete={this.saveAndRender} />
