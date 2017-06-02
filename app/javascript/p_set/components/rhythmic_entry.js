@@ -38,13 +38,18 @@ export default class RhythmicEntryComponent extends React.Component {
     });
   }
 
-  appendNote(duration, e) {
+  appendNote(e, rest) {
     e.preventDefault();
+    let duration = e.target.value;
+    if (rest) {
+      duration += 'r';
+    }
 
     const newNote = {
       type: 'note',
       duration: duration,
-      dotted: this.state.dotted
+      dotted: this.state.dotted,
+      dots: 0
     };
 
     const newAnswer = _.cloneDeep(this.props.stave.answer);
@@ -97,35 +102,83 @@ export default class RhythmicEntryComponent extends React.Component {
     }
   }
 
-  /**
-   * TODO: Rhythmic keyboarding
-   *
-   * Add support for rhythmic entry where "enter" adds a note and
-   * "r" adds a rest of the selected length. Use the same select style
-   * input as we use in the melodic entry. Delete/backspace deletes.
-   * "d" dots the last note. Left/right advance measures.
-   */
+  getCurrentNote(answer) {
+    const measure = answer[this.state.currentMeasure].notes;
+    if (measure.length) {
+      return measure[measure.length - 1];
+    }
+  }
+
+  changeDot(increment) {
+    const newAnswer = _.cloneDeep(this.props.stave.answer);
+    const note = this.getCurrentNote(newAnswer);
+
+    if (!_.isUndefined(note)) {
+      if (increment) {
+        note.dots += 1;
+      } else {
+        note.dots = Math.max(note.dots - 1, 0);
+      }
+    }
+
+    this.props.updateScore(newAnswer);
+  }
+
+  handleKeyDown(e) {
+    switch (e.key) {
+      case 'Enter':
+        this.appendNote(e);
+        break;
+      case ' ':
+        this.appendNote(e, true);
+        break;
+      case 'Backspace':
+      case 'Delete':
+        this.removeNote(e);
+        break;
+      case 'd':
+        this.changeDot(true);
+        break;
+      case 'D':
+        this.changeDot(false);
+        break;
+      case 'ArrowRight':
+        this.setCurrentMeasure(true, e);
+        break;
+      case 'ArrowLeft':
+        this.setCurrentMeasure(false, e);
+        break;
+    }
+  }
+
+  noteChange(e) {
+    const { value } = e.target;
+
+    this.setState({
+      currentNote: value
+    });
+  }
+
+  componentDidMount() {
+    this.noteInput.focus();
+  }
 
   render() {
-    const [notes, rests] = _.partition(this.props.options, ([note, _]) => {
-      return !note.endsWith('r');
-    });
-    const makeButton = (duration) => {
-        return (
-        <input key={duration}
-               type="submit"
-               className="button"
-               value={duration}
-               onClick={this.appendNote.bind(this, duration)} />
-      );
+    const durationString = (duration) => {
+      if (duration === '1') {
+        return duration;
+      } else {
+        return `1/${duration}`;
+      }
     };
-    const noteButtons =
-      notes.filter((x) => x[1]).map(([d, _]) => makeButton(d));
-    const restButtons =
-      rests.filter((x) => x[1]).map(([d, _]) => makeButton(d));
+    const noteOptions = this.props.options.filter(x => x[1])
+      .map(([duration, _], i) => {
+        return (
+          <option key={i} value={duration}>{durationString(duration)}</option>
+        );
+      });
 
     const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
-
     const errors = this.getErrors();
 
     return (
@@ -142,31 +195,16 @@ export default class RhythmicEntryComponent extends React.Component {
           <div className="row">
             <div className="large-4 columns">
               <fieldset>
-                <legend>Measure ({this.state.currentMeasure + 1}/{this.props.stave.answer.length})</legend>
-                <input type="submit"
-                       className="button"
-                       value="Prev"
-                       onClick={this.setCurrentMeasure.bind(this, false)} />
-                <input type="submit"
-                       className="button"
-                       value="Next"
-                       onClick={this.setCurrentMeasure.bind(this, true)} />
-              </fieldset>
-              <fieldset>
                 <legend>Notes</legend>
-                <p>
-                  <input type="checkbox"
-                    value="dotted"
-                    id="dotted"
-                    checked={this.state.dotted}
-                    onChange={this.toggleDotted.bind(this)} />
-                  <label htmlFor="dotted">Dot note</label>
-                </p>
-                {noteButtons}
-              </fieldset>
-              <fieldset>
-                <legend>Rests</legend>
-                {restButtons}
+                <select multiple
+                        ref={(input) => this.noteInput = input}
+                        onBlur={(e) => e.target.focus()}
+                        onKeyDown={this.handleKeyDown.bind(this)}
+                        style={{width: '85px', height: '230px'}}
+                        value={[this.state.currentNote]}
+                        onChange={this.noteChange.bind(this)}>
+                  {noteOptions}
+                </select>
               </fieldset>
               <fieldset>
                 <legend>Delete</legend>
@@ -177,6 +215,17 @@ export default class RhythmicEntryComponent extends React.Component {
               </fieldset>
             </div>
             <div className="large-4 columns">
+              <fieldset>
+                <legend>Measure ({this.state.currentMeasure + 1}/{this.props.stave.answer.length})</legend>
+                <input type="submit"
+                       className="button"
+                       value="Prev"
+                       onClick={this.setCurrentMeasure.bind(this, false)} />
+                <input type="submit"
+                       className="button"
+                       value="Next"
+                       onClick={this.setCurrentMeasure.bind(this, true)} />
+              </fieldset>
               <fieldset>
                 <legend>{errors}</legend>
               </fieldset>

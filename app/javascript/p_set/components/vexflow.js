@@ -178,8 +178,8 @@ export default class VexflowComponent extends React.Component {
         }
       }
 
-      if (note.dotted) {
-        staveNote.addDotToAll();
+      if (!_.isUndefined(note.dots) && note.dots > 0) {
+        _.times(note.dots, () => staveNote.addDotToAll());
       }
 
       if (!_.isNull(accidental)) {
@@ -221,7 +221,7 @@ export default class VexflowComponent extends React.Component {
     function scoreLength(score) {
       return score.reduce((acc, item) => {
         if (item.type === 'note') {
-          return acc + 1;
+          return acc + 1 + ((item.dots || 0) * 0.2);
         } else if (item.type === 'beam') {
           return acc + scoreLength(item.notes);
         }
@@ -295,7 +295,7 @@ export default class VexflowComponent extends React.Component {
   }
 
   componentDidMount() {
-    const e = ReactDOM.findDOMNode(this.refs.vexflow);
+    const e = ReactDOM.findDOMNode(this.vexflowEl);
     const containerWidth = e.offsetWidth;
 
     this.renderer = new VF.Renderer(e, VF.Renderer.Backends.SVG);
@@ -313,7 +313,7 @@ export default class VexflowComponent extends React.Component {
     };
 
     return (
-      <div ref="vexflow" style={style}>
+      <div ref={(el) => this.vexflowEl = el} style={style}>
       </div>
     );
   }

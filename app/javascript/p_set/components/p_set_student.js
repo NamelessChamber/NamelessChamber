@@ -57,8 +57,7 @@ treble[6].notes[5].octave = -1;
 const pSetData = {
   options: {
     rhythm: [
-      ['16', true], ['8', true], ['4', true], ['2', true], ['1', true],
-      ['16r', true], ['8r', true], ['4r', true], ['2r', true], ['1r', true]
+      ['16', true], ['8', true], ['4', true], ['2', true], ['1', true]
     ],
     solfege: [
       ['ti', true], ['la', true], ['so', true], ['fi', true], ['fa', true],
