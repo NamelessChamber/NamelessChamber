@@ -6,7 +6,7 @@ import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 
-let trebleScore = 'do-mi-mi-mi-mi-fa-so-le-ti-do-fi-la-so-re-fa-fa-fa-fa-so-la-so-fa-mi-fa-re-do-re-ti-re-do';
+let trebleScore = 'do-mi-mi-mi-mi-fa-so-la-ti-do-fi-la-so-re-fa-fa-fa-fa-so-la-so-fa-mi-fa-re-do-re-ti-re-do';
 trebleScore = trebleScore.split('-').map((note) => {
   return {type: 'note', solfege: note, octave: 0 /* 4 */};
 });
@@ -140,7 +140,7 @@ export default class PSetStudentComponent extends React.Component {
 
   changeStave(stave, e) {
     e.preventDefault();
-    this.setState({stave});
+    this.setState({stave, rhythmic: true});
   }
 
   updateCurrentMeasure(measure) {
