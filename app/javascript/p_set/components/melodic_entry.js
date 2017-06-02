@@ -49,20 +49,37 @@ export default class MelodicEntryComponent extends React.Component {
 
   setCurrentNote(increment, e) {
     e.preventDefault();
-    let { currentNote } = this.state;
-    const measure = this.props.stave.answer[this.state.currentMeasure];
+    let { currentNote, currentMeasure } = this.state;
+    const staveLength = this.props.stave.answer.length;
+    const measure = this.props.stave.answer[currentMeasure];
     const { notes } = measure;
 
     if (increment) {
       const measureLength = notes.length - 1;
-      currentNote = Math.min(measureLength, currentNote + 1);
-      currentNote = Math.max(currentNote, 0);
+      if (currentNote + 1 > measureLength) {
+        if (currentMeasure + 1 <= staveLength &&
+            this.props.stave.answer[currentMeasure + 1].notes.length > 0) {
+          currentMeasure += 1;
+          currentNote = 0;
+        }
+      } else {
+        currentNote += 1;
+      }
     } else {
-      currentNote = Math.max(0, currentNote - 1);
+      if (currentNote - 1 >= 0) {
+        currentNote -= 1;
+      } else {
+        if (currentMeasure - 1 >= 0) {
+          currentMeasure -= 1;
+          const measureLength = this.props.stave.answer[currentMeasure].notes.length;
+          currentNote = measureLength - 1;
+        }
+      }
     }
 
     this.setState({
-      currentNote
+      currentNote,
+      currentMeasure
     });
   }
 
@@ -130,6 +147,22 @@ export default class MelodicEntryComponent extends React.Component {
     this.props.updateScore(newAnswer);
   }
 
+  handleKeyDown(e) {
+    if (e.key === 'ArrowRight') {
+      this.setCurrentNote(true, e);
+    } else if (e.key === 'ArrowLeft') {
+      this.setCurrentNote(false, e);
+    } else if (e.key === '+') {
+      this.setOctave(true, e);
+    } else if (e.key === '-') {
+      this.setOctave(false, e);
+    }
+  }
+
+  componentDidMount() {
+    this.solfegeInput.focus();
+  }
+
   render() {
     const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
     const measure = this.props.stave.answer[this.state.currentMeasure];
@@ -149,6 +182,10 @@ export default class MelodicEntryComponent extends React.Component {
     });
 
     const errors = this.getErrors();
+
+    if (!_.isUndefined(this.solfegeInput)) {
+      this.solfegeInput.focus();
+    }
 
     return (
       <div className="row">
@@ -202,6 +239,8 @@ export default class MelodicEntryComponent extends React.Component {
               <fieldset>
                 <legend>Solfege</legend>
                 <select multiple
+                        ref={(input) => this.solfegeInput = input}
+                        onKeyDown={this.handleKeyDown.bind(this)}
                         style={{width: '75px', height: '230px'}}
                         value={[selectedSolfege]}
                         onChange={this.noteChange.bind(this)}>

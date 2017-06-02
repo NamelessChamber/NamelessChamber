@@ -62,7 +62,7 @@ const pSetData = {
     ],
     solfege: [
       ['ti', true], ['la', true], ['so', true], ['fi', true], ['fa', true],
-      ['me', true], ['re', true], ['do', true]
+      ['mi', true], ['re', true], ['do', true]
     ],
     keys: ['E', 'F', 'G'],
     key: 'F'

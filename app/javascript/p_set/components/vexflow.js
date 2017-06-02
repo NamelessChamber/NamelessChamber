@@ -43,11 +43,11 @@ const intervalSolfege = {
   'm7': 'te',
   'M7': 'ti',
   'A7': 'tai',
-  'dd8': 'daw',
-  'd8': 'de',
-  'P8': 'do',
-  'A8': 'di',
-  'AA8': 'dai'
+  // 'dd8': 'daw',
+  // 'd8': 'de',
+  // 'P8': 'do',
+  // 'A8': 'di',
+  // 'AA8': 'dai'
 };
 
 window.teoria = teoria;
