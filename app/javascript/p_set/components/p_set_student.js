@@ -113,10 +113,12 @@ export default class PSetStudentComponent extends React.Component {
     this.state = {
       vexData: pSetData,
       rhythmic: true,
-      stave: 0
+      stave: 0,
+      measure: 0
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
+    this.updateCurrentMeasure = this.updateCurrentMeasure.bind(this);
     this.saveAndToggle = this.saveAndToggle.bind(this);
     this.saveAndRender = this.saveAndRender.bind(this);
   }
@@ -139,6 +141,10 @@ export default class PSetStudentComponent extends React.Component {
   changeStave(stave, e) {
     e.preventDefault();
     this.setState({stave});
+  }
+
+  updateCurrentMeasure(measure) {
+    this.setState({measure});
   }
 
   saveAndRender() {
@@ -169,6 +175,7 @@ export default class PSetStudentComponent extends React.Component {
     const entryComponents = vexData.staves.map((stave, i) => {
       let body = null;
       if (i !== this.state.stave) {
+        const startMeasure = Math.floor(this.state.measure / 4) * 4;
         body = (
           <VexflowComponent score={stave.answer}
                             meter={vexData.meter}
@@ -176,7 +183,7 @@ export default class PSetStudentComponent extends React.Component {
                             rhythmic={!staveComplete(stave)}
                             tonic={stave.tonic}
                             scale={stave.scale}
-                            startMeasure={0} />
+                            startMeasure={startMeasure} />
         );
       } else {
         if (this.state.rhythmic) {
@@ -185,6 +192,7 @@ export default class PSetStudentComponent extends React.Component {
                                     stave={stave}
                                     meter={vexData.meter}
                                     updateScore={this.handleScoreUpdate}
+                                    updateCurrentMeasure={this.updateCurrentMeasure}
                                     save={this.saveAndToggle} />
           );
         } else {
@@ -193,6 +201,7 @@ export default class PSetStudentComponent extends React.Component {
                                    meter={vexData.meter}
                                    stave={stave}
                                    updateScore={this.handleScoreUpdate}
+                                   updateCurrentMeasure={this.updateCurrentMeasure}
                                    save={this.saveAndToggle}
                                    complete={this.saveAndRender} />
           );
@@ -212,25 +221,6 @@ export default class PSetStudentComponent extends React.Component {
         </div>
       );
     });
-
-    if (this.state.rhythmic) {
-      entryComponent = (
-        <RhythmicEntryComponent options={vexData.options.rhythm}
-                                stave={stave}
-                                meter={vexData.meter}
-                                updateScore={this.handleScoreUpdate}
-                                save={this.saveAndToggle} />
-      );
-    } else {
-      entryComponent = (
-        <MelodicEntryComponent options={vexData.options.solfege}
-                               meter={vexData.meter}
-                               stave={stave}
-                               updateScore={this.handleScoreUpdate}
-                               save={this.saveAndToggle}
-                               complete={this.saveAndRender} />
-      );
-    }
 
     return (
       <div className="small-12">

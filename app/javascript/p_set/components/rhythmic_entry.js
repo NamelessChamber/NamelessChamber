@@ -18,6 +18,7 @@ export default class RhythmicEntryComponent extends React.Component {
     options: PropTypes.array.isRequired,
     stave: PropTypes.object.isRequired,
     updateScore: PropTypes.func.isRequired,
+    updateCurrentMeasure: PropTypes.func.isRequired,
     meter: PropTypes.object.isRequired,
     save: PropTypes.func.isRequired
   }
@@ -32,6 +33,8 @@ export default class RhythmicEntryComponent extends React.Component {
     } else {
       currentMeasure = Math.max(0, currentMeasure - 1);
     }
+
+    this.props.updateCurrentMeasure(currentMeasure);
 
     this.setState({
       currentMeasure

@@ -27,7 +27,8 @@ export default class MelodicEntryComponent extends React.Component {
     options: PropTypes.array.isRequired,
     stave: PropTypes.object.isRequired,
     meter: PropTypes.object.isRequired,
-    updateScore: PropTypes.func.isRequired
+    updateScore: PropTypes.func.isRequired,
+    updateCurrentMeasure: PropTypes.func.isRequired
   }
 
   setCurrentNote(increment, e) {
@@ -59,6 +60,8 @@ export default class MelodicEntryComponent extends React.Component {
         }
       }
     }
+
+    this.props.updateCurrentMeasure(currentMeasure);
 
     this.setState({
       currentNote,
