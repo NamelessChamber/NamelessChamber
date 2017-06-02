@@ -30,23 +30,6 @@ export default class MelodicEntryComponent extends React.Component {
     updateScore: PropTypes.func.isRequired
   }
 
-  setCurrentMeasure(increment, e) {
-    e.preventDefault();
-    let { currentMeasure } = this.state;
-
-    if (increment) {
-      const scoreLength = this.props.stave.answer.length - 1;
-      currentMeasure = Math.min(scoreLength, currentMeasure + 1);
-    } else {
-      currentMeasure = Math.max(0, currentMeasure - 1);
-    }
-
-    this.setState({
-      currentMeasure,
-      currentNote: 0
-    });
-  }
-
   setCurrentNote(increment, e) {
     e.preventDefault();
     let { currentNote, currentMeasure } = this.state;
@@ -175,6 +158,10 @@ export default class MelodicEntryComponent extends React.Component {
     if (_.isUndefined(selectedSolfege)) {
       selectedSolfege = '';
     }
+    let octaveStr = this.state.octave.toString();
+    if (this.state.octave > 0) {
+      octaveStr = '+' + octaveStr;
+    }
     const solfegeOptions = solfege.map((s) => {
       return (
         <option key={s} value={s}>{s}</option>
@@ -203,18 +190,21 @@ export default class MelodicEntryComponent extends React.Component {
           </div>
           <div className="row">
             <div className="large-4 columns">
-              <fieldset>
-                <legend>Measure ({this.state.currentMeasure + 1})</legend>
-                <input type="submit"
-                       className="button"
-                       value="Prev"
-                       onClick={this.setCurrentMeasure.bind(this, false)} />
-                <input type="submit"
-                       className="button"
-                       value="Next"
-                       onClick={this.setCurrentMeasure.bind(this, true)} />
+            <fieldset>
+                <legend>Solfege (Octave {octaveStr})</legend>
+                <select multiple
+                        ref={(input) => this.solfegeInput = input}
+                        onBlur={(e) => e.target.focus()}
+                        onKeyDown={this.handleKeyDown.bind(this)}
+                        style={{width: '75px', height: '230px'}}
+                        value={[selectedSolfege]}
+                        onChange={this.noteChange.bind(this)}>
+                  {solfegeOptions}
+                </select>
               </fieldset>
-              <fieldset>
+            </div>
+            <div className="large-4 columns">
+             <fieldset>
                 <legend>{noteDisplay}</legend>
                 <input type="submit"
                        className="button"
@@ -236,19 +226,6 @@ export default class MelodicEntryComponent extends React.Component {
                        value="Up"
                        onClick={this.setOctave.bind(this, true)} />
               </fieldset>
-              <fieldset>
-                <legend>Solfege</legend>
-                <select multiple
-                        ref={(input) => this.solfegeInput = input}
-                        onKeyDown={this.handleKeyDown.bind(this)}
-                        style={{width: '75px', height: '230px'}}
-                        value={[selectedSolfege]}
-                        onChange={this.noteChange.bind(this)}>
-                  {solfegeOptions}
-                </select>
-              </fieldset>
-            </div>
-            <div className="large-4 columns">
               <fieldset>
                 <legend>{errors}</legend>
               </fieldset>

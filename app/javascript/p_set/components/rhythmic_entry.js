@@ -97,6 +97,15 @@ export default class RhythmicEntryComponent extends React.Component {
     }
   }
 
+  /**
+   * TODO: Rhythmic keyboarding
+   *
+   * Add support for rhythmic entry where "enter" adds a note and
+   * "r" adds a rest of the selected length. Use the same select style
+   * input as we use in the melodic entry. Delete/backspace deletes.
+   * "d" dots the last note. Left/right advance measures.
+   */
+
   render() {
     const [notes, rests] = _.partition(this.props.options, ([note, _]) => {
       return !note.endsWith('r');
