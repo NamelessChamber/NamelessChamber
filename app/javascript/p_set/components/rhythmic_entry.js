@@ -196,7 +196,7 @@ export default class RhythmicEntryComponent extends React.Component {
                               startMeasure={startMeasure} />
           </div>
           <div className="row">
-            <div className="large-4 columns">
+            <div className="large-3 columns">
               <fieldset>
                 <legend>Notes</legend>
                 <select multiple
@@ -209,15 +209,8 @@ export default class RhythmicEntryComponent extends React.Component {
                   {noteOptions}
                 </select>
               </fieldset>
-              <fieldset>
-                <legend>Delete</legend>
-                <input type="submit"
-                  className="button"
-                  value="Delete"
-                  onClick={this.removeNote.bind(this)} />
-              </fieldset>
             </div>
-            <div className="large-4 columns">
+            <div className="large-6 columns">
               <ul>
                 <li><b>Right/left</b> arrows change current measure</li>
                 <li><b>Up/down</b> arrows select note duration</li>
@@ -226,11 +219,8 @@ export default class RhythmicEntryComponent extends React.Component {
                 <li><b>d</b> adds a dot to the last note in a measure</li>
                 <li><b>Shift+d</b> removes a dot from the last note in a measure</li>
               </ul>
-              <div>
-                <legend>{errors}</legend>
-              </div>
             </div>
-            <div className="large-4 columns">
+            <div className="large-3 columns">
               <fieldset>
                 <legend>Proceed to Melody</legend>
                 <input type="submit"

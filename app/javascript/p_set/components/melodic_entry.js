@@ -192,7 +192,7 @@ export default class MelodicEntryComponent extends React.Component {
                               currentNote={this.state.currentNote} />
           </div>
           <div className="row">
-            <div className="large-4 columns">
+            <div className="large-3 columns">
             <fieldset>
                 <legend>Solfege (Octave {octaveStr})</legend>
                 <select multiple
@@ -206,17 +206,14 @@ export default class MelodicEntryComponent extends React.Component {
                 </select>
               </fieldset>
             </div>
-            <div className="large-4 columns">
+            <div className="large-6 columns">
               <ul>
                 <li><b>Right/left</b> arrows change current note</li>
                 <li><b>Up/down</b> arrows select solfege</li>
                 <li><b>+/-</b> raise or lower an octave</li>
               </ul>
-              <div>
-                <legend>{ /* errors */ }</legend>
-              </div>
             </div>
-            <div className="large-4 columns">
+            <div className="large-3 columns">
               <fieldset>
                 <legend>Return</legend>
                 <input type="submit"

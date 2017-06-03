@@ -251,7 +251,7 @@ export default class VexflowComponent extends React.Component {
         offsetIncrement += 100;
       }
 
-      const stave = new VF.Stave(widthOffset, 0, offsetIncrement);
+      const stave = new VF.Stave(widthOffset, 25, offsetIncrement);
       stave.setContext(context);
 
       if (score.endBar) {
