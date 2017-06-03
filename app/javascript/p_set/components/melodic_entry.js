@@ -134,14 +134,23 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   handleKeyDown(e) {
-    if (e.key === 'ArrowRight') {
-      this.setCurrentNote(true, e);
-    } else if (e.key === 'ArrowLeft') {
-      this.setCurrentNote(false, e);
-    } else if (e.key === '+') {
-      this.setOctave(true, e);
-    } else if (e.key === '-') {
+    switch(e.key) {
+      case 'ArrowRight':
+        this.setCurrentNote(true, e);
+        break;
+      case 'ArrowLeft':
+        this.setCurrentNote(false, e);
+        break;
+      case '+':
+        this.setOctave(true, e);
+        break;
+      case '-':
       this.setOctave(false, e);
+        break;
+      case 'ArrowUp':
+      case 'ArrowDown':
+        e.preventDefault();
+        break;
     }
   }
 
@@ -184,6 +193,7 @@ export default class MelodicEntryComponent extends React.Component {
             <VexflowComponent score={this.props.stave.answer}
                               meter={this.props.meter}
                               clef={this.props.stave.clef}
+                              name={this.props.stave.name}
                               rhythmic={false}
                               tonic={this.props.stave.tonic}
                               scale={this.props.stave.scale}

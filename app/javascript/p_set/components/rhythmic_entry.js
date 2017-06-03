@@ -4,6 +4,12 @@ import _ from 'lodash';
 
 import VexflowComponent from './vexflow';
 
+/**
+ * TODO:
+ * - grey out save button until all measures are completed
+ * - highlight incorrect notes
+ */
+
 export default class RhythmicEntryComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -190,6 +196,7 @@ export default class RhythmicEntryComponent extends React.Component {
           <div>
             <VexflowComponent score={this.props.stave.answer}
                               meter={this.props.meter}
+                              name={this.props.stave.name}
                               clef={this.props.stave.clef}
                               rhythmic={true}
                               currentMeasure={this.state.currentMeasure}

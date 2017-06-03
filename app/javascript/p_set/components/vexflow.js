@@ -50,8 +50,6 @@ const intervalSolfege = {
   // 'AA8': 'dai'
 };
 
-window.teoria = teoria;
-
 const solfegeInterval = _.invert(intervalSolfege);
 
 const noteEq = (n1, n2) => {
@@ -120,6 +118,7 @@ export default class VexflowComponent extends React.Component {
     numMeasures: PropTypes.number,
     tonic: PropTypes.string,
     scale: PropTypes.string,
+    name: PropTypes.string,
     currentNote: PropTypes.number
   }
 
@@ -165,7 +164,7 @@ export default class VexflowComponent extends React.Component {
       });
 
       if (!props.rhythmic && (_.isUndefined(solfege) || _.isUndefined(octave))) {
-        const annotation = new VF.Annotation('x')
+        const annotation = new VF.Annotation('?')
           .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
         staveNote.addModifier(0, annotation);
       }
@@ -230,7 +229,7 @@ export default class VexflowComponent extends React.Component {
 
     this.staves = [];
     let lastStave = null;
-    let widthOffset = 0;
+    let widthOffset = 5;
 
     const scoreSlice = _.slice(
       props.score,
@@ -258,15 +257,24 @@ export default class VexflowComponent extends React.Component {
         stave.setEndBarType(VF.Barline.type[score.endBar.toUpperCase()]);
       }
 
-      let section = `${i + 1}`;
+      stave.setMeasure(i + 1);
       let highlight = false;
       if (i === props.currentMeasure) {
         highlight = true
-        section = `▼${section}`;
+        if (props.rhythmic) {
+          stave.setSection('▼', 0);
+        }
       }
-      stave.setSection(section, 0);
 
       if (i === 0) {
+        if (!_.isUndefined(props.name)) {
+          stave.setText(
+            props.name,
+            VF.StaveModifier.Position.ABOVE,
+            {shift_y: -25, justification: VF.TextNote.Justification.LEFT}
+          );
+        }
+
         stave.addClef(props.clef).addTimeSignature(this.meterToString());
         if (!( _.isUndefined(props.tonic) ||
                _.isUndefined(props.scale) )) {
