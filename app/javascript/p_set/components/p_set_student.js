@@ -20,6 +20,7 @@ let treble = trebleDurations.map((measure, i, arr) => {
       const note = trebleScore.shift();
       if (_.isNumber(duration)) {
         note.duration = duration.toString();
+        note.dots = 0;
       } else {
         note.duration = duration;
         note.dots = 1;
@@ -40,9 +41,10 @@ let bass = bassDurations.map((measure, i, arr) => {
       const note = bassScore.shift();
       if (_.isNumber(duration)) {
         note.duration = duration.toString();
+        note.dots = 0;
       } else {
         note.duration = duration;
-        note.dots = 1
+        note.dots = 1;
       }
       return note;
     })

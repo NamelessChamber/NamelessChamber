@@ -181,7 +181,7 @@ export default class VexflowComponent extends React.Component {
       clef: stave.clef
     });
 
-    if (error && highlight) {
+    if (error) {
       const annotation = new VF.Annotation('x')
         .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
       staveNote.addModifier(0, annotation);
