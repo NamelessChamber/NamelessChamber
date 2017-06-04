@@ -44,10 +44,12 @@ export default class RhythmicEntryComponent extends React.Component {
       this.props.reportErrors([
         'Measure has too many notes'
       ]);
+      return;
     } else if (answerMeasure.notes.length < solutionMeasure.notes.length) {
       this.props.reportErrors([
         'Measure has too few notes'
       ]);
+      return;
     }
 
     if (increment) {
