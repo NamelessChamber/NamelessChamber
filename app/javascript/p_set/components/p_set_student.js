@@ -354,6 +354,7 @@ export default class PSetStudentComponent extends React.Component {
                                   editing={this.state.stave}
                                   meter={vexData.meter}
                                   mode={renderMode}
+                                  keySignature={this.state.keySignature}
                                   currentMeasure={this.state.currentMeasure}
                                   startMeasure={startMeasure}
                                   staveErrors={this.state.staveErrors}

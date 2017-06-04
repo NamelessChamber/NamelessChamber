@@ -130,6 +130,7 @@ export default class VexflowComponent extends React.Component {
     meter: PropTypes.object.isRequired,
     mode: PropTypes.number.isRequired,
     editing: PropTypes.number,
+    keySignature: PropTypes.string,
     currentMeasure: PropTypes.number,
     currentNote: PropTypes.number,
     startMeasure: PropTypes.number,
@@ -321,8 +322,10 @@ export default class VexflowComponent extends React.Component {
           staveObj.addClef(stave.clef).addTimeSignature(this.meterToString());
           if (!( _.isUndefined(stave.tonic) ||
             _.isUndefined(stave.scale) )) {
-            const keySignature = getVFScaleName(stave.tonic, stave.scale);
-            staveObj.addKeySignature(keySignature);
+            // const keySignature = getVFScaleName(stave.tonic, stave.scale);
+            if (_.isString(props.keySignature) && props.keySignature !== '') {
+              staveObj.addKeySignature(props.keySignature);
+            }
           }
         }
 
