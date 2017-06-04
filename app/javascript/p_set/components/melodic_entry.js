@@ -17,15 +17,22 @@ export default class MelodicEntryComponent extends React.Component {
     super(props);
 
     this.state = {
-      octave: 0
+      octave: 0,
+      keySignature: props.keySignature
     };
+
+    this.updateKey = this.updateKey.bind(this);
   }
 
   static propTypes = {
     options: PropTypes.object.isRequired,
     stave: PropTypes.object.isRequired,
+    keySignature: PropTypes.string,
     updateStave: PropTypes.func.isRequired,
-    updatePosition: PropTypes.func.isRequired
+    updatePosition: PropTypes.func.isRequired,
+    updateKeySignature: PropTypes.func.isRequired,
+    save: PropTypes.func.isRequired,
+    complete: PropTypes.func.isRequired,
   }
 
   setCurrentNote(increment, e) {
@@ -84,35 +91,6 @@ export default class MelodicEntryComponent extends React.Component {
     });
   }
 
-  getErrors() {
-    const { currentMeasure, currentNote } = this.props;
-    const measure = this.props.stave.answer[currentMeasure];
-    const { notes } = measure;
-    const solutionMeasure = this.props.stave.solution[currentMeasure];
-    const solutionNotes = solutionMeasure.notes;
-    if (notes.length > 0) {
-      if (notes.length > solutionNotes.length) {
-        return 'Too many notes!';
-      }
-
-      const note = notes[currentNote];
-      const solution = solutionNotes[currentNote];
-
-      let error = '';
-      if (note.solfege !== solution.solfege) {
-        error += 'Wrong solfege selection. ';
-      }
-      if (note.octave !== solution.octave) {
-        error += 'Wrong octave selection. ';
-      }
-      if (note.duration !== solution.duration) {
-        error += 'Wrong note duration!';
-      }
-
-      return error;
-    }
-  }
-
   currentNote(score) {
     const measure = score[this.props.currentMeasure];
     const { notes } = measure;
@@ -160,6 +138,10 @@ export default class MelodicEntryComponent extends React.Component {
     $(this.containerEl).foundation();
   }
 
+  updateKey(e) {
+    const keySignature = e.target.value;
+    this.setState({keySignature});
+  }
 
   render() {
     const { currentMeasure, currentNote } = this.props;
@@ -183,6 +165,17 @@ export default class MelodicEntryComponent extends React.Component {
       );
     });
 
+    const keyCorrect = this.props.keySignature === this.props.options.key;
+    const keyOptions = this.props.options.keys.map((key, i) => {
+      return (
+        <option key={i} value={key}>{key}</option>
+      );
+    });
+    const showIf = (cond) => {
+      return cond ?
+        {} : {display: 'none'};
+    };
+
     return (
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text" data-reveal>
@@ -192,7 +185,20 @@ export default class MelodicEntryComponent extends React.Component {
             <li><b>+/-</b> raise or lower an octave</li>
           </ul>
         </div>
-        <div className="row columns">
+        <div className="row columns" style={showIf(!keyCorrect)}>
+          <fieldset>
+            <legend>Key</legend>
+            <select value={this.state.keySignature}
+                    onChange={this.updateKey}>
+              {keyOptions}
+            </select>
+            <button className="button"
+                    onClick={(e) => this.props.updateKeySignature(this.state.keySignature)}>
+              Verify
+            </button>
+          </fieldset>
+        </div>
+        <div className="row columns" style={showIf(keyCorrect)}>
           <fieldset>
             <legend>Solfege (Octave {octaveStr})</legend>
             <select multiple
@@ -206,7 +212,7 @@ export default class MelodicEntryComponent extends React.Component {
             </select>
           </fieldset>
         </div>
-        <div className="row columns">
+        <div className="row columns" style={showIf(keyCorrect)}>
           <fieldset>
             <legend>Return to Rhythm</legend>
             <input type="submit"

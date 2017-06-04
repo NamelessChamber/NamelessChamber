@@ -119,12 +119,13 @@ export default class PSetStudentComponent extends React.Component {
       meter: {
         top: 0, bottom: 0
       },
-      key: null
+      keySignature: ''
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
     this.handlePositionUpdate = this.handlePositionUpdate.bind(this);
     this.handleMeterUpdate = this.handleMeterUpdate.bind(this);
+    this.handleKeySignatureUpdate = this.handleKeySignatureUpdate.bind(this);
     this.updateCurrentMeasure = this.updateCurrentMeasure.bind(this);
     this.saveAndToggle = this.saveAndToggle.bind(this);
     this.saveAndRender = this.saveAndRender.bind(this);
@@ -169,6 +170,15 @@ export default class PSetStudentComponent extends React.Component {
     this.setState({meter});
   }
 
+  handleKeySignatureUpdate(keySignature) {
+    if (keySignature === this.state.vexData.options.key) {
+      alert('Correct!');
+    } else {
+      alert('Incorrect... please try again!');
+    }
+    this.setState({keySignature});
+  }
+
   updateCurrentMeasure(measure) {
     this.setState({currentMeasure: measure});
   }
@@ -206,12 +216,13 @@ export default class PSetStudentComponent extends React.Component {
       renderMode = VexflowComponent.RenderMode.MELODIC;
       entryComponent = (
         <MelodicEntryComponent options={vexData.options}
-          keySignature={this.state.key}
+          keySignature={this.state.keySignature}
           stave={vexData.staves[this.state.stave]}
           updateStave={this.handleScoreUpdate}
           currentMeasure={this.state.currentMeasure}
           currentNote={this.state.currentNote}
           updatePosition={this.handlePositionUpdate}
+          updateKeySignature={this.handleKeySignatureUpdate}
           save={this.saveAndToggle}
           complete={this.saveAndRender} />
       );
