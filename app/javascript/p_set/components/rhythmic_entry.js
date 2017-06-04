@@ -165,6 +165,11 @@ export default class RhythmicEntryComponent extends React.Component {
 
   componentDidMount() {
     this.noteInput.focus();
+    $(this.containerEl).foundation();
+  }
+
+  componentDidUpdate() {
+    $(this.containerEl).foundation();
   }
 
   render() {
@@ -185,7 +190,7 @@ export default class RhythmicEntryComponent extends React.Component {
     const startMeasure = Math.floor(this.props.currentMeasure / 4) * 4;
 
     return (
-      <div className="row columns">
+      <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text" data-reveal>
           <ul>
             <li><b>Right/left</b> arrows change current measure</li>

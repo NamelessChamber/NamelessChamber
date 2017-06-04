@@ -153,7 +153,13 @@ export default class MelodicEntryComponent extends React.Component {
 
   componentDidMount() {
     this.solfegeInput.focus();
+    $(this.containerEl).foundation();
   }
+
+  componentDidUpdate() {
+    $(this.containerEl).foundation();
+  }
+
 
   render() {
     const { currentMeasure, currentNote } = this.props;
@@ -183,7 +189,7 @@ export default class MelodicEntryComponent extends React.Component {
     }
 
     return (
-      <div className="row columns">
+      <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text" data-reveal>
           <ul>
             <li><b>Right/left</b> arrows change current note</li>
