@@ -12,6 +12,15 @@ const clefToOctave = (clef) => {
   }
 };
 
+const staveComplete = (stave) => {
+  return _.every(stave.answer, (measure) => {
+    return _.every(measure.notes, (note) => {
+      return _.endsWith(note.duration, 'r') ||
+        (!_.isUndefined(note.solfege) && !_.isUndefined(note.octave));
+    });
+  });
+};
+
 export default class MelodicEntryComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -148,6 +157,14 @@ export default class MelodicEntryComponent extends React.Component {
     this.setState({keySignature});
   }
 
+  checkWork() {
+    if (staveComplete(this.props.stave)) {
+      this.props.reportErrors();
+    } else {
+      this.props.reportErrors(['Must complete melodic entry before checking work']);
+    }
+  }
+
   render() {
     const { currentMeasure, currentNote } = this.props;
     const measure = this.props.stave.answer[currentMeasure];
@@ -223,7 +240,7 @@ export default class MelodicEntryComponent extends React.Component {
             <input type="submit"
               className="button"
               value="Check"
-              onClick={() => this.props.reportErrors()}/>
+              onClick={() => this.checkWork()}/>
           </fieldset>
           <fieldset>
             <legend>Return to Rhythm</legend>

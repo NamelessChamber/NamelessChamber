@@ -6,11 +6,13 @@ import VexflowComponent from './vexflow';
 
 require('../styles/rhythmic_entry.css');
 
-/**
- * TODO:
- * - grey out save button until all measures are completed
- * - highlight incorrect notes
- */
+const staveComplete = (stave) => {
+  const stavesFull =  _.zipWith(stave.answer, stave.solution, (a, s) => {
+    return a.notes.length === s.notes.length;
+  });
+ 
+  return _.every(stavesFull);
+};
 
 export default class RhythmicEntryComponent extends React.Component {
   constructor(props) {
@@ -188,6 +190,14 @@ export default class RhythmicEntryComponent extends React.Component {
     $(this.containerEl).foundation();
   }
 
+  checkWork() {
+    if (staveComplete(this.props.stave)) {
+      this.props.reportErrors();
+    } else {
+      this.props.reportErrors(['Must complete rhythmic entry before checking work']);
+    }
+  }
+
   render() {
     const durationString = (duration) => {
       if (duration === '1') {
@@ -259,7 +269,7 @@ export default class RhythmicEntryComponent extends React.Component {
             <input type="submit"
               className="button"
               value="Check"
-              onClick={() => this.props.reportErrors()}/>
+              onClick={() => this.checkWork()}/>
           </fieldset>
           <fieldset>
             <legend>Proceed to Melody</legend>
