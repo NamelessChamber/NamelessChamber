@@ -18,7 +18,7 @@ export default class RhythmicEntryComponent extends React.Component {
   }
 
   static propTypes = {
-    options: PropTypes.array.isRequired,
+    options: PropTypes.object.isRequired,
     stave: PropTypes.object.isRequired,
     updateStave: PropTypes.func.isRequired,
     updatePosition: PropTypes.func.isRequired,
@@ -169,6 +169,7 @@ export default class RhythmicEntryComponent extends React.Component {
   }
 
   componentDidUpdate() {
+    this.noteInput.focus();
     $(this.containerEl).foundation();
   }
 
@@ -180,14 +181,12 @@ export default class RhythmicEntryComponent extends React.Component {
         return `1/${duration}`;
       }
     };
-    const noteOptions = this.props.options.filter(x => x[1])
+    const noteOptions = this.props.options.rhythm.filter(x => x[1])
       .map(([duration, _], i) => {
         return (
           <option key={i} value={duration}>{durationString(duration)}</option>
         );
       });
-
-    const startMeasure = Math.floor(this.props.currentMeasure / 4) * 4;
 
     return (
       <div className="row columns" ref={(el) => this.containerEl = el}>

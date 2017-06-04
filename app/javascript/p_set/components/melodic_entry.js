@@ -22,9 +22,8 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   static propTypes = {
-    options: PropTypes.array.isRequired,
+    options: PropTypes.object.isRequired,
     stave: PropTypes.object.isRequired,
-    meter: PropTypes.object.isRequired,
     updateStave: PropTypes.func.isRequired,
     updatePosition: PropTypes.func.isRequired
   }
@@ -157,18 +156,18 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   componentDidUpdate() {
+    this.solfegeInput.focus();
     $(this.containerEl).foundation();
   }
 
 
   render() {
     const { currentMeasure, currentNote } = this.props;
-    const startMeasure = Math.floor(currentMeasure / 4) * 4;
     const measure = this.props.stave.answer[currentMeasure];
     const measureNotes = measure.notes;
     const note = measureNotes[currentNote];
     const noteDisplay = `Note (${currentNote + 1}/${measureNotes.length})`;
-    const solfege = this.props.options.filter(([_, v]) => v).map(([v, _]) => v);
+    const solfege = this.props.options.solfege.filter(([_, v]) => v).map(([v, _]) => v);
     let selectedSolfege = _.isUndefined(note) ?
       undefined : note.solfege;
     if (_.isUndefined(selectedSolfege)) {
@@ -183,10 +182,6 @@ export default class MelodicEntryComponent extends React.Component {
         <option key={s} value={s}>{s}</option>
       );
     });
-
-    if (!_.isUndefined(this.solfegeInput)) {
-      this.solfegeInput.focus();
-    }
 
     return (
       <div className="row columns" ref={(el) => this.containerEl = el}>

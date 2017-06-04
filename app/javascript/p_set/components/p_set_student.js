@@ -115,7 +115,9 @@ export default class PSetStudentComponent extends React.Component {
       rhythmic: true,
       stave: 0,
       currentMeasure: 0,
-      currentNote: 0
+      currentNote: 0,
+      meter: {},
+      key: null
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
@@ -147,7 +149,7 @@ export default class PSetStudentComponent extends React.Component {
       stave,
       rhythmic: true,
       currentNote: 0,
-      currentMeasure: 0
+      currentMeasure: 0,
     });
   }
 
@@ -178,9 +180,9 @@ export default class PSetStudentComponent extends React.Component {
     let entryComponent = null;
     if (this.state.rhythmic) {
       entryComponent = (
-        <RhythmicEntryComponent options={vexData.options.rhythm}
+        <RhythmicEntryComponent options={vexData.options}
           stave={vexData.staves[this.state.stave]}
-          meter={vexData.meter}
+          meter={this.state.meter}
           updateStave={this.handleScoreUpdate}
           updatePosition={this.handlePositionUpdate}
           currentMeasure={this.state.currentMeasure}
@@ -189,8 +191,8 @@ export default class PSetStudentComponent extends React.Component {
     } else {
       renderMode = VexflowComponent.RenderMode.MELODIC;
       entryComponent = (
-        <MelodicEntryComponent options={vexData.options.solfege}
-          meter={vexData.meter}
+        <MelodicEntryComponent options={vexData.options}
+          keySignature={this.state.key}
           stave={vexData.staves[this.state.stave]}
           updateStave={this.handleScoreUpdate}
           currentMeasure={this.state.currentMeasure}
