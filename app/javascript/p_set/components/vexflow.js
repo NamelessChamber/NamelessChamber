@@ -147,11 +147,9 @@ export default class VexflowComponent extends React.Component {
   }
 
   meterToString(props) {
-    if (_.isUndefined(props.meter.top) ||
-        _.isUndefined(props.meter.bottom)) {
-      return;
+    if (props.meter.top && props.meter.bottom) {
+      return `${props.meter.top}/${props.meter.bottom}`;
     }
-    return `${props.meter.top}/${props.meter.bottom}`;
   }
 
   defaultLineForStave(clef) {
@@ -222,10 +220,10 @@ export default class VexflowComponent extends React.Component {
   scoreToVoice(props, measureIndex, score, width, highlight, stave, renderMode) {
     const context = this.renderer.getContext();
 
-    const voice = new VF.Voice({
-      num_beats: this.props.meter.top,
-      beat_value: this.props.meter.bottom
-    })
+    const voiceOpts = (props.meter.top && props.meter.bottom) ?
+      { num_beats: props.meter.top, beat_value: props.meter.bottom} :
+      {};
+    const voice = new VF.Voice(voiceOpts)
     voice.setMode(VF.Voice.Mode.SOFT);
 
     let notes = [];

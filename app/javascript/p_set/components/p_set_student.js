@@ -137,7 +137,7 @@ export default class PSetStudentComponent extends React.Component {
       currentMeasure: 0,
       currentNote: 0,
       meter: {
-        top: 4, bottom: 4
+        top: 0, bottom: 0
       },
       keySignature: '',
       errors: []
