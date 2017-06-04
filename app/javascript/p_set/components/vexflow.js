@@ -162,7 +162,7 @@ export default class VexflowComponent extends React.Component {
     }
   }
 
-  convertNote(props, error, highlight, stave, renderMode, note, i) {
+  convertNote(props, error, highlight, editing, stave, renderMode, note, i) {
     const { type } = note;
     const { mode } = props;
 
@@ -183,14 +183,15 @@ export default class VexflowComponent extends React.Component {
       clef: stave.clef
     });
 
-    if (error) {
+    if (error && editing) {
       const annotation = new VF.Annotation('x')
         .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
       staveNote.addModifier(0, annotation);
     }
 
     if (renderMode === RENDER_MODES.MELODIC &&
-        (_.isUndefined(solfege) || _.isUndefined(octave))) {
+        (_.isUndefined(solfege) || _.isUndefined(octave)) &&
+        editing) {
       const annotation = new VF.Annotation('?')
         .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
       staveNote.addModifier(0, annotation);
@@ -217,7 +218,7 @@ export default class VexflowComponent extends React.Component {
     return staveNote;
   }
 
-  scoreToVoice(props, measureIndex, score, width, highlight, stave, renderMode) {
+  scoreToVoice(props, measureIndex, score, width, highlight, editing, stave, renderMode) {
     const context = this.renderer.getContext();
 
     const voiceOpts = (props.meter.top && props.meter.bottom) ?
@@ -229,12 +230,12 @@ export default class VexflowComponent extends React.Component {
     let notes = [];
     if (_.isUndefined(props.staveErrors)) {
       notes = score.map(
-        this.convertNote.bind(this, props, false, highlight, stave, renderMode)
+        this.convertNote.bind(this, props, false, highlight, editing, stave, renderMode)
       );
     } else {
       notes = score.map((n, i) => {
         const error = props.staveErrors[measureIndex][i];
-        return this.convertNote(props, error, highlight, stave, renderMode, n, i)
+        return this.convertNote(props, error, highlight, editing, stave, renderMode, n, i)
       });
     }
     const beams = VF.Beam.generateBeams(notes);
@@ -301,7 +302,8 @@ export default class VexflowComponent extends React.Component {
 
         staveObj.setMeasure(index + 1);
         let highlight = false;
-        if (index === props.currentMeasure && e === props.editing) {
+        const editing = e === props.editing;
+        if (index === props.currentMeasure && editing) {
           highlight = true
           if (props.mode === RENDER_MODES.RHYTHMIC) {
             staveObj.setSection('▼', 0);
@@ -333,7 +335,7 @@ export default class VexflowComponent extends React.Component {
         }
 
         const [voice, beams] =
-          this.scoreToVoice(props, index, notes, width, highlight, stave, renderMode);
+          this.scoreToVoice(props, index, notes, width, highlight, editing, stave, renderMode);
         voice.draw(context, staveObj);
         beams.forEach((b) => b.setContext(context).draw());
 
