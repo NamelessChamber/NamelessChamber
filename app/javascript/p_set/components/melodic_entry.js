@@ -187,7 +187,7 @@ export default class MelodicEntryComponent extends React.Component {
           <ul>
             <li><b>Right/left</b> arrows change current note</li>
             <li><b>Up/down</b> arrows select solfege</li>
-            <li><b>+/-</b> raise or lower an octave</li>
+            <li><b>Shift-+/-</b> raise or lower an octave</li>
           </ul>
         </div>
         <div className="row columns" style={showIf(!keyCorrect)}>
