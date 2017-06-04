@@ -105,6 +105,24 @@ const pSetData = {
   ],
   meter: {top: 2, bottom: 4},
   measures: 10,
+  audios: [
+    {
+      name: 'Bass Rhythm',
+      url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Bass+Rhythm.mp3'
+    },
+    {
+      name: 'Bass Line',
+      url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Bass+Line.mp3'
+    },
+    {
+      name: 'Melodic Rhythm',
+      url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Melodic+Rhythm.mp3'
+    },
+    {
+      name: 'Melodic Line',
+      url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Melodic+Line.mp3'
+    },
+  ]
 };
 
 export default class PSetStudentComponent extends React.Component {
@@ -229,6 +247,17 @@ export default class PSetStudentComponent extends React.Component {
     }
 
     const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
+    const audios = vexData.audios.map(({name, url}, i) => {
+      return (
+        <div key={i}>
+          <p>{name}</p>
+          <audio controls>
+            <source src={url} type="audio/mpeg" />
+            Your browser does not support HTML5 audio.
+          </audio>
+        </div>
+      );
+    });
 
     return (
       <div className="small-12">
@@ -244,6 +273,10 @@ export default class PSetStudentComponent extends React.Component {
                                   currentMeasure={this.state.currentMeasure}
                                   startMeasure={startMeasure}
                                   currentNote={this.state.currentNote} />
+                <div className="row columns">
+                  <h4>Audio Samples</h4>
+                  {audios}
+                </div>
               </div>
               <div className="small-2 columns">
                 <div className="row columns">
