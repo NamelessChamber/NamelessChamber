@@ -146,8 +146,12 @@ export default class VexflowComponent extends React.Component {
     numMeasures: 4,
   }
 
-  meterToString() {
-    return `${this.props.meter.top}/${this.props.meter.bottom}`;
+  meterToString(props) {
+    if (_.isUndefined(props.meter.top) ||
+        _.isUndefined(props.meter.bottom)) {
+      return;
+    }
+    return `${props.meter.top}/${props.meter.bottom}`;
   }
 
   defaultLineForStave(clef) {
@@ -318,8 +322,9 @@ export default class VexflowComponent extends React.Component {
           );
         }
 
-        if (index === 0) {
-          staveObj.addClef(stave.clef).addTimeSignature(this.meterToString());
+        const meter = this.meterToString(props);
+        if (index === 0 && _.isString(meter)) {
+          staveObj.addClef(stave.clef).addTimeSignature(meter);
           if (!( _.isUndefined(stave.tonic) ||
             _.isUndefined(stave.scale) )) {
             // const keySignature = getVFScaleName(stave.tonic, stave.scale);

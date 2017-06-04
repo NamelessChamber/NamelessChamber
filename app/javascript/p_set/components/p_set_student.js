@@ -137,7 +137,7 @@ export default class PSetStudentComponent extends React.Component {
       currentMeasure: 0,
       currentNote: 0,
       meter: {
-        top: 0, bottom: 0
+        top: 4, bottom: 4
       },
       keySignature: '',
       errors: []
@@ -354,7 +354,7 @@ export default class PSetStudentComponent extends React.Component {
               <div className="small-10 columns">
                 <VexflowComponent staves={vexData.staves}
                                   editing={this.state.stave}
-                                  meter={vexData.meter}
+                                  meter={this.state.meter}
                                   mode={renderMode}
                                   keySignature={this.state.keySignature}
                                   currentMeasure={this.state.currentMeasure}
