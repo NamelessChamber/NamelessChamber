@@ -137,7 +137,8 @@ export default class PSetStudentComponent extends React.Component {
       meter: {
         top: 0, bottom: 0
       },
-      keySignature: ''
+      keySignature: '',
+      errors: []
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
@@ -147,14 +148,31 @@ export default class PSetStudentComponent extends React.Component {
     this.updateCurrentMeasure = this.updateCurrentMeasure.bind(this);
     this.saveAndToggle = this.saveAndToggle.bind(this);
     this.saveAndRender = this.saveAndRender.bind(this);
+    this.reportErrors = this.reportErrors.bind(this);
+
+    this.showError = false;
   }
 
-  handleScoreUpdate(answer) {
+  handleScoreUpdate(answer, changeMeasure, changeNote) {
     const newVexData = _.cloneDeep(this.state.vexData);
     const stave = newVexData.staves[this.state.stave];
     Object.assign(stave, {answer});
+
+    if (this.errorModalEl) {
+      try {
+        $(this.errorModalEl).foundation('close');
+      } catch (e) {
+      }
+    }
+
+    const staveErrors = _.cloneDeep(this.state.staveErrors);
+    if (_.isArray(staveErrors)) {
+      staveErrors[changeMeasure][changeNote] = false;
+    }
+
     this.setState({
-      vexData: newVexData
+      vexData: newVexData,
+      staveErrors
     });
   }
 
@@ -172,6 +190,7 @@ export default class PSetStudentComponent extends React.Component {
       rhythmic: true,
       currentNote: 0,
       currentMeasure: 0,
+      staveErrors: undefined
     });
   }
 
@@ -205,6 +224,46 @@ export default class PSetStudentComponent extends React.Component {
     alert('Mind our dust! Thanks for completing the exercise. Please leave any feedback in the survey!');
   }
 
+  getErrors(rhythmic) {
+    const stave = this.state.vexData.staves[this.state.stave];
+    const { answer, solution } = stave;
+
+    return _.zipWith(answer, solution, (m1, m2) => {
+      return _.zipWith(m1.notes, m2.notes, (n1, n2) => {
+        if (_.isUndefined(n1)) {
+          return false;
+        }
+
+        if (rhythmic) {
+          return n1.duration !== n2.duration;
+        } else {
+          return !_.isEqual(n1, n2);
+        }
+      });
+    });
+  }
+
+  reportErrors(errors) {
+    if (!_.isUndefined(errors)) {
+      // reporting an error modal
+      this.showError = true;
+      this.setState({errors});
+    } else {
+      // marking errors on stave
+      const staveErrors = this.getErrors(this.state.rhythmic);
+      this.setState({staveErrors});
+    }
+  }
+
+  componentDidUpdate() {
+    if (!_.isUndefined(this.errorModalEl) && this.showError) {
+      let $error = $(this.errorModalEl);
+      $error.foundation();
+      this.showError = false;
+      $error.foundation('open');
+    }
+  }
+
   render() {
     const { vexData } = this.state;
     const stave = vexData.staves[this.state.stave];
@@ -228,6 +287,7 @@ export default class PSetStudentComponent extends React.Component {
           updatePosition={this.handlePositionUpdate}
           updateMeter={this.handleMeterUpdate}
           currentMeasure={this.state.currentMeasure}
+          reportErrors={this.reportErrors}
           save={this.saveAndToggle} />
       );
     } else {
@@ -241,6 +301,7 @@ export default class PSetStudentComponent extends React.Component {
           currentNote={this.state.currentNote}
           updatePosition={this.handlePositionUpdate}
           updateKeySignature={this.handleKeySignatureUpdate}
+          reportErrors={this.reportErrors}
           save={this.saveAndToggle}
           complete={this.saveAndRender} />
       );
@@ -259,8 +320,21 @@ export default class PSetStudentComponent extends React.Component {
       );
     });
 
+    const errors = this.state.errors.map((e, i) => {
+      return (
+        <li key={i}>{e}</li>
+      );
+    });
+
     return (
       <div className="small-12">
+        <div className="reveal"
+             data-reveal
+             id="error-modal"
+             ref={(el) => this.errorModalEl = el}>
+          <h4>Errors</h4>
+          <ul>{errors}</ul>
+        </div>
         <div className="row">
           <div className="small-12 large-10 small-centered">
             <h3>Demo Dication: {this.state.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
@@ -272,6 +346,7 @@ export default class PSetStudentComponent extends React.Component {
                                   mode={renderMode}
                                   currentMeasure={this.state.currentMeasure}
                                   startMeasure={startMeasure}
+                                  staveErrors={this.state.staveErrors}
                                   currentNote={this.state.currentNote} />
                 <div className="row columns">
                   <h4>Audio Samples</h4>

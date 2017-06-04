@@ -30,12 +30,27 @@ export default class RhythmicEntryComponent extends React.Component {
     updatePosition: PropTypes.func.isRequired,
     updateMeter: PropTypes.func.isRequired,
     currentMeasure: PropTypes.number.isRequired,
+    reportErrors: PropTypes.func.isRequired,
     save: PropTypes.func.isRequired
   }
 
   setCurrentMeasure(increment, e) {
     e.preventDefault();
     let { currentMeasure } = this.props;
+
+    const answerMeasure = this.props.stave.answer[currentMeasure];
+    const solutionMeasure = this.props.stave.solution[currentMeasure];
+    if (answerMeasure.notes.length > solutionMeasure.notes.length) {
+      this.props.reportErrors([
+        'Measure has too many notes'
+      ]);
+      return;
+    } else if (answerMeasure.notes.length < solutionMeasure.notes.length) {
+      this.props.reportErrors([
+        'Measure has too few notes'
+      ]);
+      return;
+    }
 
     if (increment) {
       const scoreLength = this.props.stave.answer.length - 1;
@@ -62,11 +77,12 @@ export default class RhythmicEntryComponent extends React.Component {
       dots: 0
     };
 
+    const { currentMeasure } = this.props;
     const newAnswer = _.cloneDeep(this.props.stave.answer);
-    const measure = newAnswer[this.props.currentMeasure];
+    const measure = newAnswer[currentMeasure];
     measure.notes.push(newNote);
 
-    this.props.updateStave(newAnswer);
+    this.props.updateStave(newAnswer, currentMeasure, measure.length - 1);
     this.setState({dotted: false});
   }
 
@@ -85,7 +101,7 @@ export default class RhythmicEntryComponent extends React.Component {
     const measure = newAnswer[currentMeasure];
     measure.notes = _.dropRight(measure.notes);
 
-    this.props.updateStave(newAnswer);
+    this.props.updateStave(newAnswer, currentMeasure, measure.notes.length);
     this.setState({dotted: false});
   }
 
@@ -108,7 +124,10 @@ export default class RhythmicEntryComponent extends React.Component {
       }
     }
 
-    this.props.updateStave(newAnswer);
+    const { currentMeasure } = this.state;
+    const currentNote = this.props.stave.answer[currentMeasure].length - 1;
+
+    this.props.updateStave(newAnswer, currentMeasure, currentNote);
   }
 
   handleKeyDown(e) {
@@ -235,6 +254,13 @@ export default class RhythmicEntryComponent extends React.Component {
           </fieldset>
         </div>
         <div className="row columns" style={showIf(meterCorrect)}>
+          <fieldset>
+            <legend>Check Work</legend>
+            <input type="submit"
+              className="button"
+              value="Check"
+              onClick={() => this.props.reportErrors()}/>
+          </fieldset>
           <fieldset>
             <legend>Proceed to Melody</legend>
             <input type="submit"

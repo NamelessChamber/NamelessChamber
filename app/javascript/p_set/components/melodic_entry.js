@@ -32,6 +32,7 @@ export default class MelodicEntryComponent extends React.Component {
     updatePosition: PropTypes.func.isRequired,
     updateKeySignature: PropTypes.func.isRequired,
     save: PropTypes.func.isRequired,
+    reportErrors: PropTypes.func.isRequired,
     complete: PropTypes.func.isRequired,
   }
 

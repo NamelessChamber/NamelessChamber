@@ -134,6 +134,7 @@ export default class VexflowComponent extends React.Component {
     currentNote: PropTypes.number,
     startMeasure: PropTypes.number,
     numMeasures: PropTypes.number,
+    staveErrors: PropTypes.array
   }
 
   static RenderMode = RENDER_MODES;
@@ -158,58 +159,62 @@ export default class VexflowComponent extends React.Component {
     }
   }
 
-  convertNote(props, highlight, stave, renderMode, note, i) {
+  convertNote(props, error, highlight, stave, renderMode, note, i) {
     const { type } = note;
     const { mode } = props;
 
-    if (type === 'note') {
-      const { solfege, octave, duration } = note;
-      let keys = this.defaultLineForStave(stave.clef);
-      let accidental = null;
-      if (renderMode === RENDER_MODES.MELODIC &&
-          !_.isUndefined(solfege) && !_.isUndefined(octave)) {
-        const tNote = getNote(stave.tonic, octave, solfege);
-        const scale = teoria.scale(stave.tonic, stave.scale);
-        keys = [`${tNote.name()}/${tNote.octave()}`];
-        accidental = getAccidentalToRender(scale, tNote);
-      }
+    const { solfege, octave, duration } = note;
+    let keys = this.defaultLineForStave(stave.clef);
+    let accidental = null;
+    if (renderMode === RENDER_MODES.MELODIC &&
+        !_.isUndefined(solfege) && !_.isUndefined(octave)) {
+      const tNote = getNote(stave.tonic, octave, solfege);
+      const scale = teoria.scale(stave.tonic, stave.scale);
+      keys = [`${tNote.name()}/${tNote.octave()}`];
+      accidental = getAccidentalToRender(scale, tNote);
+    }
 
-      const staveNote = new VF.StaveNote({
-        duration: duration,
-        keys: keys,
-        clef: stave.clef
-      });
+    const staveNote = new VF.StaveNote({
+      duration: duration,
+      keys: keys,
+      clef: stave.clef
+    });
 
-      if (renderMode === RENDER_MODES.MELODIC &&
-          (_.isUndefined(solfege) || _.isUndefined(octave))) {
-        const annotation = new VF.Annotation('?')
+    if (error && highlight) {
+      const annotation = new VF.Annotation('x')
+        .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
+      staveNote.addModifier(0, annotation);
+    }
+
+    if (renderMode === RENDER_MODES.MELODIC &&
+        (_.isUndefined(solfege) || _.isUndefined(octave))) {
+      const annotation = new VF.Annotation('?')
+        .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
+      staveNote.addModifier(0, annotation);
+    }
+
+    if (highlight &&
+        _.isNumber(props.currentNote) &&
+      renderMode === RENDER_MODES.MELODIC) {
+      if (i === props.currentNote) {
+        const annotation = new VF.Annotation('▲')
           .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
         staveNote.addModifier(0, annotation);
       }
-
-      if (highlight &&
-          _.isNumber(props.currentNote) &&
-          renderMode === RENDER_MODES.MELODIC) {
-        if (i === props.currentNote) {
-          const annotation = new VF.Annotation('▲')
-            .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
-          staveNote.addModifier(0, annotation);
-        }
-      }
-
-      if (!_.isUndefined(note.dots) && note.dots > 0) {
-        _.times(note.dots, () => staveNote.addDotToAll());
-      }
-
-      if (!_.isNull(accidental)) {
-        staveNote.addAccidental(0, new VF.Accidental(accidental));
-      }
-
-      return staveNote;
     }
+
+    if (!_.isUndefined(note.dots) && note.dots > 0) {
+      _.times(note.dots, () => staveNote.addDotToAll());
+    }
+
+    if (!_.isNull(accidental)) {
+      staveNote.addAccidental(0, new VF.Accidental(accidental));
+    }
+
+    return staveNote;
   }
 
-  scoreToVoice(props, score, width, highlight, stave, renderMode) {
+  scoreToVoice(props, measureIndex, score, width, highlight, stave, renderMode) {
     const context = this.renderer.getContext();
 
     const voice = new VF.Voice({
@@ -218,11 +223,17 @@ export default class VexflowComponent extends React.Component {
     })
     voice.setMode(VF.Voice.Mode.SOFT);
 
-    const notes = _.flattenDeep(
-      score.map(
-        this.convertNote.bind(this, props, highlight, stave, renderMode)
-      )
-    );
+    let notes = [];
+    if (_.isUndefined(props.staveErrors)) {
+      notes = score.map(
+        this.convertNote.bind(this, props, false, highlight, stave, renderMode)
+      );
+    } else {
+      notes = score.map((n, i) => {
+        const error = props.staveErrors[measureIndex][i];
+        return this.convertNote(props, error, highlight, stave, renderMode, n, i)
+      });
+    }
     const beams = VF.Beam.generateBeams(notes);
 
     voice.addTickables(notes);
@@ -316,7 +327,7 @@ export default class VexflowComponent extends React.Component {
         }
 
         const [voice, beams] =
-          this.scoreToVoice(props, notes, width, highlight, stave, renderMode);
+          this.scoreToVoice(props, index, notes, width, highlight, stave, renderMode);
         voice.draw(context, staveObj);
         beams.forEach((b) => b.setContext(context).draw());
 
