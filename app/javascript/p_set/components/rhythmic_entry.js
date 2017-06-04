@@ -14,24 +14,21 @@ export default class RhythmicEntryComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      currentMeasure: 0,
-      dotted: false
-    };
+    this.state = {};
   }
 
   static propTypes = {
     options: PropTypes.array.isRequired,
     stave: PropTypes.object.isRequired,
-    updateScore: PropTypes.func.isRequired,
-    updateCurrentMeasure: PropTypes.func.isRequired,
-    meter: PropTypes.object.isRequired,
+    updateStave: PropTypes.func.isRequired,
+    updatePosition: PropTypes.func.isRequired,
+    currentMeasure: PropTypes.number.isRequired,
     save: PropTypes.func.isRequired
   }
 
   setCurrentMeasure(increment, e) {
     e.preventDefault();
-    let { currentMeasure } = this.state;
+    let { currentMeasure } = this.props;
 
     if (increment) {
       const scoreLength = this.props.stave.answer.length - 1;
@@ -40,9 +37,7 @@ export default class RhythmicEntryComponent extends React.Component {
       currentMeasure = Math.max(0, currentMeasure - 1);
     }
 
-    this.props.updateCurrentMeasure(currentMeasure);
-
-    this.setState({
+    this.props.updatePosition({
       currentMeasure
     });
   }
@@ -57,15 +52,14 @@ export default class RhythmicEntryComponent extends React.Component {
     const newNote = {
       type: 'note',
       duration: duration,
-      dotted: this.state.dotted,
       dots: 0
     };
 
     const newAnswer = _.cloneDeep(this.props.stave.answer);
-    const measure = newAnswer[this.state.currentMeasure];
+    const measure = newAnswer[this.props.currentMeasure];
     measure.notes.push(newNote);
 
-    this.props.updateScore(newAnswer);
+    this.props.updateStave(newAnswer);
     this.setState({dotted: false});
   }
 
@@ -80,19 +74,20 @@ export default class RhythmicEntryComponent extends React.Component {
     event.preventDefault();
 
     const newAnswer = _.cloneDeep(this.props.stave.answer);
-    const { currentMeasure } = this.state;
+    const { currentMeasure } = this.props;
     const measure = newAnswer[currentMeasure];
     measure.notes = _.dropRight(measure.notes);
 
-    this.props.updateScore(newAnswer);
+    this.props.updateStave(newAnswer);
     this.setState({dotted: false});
   }
 
   getErrors() {
-    const { stave } = this.props;
-    const measure = stave.answer[this.state.currentMeasure];
+    const { staves, currentMeasure } = this.props;
+    const stave = staves[this.props.stave];
+    const measure = stave.answer[currentMeasure];
     const { notes } = measure;
-    const solutionMeasure = stave.solution[this.state.currentMeasure];
+    const solutionMeasure = stave.solution[currentMeasure];
     const solutionNotes = solutionMeasure.notes;
     if (notes.length > 0) {
       if (notes.length > solutionNotes.length) {
@@ -112,7 +107,7 @@ export default class RhythmicEntryComponent extends React.Component {
   }
 
   getCurrentNote(answer) {
-    const measure = answer[this.state.currentMeasure].notes;
+    const measure = answer[this.props.currentMeasure].notes;
     if (measure.length) {
       return measure[measure.length - 1];
     }
@@ -130,7 +125,7 @@ export default class RhythmicEntryComponent extends React.Component {
       }
     }
 
-    this.props.updateScore(newAnswer);
+    this.props.updateStave(newAnswer);
   }
 
   handleKeyDown(e) {
@@ -187,56 +182,48 @@ export default class RhythmicEntryComponent extends React.Component {
         );
       });
 
-    const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
-    const errors = this.getErrors();
+    const startMeasure = Math.floor(this.props.currentMeasure / 4) * 4;
 
     return (
-      <div className="row">
-        <div className="small-12">
-          <div>
-            <VexflowComponent score={this.props.stave.answer}
-                              meter={this.props.meter}
-                              name={this.props.stave.name}
-                              clef={this.props.stave.clef}
-                              rhythmic={true}
-                              currentMeasure={this.state.currentMeasure}
-                              startMeasure={startMeasure} />
-          </div>
-          <div className="row">
-            <div className="large-3 columns">
-              <fieldset>
-                <legend>Notes</legend>
-                <select multiple
-                        ref={(input) => this.noteInput = input}
-                        onBlur={(e) => e.target.focus()}
-                        onKeyDown={this.handleKeyDown.bind(this)}
-                        style={{width: '85px', height: '230px'}}
-                        value={[this.state.currentNote]}
-                        onChange={this.noteChange.bind(this)}>
-                  {noteOptions}
-                </select>
-              </fieldset>
-            </div>
-            <div className="large-6 columns">
-              <ul>
-                <li><b>Right/left</b> arrows change current measure</li>
-                <li><b>Up/down</b> arrows select note duration</li>
-                <li><b>Enter</b> adds a note of selected duration</li>
-                <li><b>Space</b> adds a rest of selected duration</li>
-                <li><b>d</b> adds a dot to the last note in a measure</li>
-                <li><b>Shift+d</b> removes a dot from the last note in a measure</li>
-              </ul>
-            </div>
-            <div className="large-3 columns">
-              <fieldset>
-                <legend>Proceed to Melody</legend>
-                <input type="submit"
-                  className="button"
-                  value="Save and Continue"
-                  onClick={this.props.save}/>
-              </fieldset>
-            </div>
-          </div>
+      <div className="row columns">
+        <div className="reveal" id="help-text" data-reveal>
+          <ul>
+            <li><b>Right/left</b> arrows change current measure</li>
+            <li><b>Up/down</b> arrows select note duration</li>
+            <li><b>Enter</b> adds a note of selected duration</li>
+            <li><b>Space</b> adds a rest of selected duration</li>
+            <li><b>d</b> adds a dot to the last note in a measure</li>
+            <li><b>Shift+d</b> removes a dot from the last note in a measure</li>
+          </ul>
+        </div>
+        <div className="row columns">
+          <fieldset>
+            <legend>Notes</legend>
+            <select multiple
+                    ref={(input) => this.noteInput = input}
+                    onBlur={(e) => e.target.focus()}
+                    onKeyDown={this.handleKeyDown.bind(this)}
+                    style={{width: '85px', height: '230px'}}
+                    value={[this.state.currentNote]}
+                    onChange={this.noteChange.bind(this)}>
+              {noteOptions}
+            </select>
+          </fieldset>
+        </div>
+        <div className="row columns">
+          <fieldset>
+            <legend>Proceed to Melody</legend>
+            <input type="submit"
+              className="button"
+              value="Save and Continue"
+              onClick={this.props.save}/>
+          </fieldset>
+          <fieldset>
+            <legend>Keyboard Hints</legend>
+            <button data-open="help-text" className="button">
+              Show Help
+            </button>
+          </fieldset>
         </div>
       </div>
     );

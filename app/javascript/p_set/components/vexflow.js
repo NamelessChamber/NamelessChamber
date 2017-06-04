@@ -101,6 +101,23 @@ const getAccidentalToRender = (scale, note) => {
   }
 };
 
+const staveComplete = (stave) => {
+  return _.every(stave.answer, (measure) => {
+    return _.every(measure.notes, (note) => {
+      return _.endsWith(note.duration, 'r') ||
+        (!_.isUndefined(note.solfege) && !_.isUndefined(note.octave));
+    });
+  });
+};
+
+const STAVE_HEIGHT = 150;
+const RENDER_MODES = {
+  RHYTHMIC: 0,
+  MELODIC: 1,
+  STANDARD: 2
+};
+
+
 export default class VexflowComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -109,31 +126,29 @@ export default class VexflowComponent extends React.Component {
   }
 
   static propTypes = {
-    score: PropTypes.array.isRequired,
+    staves: PropTypes.array.isRequired,
     meter: PropTypes.object.isRequired,
-    clef: PropTypes.string.isRequired,
-    rhythmic: PropTypes.bool,
+    mode: PropTypes.number.isRequired,
+    editing: PropTypes.number,
     currentMeasure: PropTypes.number,
+    currentNote: PropTypes.number,
     startMeasure: PropTypes.number,
     numMeasures: PropTypes.number,
-    tonic: PropTypes.string,
-    scale: PropTypes.string,
-    name: PropTypes.string,
-    currentNote: PropTypes.number
   }
 
+  static RenderMode = RENDER_MODES;
+
   static defaultProps = {
-    rhythmic: false,
+    mode: VexflowComponent.RenderMode.MELODIC,
     startMeasure: 0,
-    numMeasures: 4
+    numMeasures: 4,
   }
 
   meterToString() {
     return `${this.props.meter.top}/${this.props.meter.bottom}`;
   }
 
-  defaultLineForStave(props) {
-    const { clef } = props;
+  defaultLineForStave(clef) {
     if (clef === 'treble') {
       return ['b/4'];
     } else if (clef === 'bass') {
@@ -143,33 +158,38 @@ export default class VexflowComponent extends React.Component {
     }
   }
 
-  convertNote(props, highlight, note, i) {
+  convertNote(props, highlight, stave, renderMode, note, i) {
     const { type } = note;
+    const { mode } = props;
 
     if (type === 'note') {
       const { solfege, octave, duration } = note;
-      let keys = this.defaultLineForStave(props);
+      let keys = this.defaultLineForStave(stave.clef);
       let accidental = null;
-      if (!props.rhythmic && !_.isUndefined(solfege) && !_.isUndefined(octave)) {
-        const tNote = getNote(props.tonic, octave, solfege);
-        const scale = teoria.scale(props.tonic, props.scale);
+      if (renderMode === RENDER_MODES.MELODIC &&
+          !_.isUndefined(solfege) && !_.isUndefined(octave)) {
+        const tNote = getNote(stave.tonic, octave, solfege);
+        const scale = teoria.scale(stave.tonic, stave.scale);
         keys = [`${tNote.name()}/${tNote.octave()}`];
         accidental = getAccidentalToRender(scale, tNote);
       }
 
       const staveNote = new VF.StaveNote({
         duration: duration,
-        keys: props.rhythmic ? this.defaultLineForStave(props) : keys,
-        clef: props.clef
+        keys: keys,
+        clef: stave.clef
       });
 
-      if (!props.rhythmic && (_.isUndefined(solfege) || _.isUndefined(octave))) {
+      if (renderMode === RENDER_MODES.MELODIC &&
+          (_.isUndefined(solfege) || _.isUndefined(octave))) {
         const annotation = new VF.Annotation('?')
           .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
         staveNote.addModifier(0, annotation);
       }
 
-      if (highlight && _.isNumber(props.currentNote)) {
+      if (highlight &&
+          _.isNumber(props.currentNote) &&
+          renderMode === RENDER_MODES.MELODIC) {
         if (i === props.currentNote) {
           const annotation = new VF.Annotation('▲')
             .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
@@ -189,7 +209,7 @@ export default class VexflowComponent extends React.Component {
     }
   }
 
-  scoreToVoice(props, score, width, highlight) {
+  scoreToVoice(props, score, width, highlight, stave, renderMode) {
     const context = this.renderer.getContext();
 
     const voice = new VF.Voice({
@@ -200,7 +220,7 @@ export default class VexflowComponent extends React.Component {
 
     const notes = _.flattenDeep(
       score.map(
-        this.convertNote.bind(this, props, highlight)
+        this.convertNote.bind(this, props, highlight, stave, renderMode)
       )
     );
     const beams = VF.Beam.generateBeams(notes);
@@ -229,68 +249,83 @@ export default class VexflowComponent extends React.Component {
 
     this.staves = [];
     let lastStave = null;
-    let widthOffset = 5;
+    let yOffset = 25;
 
-    const scoreSlice = _.slice(
-      props.score,
-      props.startMeasure,
-      props.startMeasure + props.numMeasures
-    );
-    scoreSlice.forEach((score, i) => {
-      i += props.startMeasure;
-      const { notes } = score;
-      let width = scoreLength(notes) * 45;
-      if (width === 0) {
-        width = 50;
-      }
-      let offsetIncrement = width;
+    props.staves.forEach((stave, e) => {
+      let widthOffset = 5;
 
-      if (i === 0) {
-        // clef
-        offsetIncrement += 100;
+      let renderMode = props.mode;
+      if (e !== props.editing) {
+        renderMode = RENDER_MODES.MELODIC;
       }
 
-      const stave = new VF.Stave(widthOffset, 25, offsetIncrement);
-      stave.setContext(context);
-
-      if (score.endBar) {
-        stave.setEndBarType(VF.Barline.type[score.endBar.toUpperCase()]);
-      }
-
-      stave.setMeasure(i + 1);
-      let highlight = false;
-      if (i === props.currentMeasure) {
-        highlight = true
-        if (props.rhythmic) {
-          stave.setSection('▼', 0);
+      const scoreSlice = _.slice(
+        stave.answer,
+        props.startMeasure,
+        props.startMeasure + props.numMeasures
+      );
+      scoreSlice.forEach((score, i) => {
+        const index = i + props.startMeasure;
+        const { notes } = score;
+        let width = scoreLength(notes) * 45;
+        if (width === 0) {
+          width = 50;
         }
-      }
+        let offsetIncrement = width;
 
-      if (i === 0) {
-        if (!_.isUndefined(props.name)) {
-          stave.setText(
-            props.name,
+        if (index === 0) {
+          // clef
+          offsetIncrement += 100;
+        }
+
+        const staveObj = new VF.Stave(widthOffset, yOffset, offsetIncrement);
+        staveObj.setContext(context);
+
+        if (score.endBar) {
+          staveObj.setEndBarType(VF.Barline.type[score.endBar.toUpperCase()]);
+        }
+
+        staveObj.setMeasure(index + 1);
+        let highlight = false;
+        if (index === props.currentMeasure && e === props.editing) {
+          highlight = true
+          if (props.mode === RENDER_MODES.RHYTHMIC) {
+            staveObj.setSection('▼', 0);
+          }
+        }
+
+        if (i === 0 && !_.isUndefined(stave.name)) {
+          let staveName = stave.name;
+          if (e === props.editing) {
+            staveName += ' (Editing)';
+          }
+          staveObj.setText(
+            staveName,
             VF.StaveModifier.Position.ABOVE,
             {shift_y: -25, justification: VF.TextNote.Justification.LEFT}
           );
         }
 
-        stave.addClef(props.clef).addTimeSignature(this.meterToString());
-        if (!( _.isUndefined(props.tonic) ||
-               _.isUndefined(props.scale) )) {
-          const keySignature = getVFScaleName(props.tonic, props.scale);
-          stave.addKeySignature(keySignature);
+        if (index === 0) {
+          staveObj.addClef(stave.clef).addTimeSignature(this.meterToString());
+          if (!( _.isUndefined(stave.tonic) ||
+            _.isUndefined(stave.scale) )) {
+            const keySignature = getVFScaleName(stave.tonic, stave.scale);
+            staveObj.addKeySignature(keySignature);
+          }
         }
-      }
 
-      const [voice, beams] = this.scoreToVoice(props, notes, width, highlight);
-      voice.draw(context, stave);
-      beams.forEach((b) => b.setContext(context).draw());
+        const [voice, beams] =
+          this.scoreToVoice(props, notes, width, highlight, stave, renderMode);
+        voice.draw(context, staveObj);
+        beams.forEach((b) => b.setContext(context).draw());
 
-      stave.draw();
+        staveObj.draw();
 
-      widthOffset += offsetIncrement;
-      this.staves.push(stave);
+        widthOffset += offsetIncrement;
+        this.staves.push(staveObj);
+      });
+      yOffset += STAVE_HEIGHT;
     });
   }
 
@@ -307,7 +342,8 @@ export default class VexflowComponent extends React.Component {
     const containerWidth = e.offsetWidth;
 
     this.renderer = new VF.Renderer(e, VF.Renderer.Backends.SVG);
-    this.renderer.resize(containerWidth, 150);
+    const height = STAVE_HEIGHT * this.props.staves.length;
+    this.renderer.resize(containerWidth, height);
 
     const context = this.renderer.getContext();
     context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
@@ -317,11 +353,12 @@ export default class VexflowComponent extends React.Component {
 
   render() {
     const style = {
-      width: '100%'
+      width: '100%',
     };
 
     return (
-      <div ref={(el) => this.vexflowEl = el} style={style}>
+      <div ref={(el) => this.vexflowEl = el}
+           style={style}>
       </div>
     );
   }

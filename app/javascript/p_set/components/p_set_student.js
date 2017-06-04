@@ -114,10 +114,12 @@ export default class PSetStudentComponent extends React.Component {
       vexData: pSetData,
       rhythmic: true,
       stave: 0,
-      measure: 0
+      currentMeasure: 0,
+      currentNote: 0
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
+    this.handlePositionUpdate = this.handlePositionUpdate.bind(this);
     this.updateCurrentMeasure = this.updateCurrentMeasure.bind(this);
     this.saveAndToggle = this.saveAndToggle.bind(this);
     this.saveAndRender = this.saveAndRender.bind(this);
@@ -138,13 +140,23 @@ export default class PSetStudentComponent extends React.Component {
     });
   }
 
-  changeStave(stave, e) {
+  changeStave(e) {
     e.preventDefault();
-    this.setState({stave, rhythmic: true});
+    const stave = parseInt(e.target.value);
+    this.setState({
+      stave,
+      rhythmic: true,
+      currentNote: 0,
+      currentMeasure: 0
+    });
+  }
+
+  handlePositionUpdate(pos) {
+    this.setState(pos);
   }
 
   updateCurrentMeasure(measure) {
-    this.setState({measure});
+    this.setState({currentMeasure: measure});
   }
 
   saveAndRender() {
@@ -152,85 +164,74 @@ export default class PSetStudentComponent extends React.Component {
   }
 
   render() {
-    let entryComponent = null;
-
     const { vexData } = this.state;
     const stave = vexData.staves[this.state.stave];
 
-    const staveOptions = vexData.staves.map((stave, i) => {
+    const staveOptions = vexData.staves.map((s, i) => {
       return (
-        <option key={i} value={i}>{_.capitalize(stave.clef)} ({stave.name})</option>
+        <option key={i} value={i}>{_.capitalize(s.clef)} ({s.name})</option>
       );
     });
 
-    const staveComplete = (stave) => {
-      return _.every(stave.answer, (measure) => {
-        return _.every(measure.notes, (note) => {
-          return _.endsWith(note.duration, 'r') ||
-                 (!_.isUndefined(note.solfege) && !_.isUndefined(note.octave));
-        });
-      });
-    };
+    let renderMode = VexflowComponent.RenderMode.RHYTHMIC;
 
-    const entryComponents = vexData.staves.map((stave, i) => {
-      let body = null;
-      if (i !== this.state.stave) {
-        const startMeasure = Math.floor(this.state.measure / 4) * 4;
-        body = (
-          <VexflowComponent score={stave.answer}
-                            meter={vexData.meter}
-                            clef={stave.clef}
-                            rhythmic={!staveComplete(stave)}
-                            tonic={stave.tonic}
-                            scale={stave.scale}
-                            startMeasure={startMeasure} />
-        );
-      } else {
-        if (this.state.rhythmic) {
-          body = (
-            <RhythmicEntryComponent options={vexData.options.rhythm}
-                                    stave={stave}
-                                    meter={vexData.meter}
-                                    updateScore={this.handleScoreUpdate}
-                                    updateCurrentMeasure={this.updateCurrentMeasure}
-                                    save={this.saveAndToggle} />
-          );
-        } else {
-          body = (
-            <MelodicEntryComponent options={vexData.options.solfege}
-                                   meter={vexData.meter}
-                                   stave={stave}
-                                   updateScore={this.handleScoreUpdate}
-                                   updateCurrentMeasure={this.updateCurrentMeasure}
-                                   save={this.saveAndToggle}
-                                   complete={this.saveAndRender} />
-          );
-        }
-      }
-
-      return (
-        <div key={i} className="row">
-          <div className="small-12 large-8 small-centered">
-            <h3>
-              <a href="#" onClick={this.changeStave.bind(this, i)}>
-                {stave.name} {i === this.state.stave ? '(Editing)' : ''}
-              </a>
-            </h3>
-            {body}
-          </div>
-        </div>
+    let entryComponent = null;
+    if (this.state.rhythmic) {
+      entryComponent = (
+        <RhythmicEntryComponent options={vexData.options.rhythm}
+          stave={vexData.staves[this.state.stave]}
+          meter={vexData.meter}
+          updateStave={this.handleScoreUpdate}
+          updatePosition={this.handlePositionUpdate}
+          currentMeasure={this.state.currentMeasure}
+          save={this.saveAndToggle} />
       );
-    });
+    } else {
+      renderMode = VexflowComponent.RenderMode.MELODIC;
+      entryComponent = (
+        <MelodicEntryComponent options={vexData.options.solfege}
+          meter={vexData.meter}
+          stave={vexData.staves[this.state.stave]}
+          updateStave={this.handleScoreUpdate}
+          currentMeasure={this.state.currentMeasure}
+          currentNote={this.state.currentNote}
+          updatePosition={this.handlePositionUpdate}
+          save={this.saveAndToggle}
+          complete={this.saveAndRender} />
+      );
+    }
+
+    const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
 
     return (
       <div className="small-12">
         <div className="row">
-          <div className="small-12 large-8 small-centered">
+          <div className="small-12 large-10 small-centered">
             <h3>Demo Dication: {this.state.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
+            <div className="row">
+              <div className="small-10 columns">
+                <VexflowComponent staves={vexData.staves}
+                                  editing={this.state.stave}
+                                  meter={vexData.meter}
+                                  mode={renderMode}
+                                  currentMeasure={this.state.currentMeasure}
+                                  startMeasure={startMeasure}
+                                  currentNote={this.state.currentNote} />
+              </div>
+              <div className="small-2 columns">
+                <div className="row columns">
+                  <fieldset>
+                    <legend>Stave</legend>
+                    <select value={this.state.stave}
+                            onChange={this.changeStave.bind(this)}>
+                      {staveOptions}
+                    </select>
+                  </fieldset>
+                </div>
+                {entryComponent}
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="row">
-          {entryComponents}
         </div>
       </div>
     );

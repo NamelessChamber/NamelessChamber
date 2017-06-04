@@ -17,8 +17,6 @@ export default class MelodicEntryComponent extends React.Component {
     super(props);
 
     this.state = {
-      currentMeasure: 0,
-      currentNote: 0,
       octave: 0
     };
   }
@@ -27,13 +25,13 @@ export default class MelodicEntryComponent extends React.Component {
     options: PropTypes.array.isRequired,
     stave: PropTypes.object.isRequired,
     meter: PropTypes.object.isRequired,
-    updateScore: PropTypes.func.isRequired,
-    updateCurrentMeasure: PropTypes.func.isRequired
+    updateStave: PropTypes.func.isRequired,
+    updatePosition: PropTypes.func.isRequired
   }
 
   setCurrentNote(increment, e) {
     e.preventDefault();
-    let { currentNote, currentMeasure } = this.state;
+    let { currentNote, currentMeasure } = this.props;
     const staveLength = this.props.stave.answer.length;
     const measure = this.props.stave.answer[currentMeasure];
     const { notes } = measure;
@@ -61,9 +59,7 @@ export default class MelodicEntryComponent extends React.Component {
       }
     }
 
-    this.props.updateCurrentMeasure(currentMeasure);
-
-    this.setState({
+    this.props.updatePosition({
       currentNote,
       currentMeasure
     });
@@ -82,7 +78,7 @@ export default class MelodicEntryComponent extends React.Component {
     const note = this.currentNote(newAnswer);
     note.octave = octave;
 
-    this.props.updateScore(newAnswer);
+    this.props.updateStave(newAnswer);
 
     this.setState({
       octave
@@ -90,17 +86,18 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   getErrors() {
-    const measure = this.props.stave.answer[this.state.currentMeasure];
+    const { currentMeasure, currentNote } = this.props;
+    const measure = this.props.stave.answer[currentMeasure];
     const { notes } = measure;
-    const solutionMeasure = this.props.stave.solution[this.state.currentMeasure];
+    const solutionMeasure = this.props.stave.solution[currentMeasure];
     const solutionNotes = solutionMeasure.notes;
     if (notes.length > 0) {
       if (notes.length > solutionNotes.length) {
         return 'Too many notes!';
       }
 
-      const note = notes[this.state.currentNote];
-      const solution = solutionNotes[this.state.currentNote];
+      const note = notes[currentNote];
+      const solution = solutionNotes[currentNote];
 
       let error = '';
       if (note.solfege !== solution.solfege) {
@@ -118,9 +115,9 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   currentNote(score) {
-    const measure = score[this.state.currentMeasure];
+    const measure = score[this.props.currentMeasure];
     const { notes } = measure;
-    return notes[this.state.currentNote];
+    return notes[this.props.currentNote];
   }
 
   noteChange(e) {
@@ -130,7 +127,7 @@ export default class MelodicEntryComponent extends React.Component {
     note.solfege = solfege;
     note.octave = this.state.octave;
 
-    this.props.updateScore(newAnswer);
+    this.props.updateStave(newAnswer);
   }
 
   handleKeyDown(e) {
@@ -159,11 +156,12 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   render() {
-    const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
-    const measure = this.props.stave.answer[this.state.currentMeasure];
+    const { currentMeasure, currentNote } = this.props;
+    const startMeasure = Math.floor(currentMeasure / 4) * 4;
+    const measure = this.props.stave.answer[currentMeasure];
     const measureNotes = measure.notes;
-    const note = measureNotes[this.state.currentNote];
-    const noteDisplay = `Note (${this.state.currentNote + 1}/${measureNotes.length})`;
+    const note = measureNotes[currentNote];
+    const noteDisplay = `Note (${currentNote + 1}/${measureNotes.length})`;
     const solfege = this.props.options.filter(([_, v]) => v).map(([v, _]) => v);
     let selectedSolfege = _.isUndefined(note) ?
       undefined : note.solfege;
@@ -180,66 +178,54 @@ export default class MelodicEntryComponent extends React.Component {
       );
     });
 
-    const errors = this.getErrors();
-
     if (!_.isUndefined(this.solfegeInput)) {
       this.solfegeInput.focus();
     }
 
     return (
-      <div className="row">
-        <div className="small-12">
-          <div>
-            <VexflowComponent score={this.props.stave.answer}
-                              meter={this.props.meter}
-                              clef={this.props.stave.clef}
-                              name={this.props.stave.name}
-                              rhythmic={false}
-                              tonic={this.props.stave.tonic}
-                              scale={this.props.stave.scale}
-                              currentMeasure={this.state.currentMeasure}
-                              startMeasure={startMeasure}
-                              currentNote={this.state.currentNote} />
-          </div>
-          <div className="row">
-            <div className="large-3 columns">
-            <fieldset>
-                <legend>Solfege (Octave {octaveStr})</legend>
-                <select multiple
-                        ref={(input) => this.solfegeInput = input}
-                        onBlur={(e) => e.target.focus()}
-                        onKeyDown={this.handleKeyDown.bind(this)}
-                        style={{width: '75px', height: '230px'}}
-                        value={[selectedSolfege]}
-                        onChange={this.noteChange.bind(this)}>
-                  {solfegeOptions}
-                </select>
-              </fieldset>
-            </div>
-            <div className="large-6 columns">
-              <ul>
-                <li><b>Right/left</b> arrows change current note</li>
-                <li><b>Up/down</b> arrows select solfege</li>
-                <li><b>+/-</b> raise or lower an octave</li>
-              </ul>
-            </div>
-            <div className="large-3 columns">
-              <fieldset>
-                <legend>Return</legend>
-                <input type="submit"
-                       className="button"
-                       value="Back to Rhythm"
-                       onClick={this.props.save} />
-              </fieldset>
-              <fieldset>
-                <legend>Save</legend>
-                <input type="submit"
-                  className="button"
-                  value="Save"
-                  onClick={this.props.complete} />
-              </fieldset>
-            </div>
-          </div>
+      <div className="row columns">
+        <div className="reveal" id="help-text" data-reveal>
+          <ul>
+            <li><b>Right/left</b> arrows change current note</li>
+            <li><b>Up/down</b> arrows select solfege</li>
+            <li><b>+/-</b> raise or lower an octave</li>
+          </ul>
+        </div>
+        <div className="row columns">
+          <fieldset>
+            <legend>Solfege (Octave {octaveStr})</legend>
+            <select multiple
+                    ref={(input) => this.solfegeInput = input}
+                    onBlur={(e) => e.target.focus()}
+                    onKeyDown={this.handleKeyDown.bind(this)}
+                    style={{width: '75px', height: '230px'}}
+                    value={[selectedSolfege]}
+                    onChange={this.noteChange.bind(this)}>
+              {solfegeOptions}
+            </select>
+          </fieldset>
+        </div>
+        <div className="row columns">
+          <fieldset>
+            <legend>Return to Rhythm</legend>
+            <input type="submit"
+              className="button"
+              value="Back"
+              onClick={this.props.save}/>
+          </fieldset>
+          <fieldset>
+            <legend>Save</legend>
+            <input type="submit"
+              className="button"
+              value="Save"
+              onClick={this.props.complete} />
+          </fieldset>
+          <fieldset>
+            <legend>Keyboard Hints</legend>
+            <button data-open="help-text" className="button">
+              Show Help
+            </button>
+          </fieldset>
         </div>
       </div>
     );
