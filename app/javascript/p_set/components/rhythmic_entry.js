@@ -4,6 +4,8 @@ import _ from 'lodash';
 
 import VexflowComponent from './vexflow';
 
+require('../styles/rhythmic_entry.css');
+
 /**
  * TODO:
  * - grey out save button until all measures are completed
@@ -14,14 +16,19 @@ export default class RhythmicEntryComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      meter: props.meter
+    };
   }
 
   static propTypes = {
     options: PropTypes.object.isRequired,
     stave: PropTypes.object.isRequired,
+    referenceMeter: PropTypes.object.isRequired,
+    meter: PropTypes.object,
     updateStave: PropTypes.func.isRequired,
     updatePosition: PropTypes.func.isRequired,
+    updateMeter: PropTypes.func.isRequired,
     currentMeasure: PropTypes.number.isRequired,
     save: PropTypes.func.isRequired
   }
@@ -82,30 +89,6 @@ export default class RhythmicEntryComponent extends React.Component {
     this.setState({dotted: false});
   }
 
-  getErrors() {
-    const { staves, currentMeasure } = this.props;
-    const stave = staves[this.props.stave];
-    const measure = stave.answer[currentMeasure];
-    const { notes } = measure;
-    const solutionMeasure = stave.solution[currentMeasure];
-    const solutionNotes = solutionMeasure.notes;
-    if (notes.length > 0) {
-      if (notes.length > solutionNotes.length) {
-        return 'Too many notes!';
-      }
-
-      const note = _.last(notes);
-      const solution = solutionNotes[notes.length - 1];
-
-      let error = '';
-      if (note.duration !== solution.duration) {
-        error += 'Wrong note type/duration! ';
-      }
-
-      return error;
-    }
-  }
-
   getCurrentNote(answer) {
     const measure = answer[this.props.currentMeasure].notes;
     if (measure.length) {
@@ -163,6 +146,19 @@ export default class RhythmicEntryComponent extends React.Component {
     });
   }
 
+  updateMeter(pos, e) {
+    let value = e.target.value;
+    if (_.isString(value)) {
+      value = parseInt(value);
+    }
+
+    const meter = Object.assign({}, this.state.meter, {[pos]: value});
+
+    this.setState({
+      meter
+    });
+  }
+
   componentDidMount() {
     this.noteInput.focus();
     $(this.containerEl).foundation();
@@ -188,6 +184,12 @@ export default class RhythmicEntryComponent extends React.Component {
         );
       });
 
+    const meterCorrect = _.isEqual(this.props.meter, this.props.referenceMeter);
+    const showIf = (cond) => {
+      return cond ?
+        {} : {display: 'none'};
+    };
+
     return (
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text" data-reveal>
@@ -200,7 +202,25 @@ export default class RhythmicEntryComponent extends React.Component {
             <li><b>Shift+d</b> removes a dot from the last note in a measure</li>
           </ul>
         </div>
-        <div className="row columns">
+        <div className="row columns" style={showIf(!meterCorrect)}>
+          <fieldset>
+            <legend>Meter</legend>
+            <input type="number"
+                   className="meter-entry"
+                   onChange={this.updateMeter.bind(this, 'top')}
+                   value={this.state.meter.top} />
+            /
+            <input type="number"
+                   className="meter-entry"
+                   onChange={this.updateMeter.bind(this, 'bottom')}
+                   value={this.state.meter.bottom} />
+            <button className="button"
+                    onClick={(e) => this.props.updateMeter(this.state.meter)}>
+              Verify
+            </button>
+          </fieldset>
+        </div>
+        <div className="row columns" style={showIf(meterCorrect)}>
           <fieldset>
             <legend>Notes</legend>
             <select multiple
@@ -214,7 +234,7 @@ export default class RhythmicEntryComponent extends React.Component {
             </select>
           </fieldset>
         </div>
-        <div className="row columns">
+        <div className="row columns" style={showIf(meterCorrect)}>
           <fieldset>
             <legend>Proceed to Melody</legend>
             <input type="submit"

@@ -116,12 +116,15 @@ export default class PSetStudentComponent extends React.Component {
       stave: 0,
       currentMeasure: 0,
       currentNote: 0,
-      meter: {},
+      meter: {
+        top: 0, bottom: 0
+      },
       key: null
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
     this.handlePositionUpdate = this.handlePositionUpdate.bind(this);
+    this.handleMeterUpdate = this.handleMeterUpdate.bind(this);
     this.updateCurrentMeasure = this.updateCurrentMeasure.bind(this);
     this.saveAndToggle = this.saveAndToggle.bind(this);
     this.saveAndRender = this.saveAndRender.bind(this);
@@ -156,6 +159,15 @@ export default class PSetStudentComponent extends React.Component {
   handlePositionUpdate(pos) {
     this.setState(pos);
   }
+  
+  handleMeterUpdate(meter) {
+    if (_.isEqual(meter, this.state.vexData.meter)) {
+      alert('Correct!');
+    } else {
+      alert('Incorrect... please try again!');
+    }
+    this.setState({meter});
+  }
 
   updateCurrentMeasure(measure) {
     this.setState({currentMeasure: measure});
@@ -181,10 +193,12 @@ export default class PSetStudentComponent extends React.Component {
     if (this.state.rhythmic) {
       entryComponent = (
         <RhythmicEntryComponent options={vexData.options}
+          referenceMeter={vexData.meter}
           stave={vexData.staves[this.state.stave]}
           meter={this.state.meter}
           updateStave={this.handleScoreUpdate}
           updatePosition={this.handlePositionUpdate}
+          updateMeter={this.handleMeterUpdate}
           currentMeasure={this.state.currentMeasure}
           save={this.saveAndToggle} />
       );
