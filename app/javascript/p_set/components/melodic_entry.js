@@ -85,7 +85,9 @@ export default class MelodicEntryComponent extends React.Component {
     const note = this.currentNote(newAnswer);
     note.octave = octave;
 
-    this.props.updateStave(newAnswer);
+    const { currentMeasure, currentNote } = this.props;
+
+    this.props.updateStave(newAnswer, currentMeasure, currentNote);
 
     this.setState({
       octave
@@ -105,7 +107,9 @@ export default class MelodicEntryComponent extends React.Component {
     note.solfege = solfege;
     note.octave = this.state.octave;
 
-    this.props.updateStave(newAnswer);
+    const { currentMeasure, currentNote } = this.props;
+
+    this.props.updateStave(newAnswer, currentMeasure, currentNote);
   }
 
   handleKeyDown(e) {
@@ -214,6 +218,13 @@ export default class MelodicEntryComponent extends React.Component {
           </fieldset>
         </div>
         <div className="row columns" style={showIf(keyCorrect)}>
+          <fieldset>
+            <legend>Check Work</legend>
+            <input type="submit"
+              className="button"
+              value="Check"
+              onClick={() => this.props.reportErrors()}/>
+          </fieldset>
           <fieldset>
             <legend>Return to Rhythm</legend>
             <input type="submit"

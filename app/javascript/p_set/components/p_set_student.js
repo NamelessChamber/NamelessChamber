@@ -8,7 +8,7 @@ import MelodicEntryComponent from './melodic_entry';
 
 let trebleScore = 'do-mi-mi-mi-mi-fa-so-la-ti-do-fi-la-so-re-fa-fa-fa-fa-so-la-so-fa-mi-fa-re-do-re-ti-re-do';
 trebleScore = trebleScore.split('-').map((note) => {
-  return {type: 'note', solfege: note, octave: 0 /* 4 */};
+  return {type: 'note', solfege: note, octave: 0, dots: 0};
 });
 let trebleDurations = [[8, 8, 8, 8], ['8', 16, 4], [8, 8, 8, 8], [4, 4],
                        [8, 8, 8, 8], [16, 16, 16, 16, 4], [8, 16, 16, 8, 16, 16],
@@ -22,7 +22,7 @@ let treble = trebleDurations.map((measure, i, arr) => {
         note.duration = duration.toString();
       } else {
         note.duration = duration;
-        note.dotted = true
+        note.dots = 1;
       }
       return note;
     })
@@ -42,7 +42,7 @@ let bass = bassDurations.map((measure, i, arr) => {
         note.duration = duration.toString();
       } else {
         note.duration = duration;
-        note.dotted = true
+        note.dots = 1
       }
       return note;
     })
@@ -234,8 +234,13 @@ export default class PSetStudentComponent extends React.Component {
           return false;
         }
 
+        if (_.isUndefined(n2)) {
+          return true;
+        }
+
         if (rhythmic) {
-          return n1.duration !== n2.duration;
+          return n1.duration !== n2.duration ||
+            n1.dots !== n2.dots;
         } else {
           return !_.isEqual(n1, n2);
         }
@@ -250,8 +255,13 @@ export default class PSetStudentComponent extends React.Component {
       this.setState({errors});
     } else {
       // marking errors on stave
+      errors = [];
       const staveErrors = this.getErrors(this.state.rhythmic);
-      this.setState({staveErrors});
+      if (_.every(staveErrors, (es) => _.every(es, (e) => !e))) {
+        this.showError = true;
+        errors.push('No errors!');
+      }
+      this.setState({staveErrors, errors});
     }
   }
 
