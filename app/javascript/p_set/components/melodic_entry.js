@@ -200,7 +200,7 @@ export default class MelodicEntryComponent extends React.Component {
 
     return (
       <div className="row columns" ref={(el) => this.containerEl = el}>
-        <div className="reveal" id="help-text" data-reveal>
+        <div className="reveal" id="help-text-melodic" data-reveal>
           <ul>
             <li><b>Right/left</b> arrows change current note</li>
             <li><b>Up/down</b> arrows select solfege</li>
@@ -258,7 +258,7 @@ export default class MelodicEntryComponent extends React.Component {
           </fieldset>
           <fieldset>
             <legend>Keyboard Hints</legend>
-            <button data-open="help-text" className="button">
+            <button data-open="help-text-melodic" className="button">
               Show Help
             </button>
           </fieldset>

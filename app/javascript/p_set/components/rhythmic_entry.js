@@ -221,7 +221,7 @@ export default class RhythmicEntryComponent extends React.Component {
 
     return (
       <div className="row columns" ref={(el) => this.containerEl = el}>
-        <div className="reveal" id="help-text" data-reveal>
+        <div className="reveal" id="help-text-rhythmic" data-reveal>
           <ul>
             <li><b>Right/left</b> arrows change current measure</li>
             <li><b>Up/down</b> arrows select note duration</li>
@@ -280,7 +280,7 @@ export default class RhythmicEntryComponent extends React.Component {
           </fieldset>
           <fieldset>
             <legend>Keyboard Hints</legend>
-            <button data-open="help-text" className="button">
+            <button data-open="help-text-rhythmic" className="button">
               Show Help
             </button>
           </fieldset>
