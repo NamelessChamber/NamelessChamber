@@ -42,6 +42,7 @@ export default class MelodicEntryComponent extends React.Component {
     updateKeySignature: PropTypes.func.isRequired,
     save: PropTypes.func.isRequired,
     reportErrors: PropTypes.func.isRequired,
+    showAudios: PropTypes.func.isRequired,
     complete: PropTypes.func.isRequired,
   }
 
@@ -260,6 +261,14 @@ export default class MelodicEntryComponent extends React.Component {
             <legend>Keyboard Hints</legend>
             <button data-open="help-text-melodic" className="button">
               Show Help
+            </button>
+          </fieldset>
+        </div>
+        <div className="row columns">
+          <fieldset>
+            <legend>Audio Samples</legend>
+            <button data-open="audios-modal" className="button">
+              Show Audio
             </button>
           </fieldset>
         </div>

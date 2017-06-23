@@ -285,6 +285,14 @@ export default class RhythmicEntryComponent extends React.Component {
             </button>
           </fieldset>
         </div>
+        <div className="row columns">
+          <fieldset>
+            <legend>Audio Samples</legend>
+            <button data-open="audios-modal" className="button">
+              Show Audio
+            </button>
+          </fieldset>
+        </div>
       </div>
     );
   }

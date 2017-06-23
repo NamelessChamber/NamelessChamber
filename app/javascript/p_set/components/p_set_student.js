@@ -84,7 +84,21 @@ const pSetData = {
         {endBar: 'single', notes: []},
         {endBar: 'single', notes: []},
         {endBar: 'end', notes: []},
-      ]
+      ],
+      audios: {
+        rhythm: [
+          {
+            name: 'Melodic Rhythm',
+            url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Melodic+Rhythm.mp3'
+          },
+        ],
+        melody: [
+          {
+            name: 'Melodic Line',
+            url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Melodic+Line.mp3'
+          },
+        ]
+      }
     },
     {
       clef: 'bass',
@@ -101,30 +115,25 @@ const pSetData = {
         {endBar: 'single', notes: []},
         {endBar: 'single', notes: []},
         {endBar: 'end', notes: []},
-      ]
+      ],
+      audios: {
+        rhythm: [
+          {
+            name: 'Bass Rhythm',
+            url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Bass+Rhythm.mp3'
+          },
+        ],
+        melody: [
+          {
+            name: 'Bass Line',
+            url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Bass+Line.mp3'
+          },
+        ]
+      }
     }
-
   ],
   meter: {top: 2, bottom: 4},
   measures: 10,
-  audios: [
-    {
-      name: 'Bass Rhythm',
-      url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Bass+Rhythm.mp3'
-    },
-    {
-      name: 'Bass Line',
-      url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Bass+Line.mp3'
-    },
-    {
-      name: 'Melodic Rhythm',
-      url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Melodic+Rhythm.mp3'
-    },
-    {
-      name: 'Melodic Line',
-      url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Melodic+Line.mp3'
-    },
-  ]
 };
 
 export default class PSetStudentComponent extends React.Component {
@@ -267,12 +276,22 @@ export default class PSetStudentComponent extends React.Component {
     }
   }
 
+  componentDidMount() {
+    if (!_.isUndefined(this.containerEl)) {
+      $(this.containerEl).foundation();
+    }
+  }
+
   componentDidUpdate() {
     if (!_.isUndefined(this.errorModalEl) && this.showError) {
-      let $error = $(this.errorModalEl);
+      const $error = $(this.errorModalEl);
       $error.foundation();
       this.showError = false;
       $error.foundation('open');
+    }
+
+    if (!_.isUndefined(this.containerEl)) {
+      $(this.containerEl).foundation();
     }
   }
 
@@ -320,15 +339,16 @@ export default class PSetStudentComponent extends React.Component {
     }
 
     const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
-    const audios = vexData.audios.map(({name, url}, i) => {
+    const mode = this.state.rhythmic ? 'rhythm' : 'melody';
+    const audios = stave.audios[mode].map(({name, url}, i) => {
       return (
-        <div key={i}>
+        <li key={i}>
           <p>{name}</p>
           <audio controls>
             <source src={url} type="audio/mpeg" />
             Your browser does not support HTML5 audio.
           </audio>
-        </div>
+        </li>
       );
     });
 
@@ -339,13 +359,19 @@ export default class PSetStudentComponent extends React.Component {
     });
 
     return (
-      <div className="small-12">
+      <div className="small-12" ref={(el) => this.containerEl = el}>
         <div className="reveal"
              data-reveal
              id="error-modal"
              ref={(el) => this.errorModalEl = el}>
           <h4>Errors</h4>
           <ul>{errors}</ul>
+        </div>
+        <div className="reveal"
+             data-reveal
+             id="audios-modal">
+          <h4>Audio</h4>
+          <ul>{audios}</ul>
         </div>
         <div className="row">
           <div className="small-12 large-10 small-centered">
@@ -361,10 +387,6 @@ export default class PSetStudentComponent extends React.Component {
                                   startMeasure={startMeasure}
                                   staveErrors={this.state.staveErrors}
                                   currentNote={this.state.currentNote} />
-                <div className="row columns">
-                  <h4>Audio Samples</h4>
-                  {audios}
-                </div>
               </div>
               <div className="small-2 columns">
                 <div className="row columns">
