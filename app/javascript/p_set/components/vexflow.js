@@ -110,7 +110,7 @@ const staveComplete = (stave) => {
   });
 };
 
-const STAVE_HEIGHT = 150;
+const STAVE_HEIGHT = 125;
 const RENDER_MODES = {
   RHYTHMIC: 0,
   MELODIC: 1,
@@ -308,18 +308,6 @@ export default class VexflowComponent extends React.Component {
           if (props.mode === RENDER_MODES.RHYTHMIC) {
             staveObj.setSection('▼', 0);
           }
-        }
-
-        if (i === 0 && !_.isUndefined(stave.name)) {
-          let staveName = stave.name;
-          if (e === props.editing) {
-            staveName += ' (Editing)';
-          }
-          staveObj.setText(
-            staveName,
-            VF.StaveModifier.Position.ABOVE,
-            {shift_y: -25, justification: VF.TextNote.Justification.LEFT}
-          );
         }
 
         const meter = this.meterToString(props);
