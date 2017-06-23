@@ -265,6 +265,7 @@ export default class VexflowComponent extends React.Component {
     this.staves = [];
     let lastStave = null;
     let yOffset = 25;
+    const firstStaves = [];
 
     props.staves.forEach((stave, e) => {
       let widthOffset = 5;
@@ -281,6 +282,7 @@ export default class VexflowComponent extends React.Component {
       );
       scoreSlice.forEach((score, i) => {
         const index = i + props.startMeasure;
+
         const { notes } = score;
         let width = scoreLength(notes) * 45;
         if (width === 0) {
@@ -331,8 +333,21 @@ export default class VexflowComponent extends React.Component {
 
         widthOffset += offsetIncrement;
         this.staves.push(staveObj);
+
+        if (index === 0) {
+          firstStaves.push(staveObj);
+        }
       });
       yOffset += STAVE_HEIGHT;
+    });
+
+    this.connectors = _.chunk(firstStaves, 2).map(([s1, s2]) => {
+      const conn = new VF.StaveConnector(s1, s2);
+      conn.setType(VF.StaveConnector.type.SINGLE_LEFT);
+      conn.setContext(context);
+      conn.draw();
+
+      return conn;
     });
   }
 
