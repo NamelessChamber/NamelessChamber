@@ -266,6 +266,18 @@ export default class VexflowComponent extends React.Component {
     let lastStave = null;
     let yOffset = 25;
     const firstStaves = [];
+    const formatter = new VF.Formatter();
+
+    const firstStave = props.staves[0];
+    const measureWidths =
+      _.range(props.startMeasure,
+              props.startMeasure + props.numMeasures).map((i) => {
+                return props.staves.reduce((m, x) => {
+                  const measure = x.answer[i];
+                  const measureLength = scoreLength(measure.notes);
+                  return Math.max(m, measureLength);
+                }, 0);
+              });
 
     props.staves.forEach((stave, e) => {
       let widthOffset = 5;
@@ -284,7 +296,7 @@ export default class VexflowComponent extends React.Component {
         const index = i + props.startMeasure;
 
         const { notes } = score;
-        let width = scoreLength(notes) * 45;
+        let width = measureWidths[i] * 45;
         if (width === 0) {
           width = 50;
         }

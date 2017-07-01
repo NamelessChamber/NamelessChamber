@@ -44,12 +44,12 @@ export default class RhythmicEntryComponent extends React.Component {
     const solutionMeasure = this.props.stave.solution[currentMeasure];
     if (answerMeasure.notes.length > solutionMeasure.notes.length) {
       this.props.reportErrors([
-        `Measure has too many beats in measure ${currentMeasure + 1}`
+        `Too many beats in measure ${currentMeasure + 1}`
       ]);
       return;
     } else if (answerMeasure.notes.length < solutionMeasure.notes.length) {
       this.props.reportErrors([
-        `Measure has too few beats in measure ${currentMeasure + 1}`
+        `Too few beats in measure ${currentMeasure + 1}`
       ]);
       return;
     }
@@ -227,6 +227,7 @@ export default class RhythmicEntryComponent extends React.Component {
             <li><b>Up/down</b> arrows select note duration</li>
             <li><b>Enter</b> adds a note of selected duration</li>
             <li><b>Space</b> adds a rest of selected duration</li>
+            <li><b>Backspace/Delete</b> removes the last note in a measure</li>
             <li><b>d</b> adds a dot to the last note in a measure</li>
             <li><b>Shift+d</b> removes a dot from the last note in a measure</li>
           </ul>

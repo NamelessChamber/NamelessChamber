@@ -42,7 +42,6 @@ export default class MelodicEntryComponent extends React.Component {
     updateKeySignature: PropTypes.func.isRequired,
     save: PropTypes.func.isRequired,
     reportErrors: PropTypes.func.isRequired,
-    showAudios: PropTypes.func.isRequired,
     complete: PropTypes.func.isRequired,
   }
 
@@ -223,7 +222,7 @@ export default class MelodicEntryComponent extends React.Component {
         </div>
         <div className="row columns" style={showIf(keyCorrect)}>
           <fieldset>
-            <legend>Solfege (Octave {octaveStr})</legend>
+            <legend>Solfege</legend>
             <select multiple
                     ref={(input) => this.solfegeInput = input}
                     onBlur={(e) => e.target.focus()}

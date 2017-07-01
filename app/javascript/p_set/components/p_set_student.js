@@ -71,7 +71,7 @@ const pSetData = {
   staves: [
     {
       clef: 'treble',
-      name: 'Lead',
+      name: 'Treble',
       tonic: 'f4',
       scale: 'major',
       solution: treble,
@@ -196,9 +196,14 @@ export default class PSetStudentComponent extends React.Component {
   changeStave(e) {
     e.preventDefault();
     const stave = parseInt(e.target.value);
+    let {rhythmic} = this.state;
+    const newStaveAnswer = this.state.vexData.staves[stave].answer;
+    if (_.every(newStaveAnswer, (a) => _.isEmpty(a.notes))) {
+      rhythmic = true;
+    }
     this.setState({
       stave,
-      rhythmic: true,
+      rhythmic,
       currentNote: 0,
       currentMeasure: 0,
       staveErrors: undefined
@@ -301,7 +306,7 @@ export default class PSetStudentComponent extends React.Component {
 
     const staveOptions = vexData.staves.map((s, i) => {
       return (
-        <option key={i} value={i}>{_.capitalize(s.clef)} ({s.name})</option>
+        <option key={i} value={i}>{s.name}</option>
       );
     });
 
