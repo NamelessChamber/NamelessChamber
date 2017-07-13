@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import ReactAudioPlayer from 'react-audio-player';
 
 import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
@@ -88,13 +89,13 @@ const pSetData = {
       audios: {
         rhythm: [
           {
-            name: 'Melodic Rhythm',
+            name: 'Treble Rhythm',
             url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Melodic+Rhythm.mp3'
           },
         ],
         melody: [
           {
-            name: 'Melodic Line',
+            name: 'Treble Line',
             url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Melodic+Line.mp3'
           },
         ]
@@ -349,10 +350,8 @@ export default class PSetStudentComponent extends React.Component {
       return (
         <li key={i}>
           <p>{name}</p>
-          <audio controls>
-            <source src={url} type="audio/mpeg" />
-            Your browser does not support HTML5 audio.
-          </audio>
+          <ReactAudioPlayer src={url}
+                            controls />
         </li>
       );
     });
