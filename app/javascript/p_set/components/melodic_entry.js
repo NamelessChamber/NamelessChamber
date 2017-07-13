@@ -197,6 +197,15 @@ export default class MelodicEntryComponent extends React.Component {
       return cond ?
         {} : {display: 'none'};
     };
+    const audios = this.props.stave.audios.melody.map(({name, url}, i) => {
+      return (
+        <li key={i}>
+          <p>{name}</p>
+          <ReactAudioPlayer src={url}
+                            controls />
+        </li>
+      );
+    });
 
     return (
       <div className="row columns" ref={(el) => this.containerEl = el}>
@@ -266,9 +275,7 @@ export default class MelodicEntryComponent extends React.Component {
         <div className="row columns">
           <fieldset>
             <legend>Audio Samples</legend>
-            <button data-open="audios-modal" className="button">
-              Show Audio
-            </button>
+            <ul>{audios}</ul>
           </fieldset>
         </div>
       </div>

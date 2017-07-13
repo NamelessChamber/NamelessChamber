@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import ReactAudioPlayer from 'react-audio-player';
 
 import VexflowComponent from './vexflow';
 
@@ -218,6 +219,15 @@ export default class RhythmicEntryComponent extends React.Component {
       return cond ?
         {} : {display: 'none'};
     };
+    const audios = this.props.stave.audios.rhythm.map(({name, url}, i) => {
+      return (
+        <li key={i}>
+          <p>{name}</p>
+          <ReactAudioPlayer src={url}
+                            controls />
+        </li>
+      );
+    });
 
     return (
       <div className="row columns" ref={(el) => this.containerEl = el}>
@@ -289,9 +299,7 @@ export default class RhythmicEntryComponent extends React.Component {
         <div className="row columns">
           <fieldset>
             <legend>Audio Samples</legend>
-            <button data-open="audios-modal" className="button">
-              Show Audio
-            </button>
+            <ul>{audios}</ul>
           </fieldset>
         </div>
       </div>

@@ -346,16 +346,6 @@ export default class PSetStudentComponent extends React.Component {
 
     const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
     const mode = this.state.rhythmic ? 'rhythm' : 'melody';
-    const audios = stave.audios[mode].map(({name, url}, i) => {
-      return (
-        <li key={i}>
-          <p>{name}</p>
-          <ReactAudioPlayer src={url}
-                            controls />
-        </li>
-      );
-    });
-
     const errors = this.state.errors.map((e, i) => {
       return (
         <li key={i}>{e}</li>
@@ -370,12 +360,6 @@ export default class PSetStudentComponent extends React.Component {
              ref={(el) => this.errorModalEl = el}>
           <h4>Errors</h4>
           <ul>{errors}</ul>
-        </div>
-        <div className="reveal"
-             data-reveal
-             id="audios-modal">
-          <h4>Audio</h4>
-          <ul>{audios}</ul>
         </div>
         <div className="row">
           <div className="small-12 large-10 small-centered">
