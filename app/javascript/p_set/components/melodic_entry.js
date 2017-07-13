@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import ReactAudioPlayer from 'react-audio-player';
 
 import VexflowComponent from './vexflow';
 
@@ -138,6 +139,9 @@ export default class MelodicEntryComponent extends React.Component {
       case 'ArrowUp':
       case 'ArrowDown':
         e.preventDefault();
+        break;
+      case 'Enter':
+        this.noteChange(e);
         break;
     }
   }

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import ReactAudioPlayer from 'react-audio-player';
 
 import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
