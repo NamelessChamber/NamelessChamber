@@ -1,23 +1,22 @@
 import ReactDOM from 'react-dom';
 import PSetOptionsEditor from './components/p_set_options_editor';
 import PSetStudentComponent from './components/p_set_student';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import PSetInstructorComponent from './components/p_set_instructor';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 
 function init() {
   document.addEventListener('DOMContentLoaded', () => {
-    let {pathname} = window.location;
-    let parts = pathname.split('/');
-    let id = parts[3];
-    let url = `/admin/p_sets/${id}.json`;
-
     ReactDOM.render(
-      <BrowserRouter>
+      <HashRouter>
         <Switch>
-          <Route path="/admin/p_sets/:p_set_id/edit"
-                 component={PSetOptionsEditor} />
+          <Route path="/admin/p_sets/:p_set_id/options"
+            component={PSetOptionsEditor} />
+          <Route path="/admin/p_sets/:p_set_id/staves"
+            component={PSetInstructorComponent} />
+          <Route path="/p_sets/:p_set_id" component={PSetStudentComponent} />
           <Route path="/" component={PSetStudentComponent} />
         </Switch>
-      </BrowserRouter>,
+      </HashRouter>,
       document.getElementById('app-root'),
     );
   });

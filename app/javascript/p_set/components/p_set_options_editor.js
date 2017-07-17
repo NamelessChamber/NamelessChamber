@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import BoolOptionsEditor from './bool_options_editor';
+import { newPSet } from '../lib/models';
 
 import '../styles/p_set_options_editor.css';
 
@@ -15,6 +16,7 @@ export default class PSetOptionsEditor extends React.Component {
     super(props);
     this.onNameChange = this.onNameChange.bind(this);
     this.onMeterChange = this.onMeterChange.bind(this);
+    this.state = {};
   }
 
   static propTypes = {
@@ -24,26 +26,41 @@ export default class PSetOptionsEditor extends React.Component {
   componentDidMount() {
     const { p_set_id } = this.props.match.params;
     const params = {method: 'get', dataType: 'json'};
-    $.ajax(pSetUrl(p_set_id), params).then((data) => {
-      this.setState(data);
-    });
+    let pSet = window.localStorage.getItem(pSetUrl(p_set_id));
+    if (_.isUndefined(pSet) || _.isNull(pSet)) {
+      pSet = newPSet();
+    } else {
+      try {
+        pSet = JSON.parse(pSet);
+      } catch (e) {
+        console.log('error', e);
+        pSet = newPSet();
+      }
+    }
+    this.setState(pSet);
+    /* $.ajax(pSetUrl(p_set_id), params).then((data) => {
+     *   this.setState(data);
+     * });*/
   }
 
   postUpdate(newState) {
     this.setState(newState);
-    const params = {
-      method: 'put',
-      dataType: 'json',
-      data: {p_set: newState}
-    };
-    $.ajax(this.props.url, params).then((data) => {
-      this.setState(data);
-    });
+    const { p_set_id } = this.props.match.params;
+    window.localStorage.setItem(pSetUrl(p_set_id), JSON.stringify(newState));
+    /* const params = {
+     *   method: 'put',
+     *   dataType: 'json',
+     *   data: {p_set: newState}
+     * };
+     * $.ajax(this.props.url, params).then((data) => {
+     *   this.setState(data);
+     * });*/
   }
 
   onOptionsChange(option, values) {
     const update = {[option]: values};
-    const newData = Object.assign({}, this.state.data, update);
+    const newOptions = Object.assign({}, this.state.data.options, update);
+    const newData = Object.assign({}, this.state.data, {options: newOptions});
     const newState = Object.assign({}, this.state, {data: newData});
     this.postUpdate(newState);
   }
@@ -61,17 +78,17 @@ export default class PSetOptionsEditor extends React.Component {
   }
 
   render() {
-    if (_.isUndefined(this.state) || _.isNull(this.state)) {
+    if (_.isUndefined(this.state.data) || _.isNull(this.state.data)) {
       return (
         <form></form>
       );
     }
 
     const boolSets =
-      ['Solfege', 'Rhythm', 'Harmony', 'Inversion', 'Accidental'];
+      ['Solfege', 'Rhythm', 'Harmony', 'Inversion', 'Key'];
     let boolEditors = boolSets.map((name, i) => {
       const prop = name.toLowerCase();
-      const options = this.state.data[prop];
+      const options = this.state.data.options[prop];
       const changeFn = this.onOptionsChange.bind(this, prop);
       return (
         <BoolOptionsEditor key={i}
