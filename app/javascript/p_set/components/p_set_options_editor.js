@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import BoolOptionsEditor from './bool_options_editor';
+import StaveOptionsEditor from './stave_options_editor';
 import { newPSet } from '../lib/models';
 
 import '../styles/p_set_options_editor.css';
@@ -16,6 +17,7 @@ export default class PSetOptionsEditor extends React.Component {
     super(props);
     this.onNameChange = this.onNameChange.bind(this);
     this.onMeterChange = this.onMeterChange.bind(this);
+    this.onStavesChange = this.onStavesChange.bind(this);
     this.state = {};
   }
 
@@ -26,15 +28,18 @@ export default class PSetOptionsEditor extends React.Component {
   componentDidMount() {
     const { p_set_id } = this.props.match.params;
     const params = {method: 'get', dataType: 'json'};
-    let pSet = window.localStorage.getItem(pSetUrl(p_set_id));
+    const url = pSetUrl(p_set_id);
+    let pSet = window.localStorage.getItem(url);
     if (_.isUndefined(pSet) || _.isNull(pSet)) {
       pSet = newPSet();
+      window.localStorage.setItem(url, JSON.stringify(pSet));
     } else {
       try {
         pSet = JSON.parse(pSet);
       } catch (e) {
         console.log('error', e);
         pSet = newPSet();
+        window.localStorage.setItem(url, JSON.stringify(pSet));
       }
     }
     this.setState(pSet);
@@ -77,6 +82,12 @@ export default class PSetOptionsEditor extends React.Component {
     this.postUpdate(newState);
   }
 
+  onStavesChange(staves) {
+    const newData = Object.assign({}, this.state.data, {staves});
+    const newState = Object.assign({}, this.state, {data: newData});
+    this.postUpdate(newState);
+  }
+
   render() {
     if (_.isUndefined(this.state.data) || _.isNull(this.state.data)) {
       return (
@@ -92,14 +103,14 @@ export default class PSetOptionsEditor extends React.Component {
       const changeFn = this.onOptionsChange.bind(this, prop);
       return (
         <BoolOptionsEditor key={i}
-                           options={options}
-                           name={name}
-                           onChange={changeFn} />
+          options={options}
+          name={name}
+          onChange={changeFn} />
       );
     });
 
     return (
-      <form>
+      <div>
         <div className="row">
           <div className="small-8 columns">
             <label htmlFor="name">
@@ -113,29 +124,27 @@ export default class PSetOptionsEditor extends React.Component {
         </div>
         <div className="row large-up-3">
           {boolEditors}
-        </div>
-        <div className="row">
-          <div className="small-6 columns">
-              <label>
-                <p>Meter</p>
-                <input type="number"
-                       name="top"
-                       className="meter-input"
-                       value={this.state.data.meter.top}
-                       onChange={this.onMeterChange} />
-                /
-                <input type="number"
-                       name="bottom"
-                       className="meter-input"
-                       value={this.state.data.meter.bottom}
-                       onChange={this.onMeterChange} />
-              </label>
-          </div>
-          <div className="small-6 columns">
-
+          <fieldset className="column column-block">
+            <legend>Meter</legend>
+            <input type="number"
+              name="top"
+              className="meter-input"
+              value={this.state.data.meter.top}
+              onChange={this.onMeterChange} />
+            /
+            <input type="number"
+              name="bottom"
+              className="meter-input"
+              value={this.state.data.meter.bottom}
+              onChange={this.onMeterChange} />
+          </fieldset>
+          <div className="column column-block">
+            <StaveOptionsEditor
+              staves={this.state.data.staves}
+              updateStaves={this.onStavesChange} />
           </div>
         </div>
-      </form>
+      </div>
     );
   }
 }

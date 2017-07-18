@@ -29,7 +29,8 @@ class PSet < ApplicationRecord
   def add_default_metadata
     self.data ||= {
       solfege: initialize_pairs([
-        'd', 'r', 'm', 'f', 's', 'l', 't', 'di', 'ri', 'fi', 'si', 'li', 'ra',
+        'do', 're', 'mi', 'fa', 'so', 'la', 'ti',
+        'di', 'ri', 'fi', 'si', 'li', 'ra',
         'meh', 'seh', 'leh', 'teh'
       ]),
       rhythm: initialize_pairs([
@@ -45,11 +46,6 @@ class PSet < ApplicationRecord
       ]),
       inversion: initialize_pairs([
         '6', '6/4', '4/3', '4/2', '6/3', '6/5', '7'
-      ]),
-      accidental: initialize_pairs([
-        'C', 'D', 'E', 'F', 'G', 'A', 'B',
-        'Cb', 'Db', 'Eb', 'Fb', 'Gb', 'Ab', 'Bb',
-        'C#', 'D#', 'E#', 'F#', 'G#', 'A#', 'B#',
       ]),
       meter: {top: 4, bottom: 4},
       staves: [],
