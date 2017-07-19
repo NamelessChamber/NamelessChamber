@@ -42,22 +42,33 @@ export default class MelodicEntryComponent extends React.Component {
     updatePosition: PropTypes.func.isRequired,
     updateKeySignature: PropTypes.func.isRequired,
     save: PropTypes.func.isRequired,
-    reportErrors: PropTypes.func.isRequired,
+    reportErrors: PropTypes.func,
     complete: PropTypes.func.isRequired,
+    instructor: PropTypes.bool
+  }
+
+  static defaultProps = {
+    instructor: true
+  }
+
+  get measures() {
+    const key = this.props.instructor ?
+                'solution' : 'answer';
+    return this.props.stave[key];
   }
 
   setCurrentNote(increment, e) {
     e.preventDefault();
     let { currentNote, currentMeasure } = this.props;
-    const staveLength = this.props.stave.answer.length;
-    const measure = this.props.stave.answer[currentMeasure];
+    const staveLength = this.measures.length;
+    const measure = this.measures[currentMeasure];
     const { notes } = measure;
 
     if (increment) {
       const measureLength = notes.length - 1;
       if (currentNote + 1 > measureLength) {
         if (currentMeasure + 1 <= staveLength &&
-            this.props.stave.answer[currentMeasure + 1].notes.length > 0) {
+            this.measures[currentMeasure + 1].notes.length > 0) {
           currentMeasure += 1;
           currentNote = 0;
         }
@@ -70,7 +81,7 @@ export default class MelodicEntryComponent extends React.Component {
       } else {
         if (currentMeasure - 1 >= 0) {
           currentMeasure -= 1;
-          const measureLength = this.props.stave.answer[currentMeasure].notes.length;
+          const measureLength = this.measures[currentMeasure].notes.length;
           currentNote = measureLength - 1;
         }
       }
@@ -91,13 +102,13 @@ export default class MelodicEntryComponent extends React.Component {
       octave -= 1;
     }
 
-    const newAnswer = _.cloneDeep(this.props.stave.answer);
-    const note = this.currentNote(newAnswer);
+    const measures = _.cloneDeep(this.measures);
+    const note = this.currentNote(measures);
     note.octave = octave;
 
     const { currentMeasure, currentNote } = this.props;
 
-    this.props.updateStave(newAnswer, currentMeasure, currentNote);
+    this.props.updateStave(measures, currentMeasure, currentNote);
 
     this.setState({
       octave
@@ -112,14 +123,14 @@ export default class MelodicEntryComponent extends React.Component {
 
   noteChange(e) {
     const solfege = e.target.value;
-    const newAnswer = _.cloneDeep(this.props.stave.answer);
-    const note = this.currentNote(newAnswer);
+    const measures = _.cloneDeep(this.measures);
+    const note = this.currentNote(measures);
     note.solfege = solfege;
     note.octave = this.state.octave;
 
     const { currentMeasure, currentNote } = this.props;
 
-    this.props.updateStave(newAnswer, currentMeasure, currentNote);
+    this.props.updateStave(measures, currentMeasure, currentNote);
   }
 
   handleKeyDown(e) {
@@ -171,7 +182,7 @@ export default class MelodicEntryComponent extends React.Component {
 
   render() {
     const { currentMeasure, currentNote } = this.props;
-    const measure = this.props.stave.answer[currentMeasure];
+    const measure = this.measures[currentMeasure];
     const measureNotes = measure.notes;
     const note = measureNotes[currentNote];
     const noteDisplay = `Note (${currentNote + 1}/${measureNotes.length})`;
@@ -192,11 +203,12 @@ export default class MelodicEntryComponent extends React.Component {
     });
 
     const keyCorrect = this.props.keySignature === this.props.options.key;
-    const keyOptions = this.props.options.keys.map((key, i) => {
+    const keyOptions = this.props.options.key.map((key, i) => {
       return (
         <option key={i} value={key}>{key}</option>
       );
     });
+    const { instructor } = this.props;
     const showIf = (cond) => {
       return cond ?
         {} : {display: 'none'};
@@ -220,7 +232,7 @@ export default class MelodicEntryComponent extends React.Component {
             <li><b>Shift-+/-</b> raise or lower an octave</li>
           </ul>
         </div>
-        <div className="row columns" style={showIf(!keyCorrect)}>
+        <div className="row columns" style={showIf(!keyCorrect && !instructor)}>
           <fieldset>
             <legend>Key</legend>
             <select value={this.state.keySignature}
@@ -233,7 +245,7 @@ export default class MelodicEntryComponent extends React.Component {
             </button>
           </fieldset>
         </div>
-        <div className="row columns" style={showIf(keyCorrect)}>
+        <div className="row columns" style={showIf(keyCorrect || instructor)}>
           <fieldset>
             <legend>Solfege</legend>
             <select multiple
@@ -247,7 +259,7 @@ export default class MelodicEntryComponent extends React.Component {
             </select>
           </fieldset>
         </div>
-        <div className="row columns" style={showIf(keyCorrect)}>
+        <div className="row columns" style={showIf(keyCorrect && !instructor)}>
           <fieldset>
             <legend>Check Work</legend>
             <input type="submit"
@@ -255,6 +267,8 @@ export default class MelodicEntryComponent extends React.Component {
               value="Check"
               onClick={() => this.checkWork()}/>
           </fieldset>
+        </div>
+        <div className="row columns" style={showIf(keyCorrect || instructor)}>
           <fieldset>
             <legend>Return to Rhythm</legend>
             <input type="submit"

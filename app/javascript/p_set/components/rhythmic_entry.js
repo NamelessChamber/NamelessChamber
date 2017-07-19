@@ -34,11 +34,17 @@ export default class RhythmicEntryComponent extends React.Component {
     instructor: true
   }
 
+  get measures() {
+    const key = this.props.instructor ?
+                'solution' : 'answer';
+    return this.props.stave[key];
+  }
+
   setCurrentMeasure(increment, e) {
     e.preventDefault();
     let { currentMeasure } = this.props;
 
-    const measures = this.props.stave.solution;
+    const measures = this.measures;
 
     if (increment) {
       const scoreLength = measures.length - 1;
@@ -66,11 +72,11 @@ export default class RhythmicEntryComponent extends React.Component {
     };
 
     const { currentMeasure } = this.props;
-    const newSolution = _.cloneDeep(this.props.stave.solution);
-    const measure = newSolution[currentMeasure];
+    const measures = _.cloneDeep(this.measures);
+    const measure = measures[currentMeasure];
     measure.notes.push(newNote);
 
-    this.props.updateStave(newSolution, currentMeasure, measure.length - 1);
+    this.props.updateStave(measures, currentMeasure, measure.length - 1);
     this.setState({dotted: false});
   }
 
@@ -84,25 +90,25 @@ export default class RhythmicEntryComponent extends React.Component {
   removeNote(event) {
     event.preventDefault();
 
-    const newSolution = _.cloneDeep(this.props.stave.solution);
+    const measures = _.cloneDeep(this.measures);
     const { currentMeasure } = this.props;
-    const measure = newSolution[currentMeasure];
+    const measure = measures[currentMeasure];
     measure.notes = _.dropRight(measure.notes);
 
-    this.props.updateStave(newSolution, currentMeasure, measure.notes.length);
+    this.props.updateStave(measures, currentMeasure, measure.notes.length);
     this.setState({dotted: false});
   }
 
-  getCurrentNote(solution) {
-    const measure = solution[this.props.currentMeasure].notes;
+  getCurrentNote(measures) {
+    const measure = measures[this.props.currentMeasure].notes;
     if (measure.length) {
       return measure[measure.length - 1];
     }
   }
 
   changeDot(increment) {
-    const newSolution = _.cloneDeep(this.props.stave.solution);
-    const note = this.getCurrentNote(newSolution);
+    const measures = _.cloneDeep(this.measures);
+    const note = this.getCurrentNote(measures);
 
     if (!_.isUndefined(note)) {
       if (increment) {
@@ -113,9 +119,9 @@ export default class RhythmicEntryComponent extends React.Component {
     }
 
     const { currentMeasure } = this.props;
-    const currentNote = this.props.stave.solution[currentMeasure].notes.length - 1;
+    const currentNote = measures[currentMeasure].notes.length - 1;
 
-    this.props.updateStave(newSolution, currentMeasure, currentNote);
+    this.props.updateStave(measures, currentMeasure, currentNote);
   }
 
   handleKeyDown(e) {

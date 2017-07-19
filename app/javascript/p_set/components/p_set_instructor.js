@@ -153,6 +153,7 @@ export default class PSetInstructorComponent extends React.Component {
           updatePosition={this.handlePositionUpdate}
           updateMeter={this.handleMeterUpdate}
           currentMeasure={this.state.currentMeasure}
+          instructor={true}
           save={this.saveAndToggle} />
       );
     } else {
@@ -167,6 +168,7 @@ export default class PSetInstructorComponent extends React.Component {
           updatePosition={this.handlePositionUpdate}
           updateKeySignature={this.handleKeySignatureUpdate}
           save={this.saveAndToggle}
+          instructor={true}
           complete={this.saveAndRender} />
       );
     }
@@ -183,7 +185,7 @@ export default class PSetInstructorComponent extends React.Component {
                 <VexflowComponent staves={vexData.staves}
                                   render="solution"
                                   editing={this.state.stave}
-                                  meter={this.state.meter}
+                                  meter={this.state.vexData.data.meter}
                                   mode={renderMode}
                                   keySignature={this.state.keySignature}
                                   currentMeasure={this.state.currentMeasure}

@@ -275,7 +275,6 @@ export default class VexflowComponent extends React.Component {
       props.measures,
       props.startMeasure + props.numMeasures
     );
-    console.log(props.startMeasure, props.numMeasures, lastMeasure);
     const measureWidths =
       _.range(props.startMeasure,
               lastMeasure).map((i) => {
