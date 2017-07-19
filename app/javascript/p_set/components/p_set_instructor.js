@@ -58,9 +58,7 @@ export default class PSetInstructorComponent extends React.Component {
     const stave = parseInt(e.target.value);
     let {rhythmic} = this.state;
     const newStaveSolution = this.state.vexData.data.staves[stave].solution;
-    if (_.every(newStaveSolution, (a) => _.isEmpty(a.notes))) {
-      rhythmic = true;
-    }
+    rhythmic = _.every(newStaveSolution, (s) => _.isEmpty(s.notes));
     this.setState({
       stave,
       rhythmic,
