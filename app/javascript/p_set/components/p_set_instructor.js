@@ -14,9 +14,89 @@ function pSetUrl(id) {
 
 export default class PSetInstructorComponent extends React.Component {
   constructor(props) {
-    super();
+    super(props);
+    this.state = {
+      rhythmic: true,
+      stave: 0,
+      currentMeasure: 0,
+      currentNote: 0,
+      meter: {
+        top: 0, bottom: 0
+      },
+      keySignature: '',
+    };
 
-    this.state = {};
+    this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
+    this.handlePositionUpdate = this.handlePositionUpdate.bind(this);
+    this.handleMeterUpdate = this.handleMeterUpdate.bind(this);
+    this.handleKeySignatureUpdate = this.handleKeySignatureUpdate.bind(this);
+    this.updateCurrentMeasure = this.updateCurrentMeasure.bind(this);
+    this.saveAndToggle = this.saveAndToggle.bind(this);
+    this.saveAndRender = this.saveAndRender.bind(this);
+
+    this.showError = false;
+  }
+
+  handleScoreUpdate(solution, changeMeasure, changeNote) {
+    const newVexData = _.cloneDeep(this.state.vexData);
+    const stave = newVexData.data.staves[this.state.stave];
+    Object.assign(stave, {solution});
+
+    this.setState({
+      vexData: newVexData
+    });
+  }
+
+  saveAndToggle() {
+    this.setState({
+      rhythmic: !this.state.rhythmic
+    });
+  }
+
+  changeStave(e) {
+    e.preventDefault();
+    const stave = parseInt(e.target.value);
+    let {rhythmic} = this.state;
+    const newStaveSolution = this.state.vexData.data.staves[stave].solution;
+    if (_.every(newStaveSolution, (a) => _.isEmpty(a.notes))) {
+      rhythmic = true;
+    }
+    this.setState({
+      stave,
+      rhythmic,
+      currentNote: 0,
+      currentMeasure: 0
+    });
+  }
+
+  handlePositionUpdate(pos) {
+    this.setState(pos);
+  }
+
+  handleMeterUpdate(meter) {
+    if (_.isEqual(meter, this.state.vexData.meter)) {
+      alert('Correct!');
+    } else {
+      alert('Incorrect... please try again!');
+    }
+    this.setState({meter});
+  }
+
+  handleKeySignatureUpdate(keySignature) {
+    if (keySignature === this.state.vexData.options.key) {
+      alert('Correct!');
+    } else {
+      alert('Incorrect... please try again!');
+    }
+    this.setState({keySignature});
+  }
+
+  updateCurrentMeasure(measure) {
+    this.setState({currentMeasure: measure});
+  }
+
+  saveAndRender() {
+    alert('Mind our dust! Thanks for completing the exercise. Please leave any feedback in the survey!');
   }
 
   componentDidMount() {
@@ -27,21 +107,108 @@ export default class PSetInstructorComponent extends React.Component {
       alert('No PSet found by this ID!');
     } else {
       pSet = JSON.parse(pSet);
-      this.setState({pSet});
+      this.setState({vexData: pSet});
+    }
+
+    if (!_.isUndefined(this.containerEl)) {
+      $(this.containerEl).foundation();
+    }
+  }
+
+  componentDidUpdate() {
+    if (!_.isUndefined(this.errorModalEl) && this.showError) {
+      const $error = $(this.errorModalEl);
+      $error.foundation();
+      this.showError = false;
+      $error.foundation('open');
+    }
+
+    if (!_.isUndefined(this.containerEl)) {
+      $(this.containerEl).foundation();
     }
   }
 
   render() {
+    if (_.isUndefined(this.state.vexData)) {
+      return (<div></div>);
+    }
+    const vexData = this.state.vexData.data;
 
+    const stave = vexData.staves[this.state.stave];
+
+    const staveOptions = vexData.staves.map((s, i) => {
+      return (
+        <option key={i} value={i}>{s.name}</option>
+      );
+    });
+
+    let renderMode = VexflowComponent.RenderMode.RHYTHMIC;
+
+    let entryComponent = null;
+    if (this.state.rhythmic) {
+      entryComponent = (
+        <RhythmicEntryComponent options={vexData.options}
+          referenceMeter={vexData.meter}
+          stave={vexData.staves[this.state.stave]}
+          meter={this.state.meter}
+          updateStave={this.handleScoreUpdate}
+          updatePosition={this.handlePositionUpdate}
+          updateMeter={this.handleMeterUpdate}
+          currentMeasure={this.state.currentMeasure}
+          save={this.saveAndToggle} />
+      );
+    } else {
+      renderMode = VexflowComponent.RenderMode.MELODIC;
+      entryComponent = (
+        <MelodicEntryComponent options={vexData.options}
+          keySignature={this.state.keySignature}
+          stave={vexData.staves[this.state.stave]}
+          updateStave={this.handleScoreUpdate}
+          currentMeasure={this.state.currentMeasure}
+          currentNote={this.state.currentNote}
+          updatePosition={this.handlePositionUpdate}
+          updateKeySignature={this.handleKeySignatureUpdate}
+          save={this.saveAndToggle}
+          complete={this.saveAndRender} />
+      );
+    }
+
+    const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
+    const mode = this.state.rhythmic ? 'rhythm' : 'melody';
     return (
       <div className="small-12" ref={(el) => this.containerEl = el}>
         <div className="row">
           <div className="small-12 large-10 small-centered">
-            testing
+            <h3>{this.state.vexData.name}: {this.state.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
+            <div className="row">
+              <div className="small-10 columns">
+                <VexflowComponent staves={vexData.staves}
+                                  render="solution"
+                                  editing={this.state.stave}
+                                  meter={this.state.meter}
+                                  mode={renderMode}
+                                  keySignature={this.state.keySignature}
+                                  currentMeasure={this.state.currentMeasure}
+                                  startMeasure={startMeasure}
+                                  measures={this.state.vexData.data.measures}
+                                  currentNote={this.state.currentNote} />
+              </div>
+              <div className="small-2 columns">
+                <div className="row columns">
+                  <fieldset>
+                    <legend>Stave</legend>
+                    <select value={this.state.stave}
+                            onChange={this.changeStave.bind(this)}>
+                      {staveOptions}
+                    </select>
+                  </fieldset>
+                </div>
+                {entryComponent}
+              </div>
+            </div>
           </div>
         </div>
       </div>
     );
   }
 }
-

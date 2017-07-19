@@ -7,14 +7,6 @@ import VexflowComponent from './vexflow';
 
 require('../styles/rhythmic_entry.css');
 
-const staveComplete = (stave) => {
-  const stavesFull =  _.zipWith(stave.answer, stave.solution, (a, s) => {
-    return a.notes.length === s.notes.length;
-  });
- 
-  return _.every(stavesFull);
-};
-
 export default class RhythmicEntryComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -33,30 +25,23 @@ export default class RhythmicEntryComponent extends React.Component {
     updatePosition: PropTypes.func.isRequired,
     updateMeter: PropTypes.func.isRequired,
     currentMeasure: PropTypes.number.isRequired,
-    reportErrors: PropTypes.func.isRequired,
-    save: PropTypes.func.isRequired
+    reportErrors: PropTypes.func,
+    save: PropTypes.func.isRequired,
+    instructor: PropTypes.bool
+  }
+
+  static defaultProps = {
+    instructor: true
   }
 
   setCurrentMeasure(increment, e) {
     e.preventDefault();
     let { currentMeasure } = this.props;
 
-    const answerMeasure = this.props.stave.answer[currentMeasure];
-    const solutionMeasure = this.props.stave.solution[currentMeasure];
-    if (answerMeasure.notes.length > solutionMeasure.notes.length) {
-      this.props.reportErrors([
-        `Too many beats in measure ${currentMeasure + 1}`
-      ]);
-      return;
-    } else if (answerMeasure.notes.length < solutionMeasure.notes.length) {
-      this.props.reportErrors([
-        `Too few beats in measure ${currentMeasure + 1}`
-      ]);
-      return;
-    }
+    const measures = this.props.stave.solution;
 
     if (increment) {
-      const scoreLength = this.props.stave.answer.length - 1;
+      const scoreLength = measures.length - 1;
       currentMeasure = Math.min(scoreLength, currentMeasure + 1);
     } else {
       currentMeasure = Math.max(0, currentMeasure - 1);
@@ -81,11 +66,11 @@ export default class RhythmicEntryComponent extends React.Component {
     };
 
     const { currentMeasure } = this.props;
-    const newAnswer = _.cloneDeep(this.props.stave.answer);
-    const measure = newAnswer[currentMeasure];
+    const newSolution = _.cloneDeep(this.props.stave.solution);
+    const measure = newSolution[currentMeasure];
     measure.notes.push(newNote);
 
-    this.props.updateStave(newAnswer, currentMeasure, measure.length - 1);
+    this.props.updateStave(newSolution, currentMeasure, measure.length - 1);
     this.setState({dotted: false});
   }
 
@@ -99,25 +84,25 @@ export default class RhythmicEntryComponent extends React.Component {
   removeNote(event) {
     event.preventDefault();
 
-    const newAnswer = _.cloneDeep(this.props.stave.answer);
+    const newSolution = _.cloneDeep(this.props.stave.solution);
     const { currentMeasure } = this.props;
-    const measure = newAnswer[currentMeasure];
+    const measure = newSolution[currentMeasure];
     measure.notes = _.dropRight(measure.notes);
 
-    this.props.updateStave(newAnswer, currentMeasure, measure.notes.length);
+    this.props.updateStave(newSolution, currentMeasure, measure.notes.length);
     this.setState({dotted: false});
   }
 
-  getCurrentNote(answer) {
-    const measure = answer[this.props.currentMeasure].notes;
+  getCurrentNote(solution) {
+    const measure = solution[this.props.currentMeasure].notes;
     if (measure.length) {
       return measure[measure.length - 1];
     }
   }
 
   changeDot(increment) {
-    const newAnswer = _.cloneDeep(this.props.stave.answer);
-    const note = this.getCurrentNote(newAnswer);
+    const newSolution = _.cloneDeep(this.props.stave.solution);
+    const note = this.getCurrentNote(newSolution);
 
     if (!_.isUndefined(note)) {
       if (increment) {
@@ -128,9 +113,9 @@ export default class RhythmicEntryComponent extends React.Component {
     }
 
     const { currentMeasure } = this.props;
-    const currentNote = this.props.stave.answer[currentMeasure].notes.length - 1;
+    const currentNote = this.props.stave.solution[currentMeasure].notes.length - 1;
 
-    this.props.updateStave(newAnswer, currentMeasure, currentNote);
+    this.props.updateStave(newSolution, currentMeasure, currentNote);
   }
 
   handleKeyDown(e) {
@@ -191,14 +176,6 @@ export default class RhythmicEntryComponent extends React.Component {
     $(this.containerEl).foundation();
   }
 
-  checkWork() {
-    if (staveComplete(this.props.stave)) {
-      this.props.reportErrors();
-    } else {
-      this.props.reportErrors(['Must complete rhythmic entry before checking work']);
-    }
-  }
-
   render() {
     const durationString = (duration) => {
       if (duration === '1') {
@@ -215,6 +192,7 @@ export default class RhythmicEntryComponent extends React.Component {
       });
 
     const meterCorrect = _.isEqual(this.props.meter, this.props.referenceMeter);
+    const { instructor } = this.props;
     const showIf = (cond) => {
       return cond ?
         {} : {display: 'none'};
@@ -242,7 +220,7 @@ export default class RhythmicEntryComponent extends React.Component {
             <li><b>Shift+d</b> removes a dot from the last note in a measure</li>
           </ul>
         </div>
-        <div className="row columns" style={showIf(!meterCorrect)}>
+        <div className="row columns" style={showIf(!meterCorrect && !instructor)}>
           <fieldset>
             <legend>Meter</legend>
             <input type="number"
@@ -260,7 +238,7 @@ export default class RhythmicEntryComponent extends React.Component {
             </button>
           </fieldset>
         </div>
-        <div className="row columns" style={showIf(meterCorrect)}>
+        <div className="row columns" style={showIf(meterCorrect || instructor)}>
           <fieldset>
             <legend>Notes</legend>
             <select multiple
@@ -272,15 +250,6 @@ export default class RhythmicEntryComponent extends React.Component {
                     onChange={this.noteChange.bind(this)}>
               {noteOptions}
             </select>
-          </fieldset>
-        </div>
-        <div className="row columns" style={showIf(meterCorrect)}>
-          <fieldset>
-            <legend>Check Work</legend>
-            <input type="submit"
-              className="button"
-              value="Check"
-              onClick={() => this.checkWork()}/>
           </fieldset>
           <fieldset>
             <legend>Proceed to Melody</legend>

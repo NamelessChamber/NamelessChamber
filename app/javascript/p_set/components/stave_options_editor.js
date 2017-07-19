@@ -28,7 +28,8 @@ export default class StaveOptionsEditor extends React.Component {
 
   static propTypes = {
     staves: PropTypes.array.isRequired,
-    updateStaves: PropTypes.func.isRequired
+    updateStaves: PropTypes.func.isRequired,
+    measures: PropTypes.number.isRequired
   }
 
   updateCurrentStave(key, e) {
@@ -39,7 +40,14 @@ export default class StaveOptionsEditor extends React.Component {
     let staves = _.cloneDeep(this.props.staves);
 
     if (action === 'add') {
-      staves.push(newStave(this.state.currentStave));
+      const { currentStave } = this.state;
+      staves.push(
+        newStave(
+          currentStave,
+          STAVES[currentStave],
+          this.props.measures
+        )
+      );
     } else if (action === 'remove') {
       _.pullAt(staves, this.state.currentPSetStave);
     } else if (action === 'up') {

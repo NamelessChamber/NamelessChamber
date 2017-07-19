@@ -88,7 +88,7 @@ const getAccidentalToRender = (scale, note) => {
   const notInScale = _.isUndefined(
     _.find(scale.notes(), _.bind(noteRelEq, this, note))
   );
-  
+
   if (notInScale) {
     const accidental = note.accidental();
     if (accidental === '') {
@@ -102,7 +102,7 @@ const getAccidentalToRender = (scale, note) => {
 };
 
 const staveComplete = (stave) => {
-  return _.every(stave.answer, (measure) => {
+  return _.every(stave[this.props.render], (measure) => {
     return _.every(measure.notes, (note) => {
       return _.endsWith(note.duration, 'r') ||
         (!_.isUndefined(note.solfege) && !_.isUndefined(note.octave));
@@ -127,6 +127,7 @@ export default class VexflowComponent extends React.Component {
 
   static propTypes = {
     staves: PropTypes.array.isRequired,
+    render: PropTypes.string.isRequired,
     meter: PropTypes.object.isRequired,
     mode: PropTypes.number.isRequired,
     editing: PropTypes.number,
@@ -135,6 +136,7 @@ export default class VexflowComponent extends React.Component {
     currentNote: PropTypes.number,
     startMeasure: PropTypes.number,
     numMeasures: PropTypes.number,
+    measures: PropTypes.number.isRequired,
     staveErrors: PropTypes.array
   }
 
@@ -269,11 +271,16 @@ export default class VexflowComponent extends React.Component {
     const formatter = new VF.Formatter();
 
     const firstStave = props.staves[0];
+    const lastMeasure = Math.min(
+      props.measures,
+      props.startMeasure + props.numMeasures
+    );
+    console.log(props.startMeasure, props.numMeasures, lastMeasure);
     const measureWidths =
       _.range(props.startMeasure,
-              props.startMeasure + props.numMeasures).map((i) => {
+              lastMeasure).map((i) => {
                 return props.staves.reduce((m, x) => {
-                  const measure = x.answer[i];
+                  const measure = x[this.props.render][i];
                   const measureLength = scoreLength(measure.notes);
                   return Math.max(m, measureLength);
                 }, 0);
@@ -288,9 +295,9 @@ export default class VexflowComponent extends React.Component {
       }
 
       const scoreSlice = _.slice(
-        stave.answer,
+        stave[this.props.render],
         props.startMeasure,
-        props.startMeasure + props.numMeasures
+        lastMeasure
       );
       scoreSlice.forEach((score, i) => {
         const index = i + props.startMeasure;

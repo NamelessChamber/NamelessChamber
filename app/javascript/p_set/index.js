@@ -1,4 +1,6 @@
 import ReactDOM from 'react-dom';
+import createBrowserHistory from 'history/createBrowserHistory';
+
 import PSetOptionsEditor from './components/p_set_options_editor';
 import PSetStudentComponent from './components/p_set_student';
 import PSetInstructorComponent from './components/p_set_instructor';
@@ -7,7 +9,7 @@ import { HashRouter, Route, Switch } from 'react-router-dom';
 function init() {
   document.addEventListener('DOMContentLoaded', () => {
     ReactDOM.render(
-      <HashRouter>
+      <HashRouter history={createBrowserHistory()}>
         <Switch>
           <Route path="/admin/p_sets/:p_set_id/options"
             component={PSetOptionsEditor} />

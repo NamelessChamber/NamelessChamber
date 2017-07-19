@@ -133,7 +133,7 @@ const pSetData = {
     }
   ],
   meter: {top: 2, bottom: 4},
-  measures: 10,
+  measures: 8,
 };
 
 export default class PSetStudentComponent extends React.Component {
@@ -372,6 +372,7 @@ export default class PSetStudentComponent extends React.Component {
                                   keySignature={this.state.keySignature}
                                   currentMeasure={this.state.currentMeasure}
                                   startMeasure={startMeasure}
+                                  measures={this.state.vexData.data.measures}
                                   staveErrors={this.state.staveErrors}
                                   currentNote={this.state.currentNote} />
               </div>

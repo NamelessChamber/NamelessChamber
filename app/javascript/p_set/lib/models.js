@@ -12,15 +12,26 @@ import _ from 'lodash';
  * }
  */
 
-export function newStave(clef) {
+export function newStave(clef, name, measures) {
   return {
     clef,
-    name: '',
+    name,
     tonic: '',
     scale: '',
-    solution: [],
+    solution: _.range(measures)
+      .map((i) => {
+        return {
+          endBar: (i === measures - 1) ?
+            'end' :
+            'single',
+          notes: []
+        };
+      }),
     answer: [],
-    audios: []
+    audios: {
+      rhythm: [],
+      melody: []
+    }
   };
 }
 

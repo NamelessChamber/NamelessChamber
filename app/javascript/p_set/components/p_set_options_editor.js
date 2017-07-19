@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import BoolOptionsEditor from './bool_options_editor';
@@ -17,12 +18,18 @@ export default class PSetOptionsEditor extends React.Component {
     super(props);
     this.onNameChange = this.onNameChange.bind(this);
     this.onMeterChange = this.onMeterChange.bind(this);
+    this.onMeasuresChange = this.onMeasuresChange.bind(this);
     this.onStavesChange = this.onStavesChange.bind(this);
     this.state = {};
   }
 
   static propTypes = {
     match: PropTypes.object.isRequired
+  }
+
+  pSetUrlBase(page) {
+    const { p_set_id } = this.props.match.params;
+    return `/admin/p_sets/${p_set_id}/${page}`;
   }
 
   componentDidMount() {
@@ -88,10 +95,40 @@ export default class PSetOptionsEditor extends React.Component {
     this.postUpdate(newState);
   }
 
+  onMeasuresChange(e) {
+    const newState = _.cloneDeep(this.state);
+    let { value } = e.target;
+    value = parseInt(value);
+    _.set(newState, 'data.measures', value);
+    _.update(newState, 'data.staves', (staves) => {
+      return _.map(staves, (stave) => {
+        return _.update(stave, 'solution', (solution) => {
+          if (solution.length > value) {
+            return _.slice(solution, 0, value);
+          } else {
+            const newMeasures = _.map(_.range(value - solution.length),
+                                      () => {
+                                        return {notes: []};
+                                      });
+            return _.chain(solution)
+                    .concat(newMeasures)
+                    .map((m, i) => {
+                      const endBar = (i === value - 1) ?
+                                     'end' : 'single';
+                      return _.assign(m, {endBar});
+                    })
+                    .value();
+          }
+        });
+      });
+    });
+    this.postUpdate(newState);
+  }
+
   render() {
     if (_.isUndefined(this.state.data) || _.isNull(this.state.data)) {
       return (
-        <form></form>
+        <div></div>
       );
     }
 
@@ -111,19 +148,21 @@ export default class PSetOptionsEditor extends React.Component {
 
     return (
       <div>
-        <div className="row">
-          <div className="small-8 columns">
-            <label htmlFor="name">
-              Name
-              <input name="name"
-                     type="text"
-                     value={this.state.name}
-                     onChange={this.onNameChange} />
-            </label>
-          </div>
-        </div>
         <div className="row large-up-3">
-          {boolEditors}
+          <fieldset className="column column-block">
+            <legend>Name</legend>
+            <input
+              name="name"
+              type="text"
+              value={this.state.name}
+              onChange={this.onNameChange} />
+            <legend>Measures</legend>
+            <input type="number"
+              name="measures"
+              className="meter-input"
+              value={this.state.data.measures}
+              onChange={this.onMeasuresChange} />
+          </fieldset>
           <fieldset className="column column-block">
             <legend>Meter</legend>
             <input type="number"
@@ -137,12 +176,20 @@ export default class PSetOptionsEditor extends React.Component {
               className="meter-input"
               value={this.state.data.meter.bottom}
               onChange={this.onMeterChange} />
+         </fieldset>
+          <fieldset className="column column-block">
+            <legend>Proceed</legend>
+            <Link className="button" to={this.pSetUrlBase('staves')}>
+              Proceed to Music Entry
+            </Link>
           </fieldset>
-          <div className="column column-block">
-            <StaveOptionsEditor
-              staves={this.state.data.staves}
-              updateStaves={this.onStavesChange} />
-          </div>
+
+          {boolEditors}
+
+          <StaveOptionsEditor
+            measures={this.state.data.measures}
+            staves={this.state.data.staves}
+            updateStaves={this.onStavesChange} />
         </div>
       </div>
     );
