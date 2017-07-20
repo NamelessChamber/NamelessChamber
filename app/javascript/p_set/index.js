@@ -13,7 +13,9 @@ function init() {
         <Switch>
           <Route path="/admin/p_sets/:p_set_id/options"
             component={PSetOptionsEditor} />
-          <Route path="/admin/p_sets/:p_set_id/staves"
+          <Route exact path="/admin/p_sets/:p_set_id/rhythm"
+            component={PSetInstructorComponent} />
+          <Route exact path="/admin/p_sets/:p_set_id/melody"
             component={PSetInstructorComponent} />
           <Route path="/p_sets/:p_set_id" component={PSetStudentComponent} />
           <Route path="/" component={PSetStudentComponent} />

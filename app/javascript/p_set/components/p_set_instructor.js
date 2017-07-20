@@ -47,10 +47,20 @@ export default class PSetInstructorComponent extends React.Component {
     });
   }
 
+  get rhythmic() {
+    return this.props.location.pathname.match(/\/rhythm\/?$/) !== null;
+  }
+
   saveAndToggle() {
     this.setState({
       rhythmic: !this.state.rhythmic
     });
+  }
+
+  postUpdate(newState) {
+    this.setState({vexData: newState});
+    const { p_set_id } = this.props.match.params;
+    window.localStorage.setItem(pSetUrl(p_set_id), JSON.stringify(newState));
   }
 
   changeStave(e) {
@@ -143,7 +153,7 @@ export default class PSetInstructorComponent extends React.Component {
     let renderMode = VexflowComponent.RenderMode.RHYTHMIC;
 
     let entryComponent = null;
-    if (this.state.rhythmic) {
+    if (this.rhythmic) {
       entryComponent = (
         <RhythmicEntryComponent options={vexData.options}
           referenceMeter={vexData.meter}
@@ -174,12 +184,12 @@ export default class PSetInstructorComponent extends React.Component {
     }
 
     const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
-    const mode = this.state.rhythmic ? 'rhythm' : 'melody';
+    const mode = this.rhythmic ? 'rhythm' : 'melody';
     return (
       <div className="small-12" ref={(el) => this.containerEl = el}>
         <div className="row">
           <div className="small-12 large-10 small-centered">
-            <h3>{this.state.vexData.name}: {this.state.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
+            <h3>{this.state.vexData.name}: {this.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
             <div className="row">
               <div className="small-10 columns">
                 <VexflowComponent staves={vexData.staves}
