@@ -6,141 +6,14 @@ import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 
-let trebleScore = 'do-mi-mi-mi-mi-fa-so-la-ti-do-fi-la-so-re-fa-fa-fa-fa-so-la-so-fa-mi-fa-re-do-re-ti-re-do';
-trebleScore = trebleScore.split('-').map((note) => {
-  return {type: 'note', solfege: note, octave: 0, dots: 0};
-});
-let trebleDurations = [[8, 8, 8, 8], ['8', 16, 4], [8, 8, 8, 8], [4, 4],
-                       [8, 8, 8, 8], [16, 16, 16, 16, 4], [8, 16, 16, 8, 16, 16],
-                       [4, 4]];
-let treble = trebleDurations.map((measure, i, arr) => {
-  return {
-    endBar: i === (arr.length - 1) ? 'end' : 'single',
-    notes: measure.map((duration) => {
-      const note = trebleScore.shift();
-      if (_.isNumber(duration)) {
-        note.duration = duration.toString();
-        note.dots = 0;
-      } else {
-        note.duration = duration;
-        note.dots = 1;
-      }
-      return note;
-    })
-  };
-});
-let bassScore = 'do-do-ti-la-so-so-so-do-so-so-do';
-bassScore = bassScore.split('-').map((note, i) => {
-  return {type: 'note', solfege: note, octave: 0 /* 2 */};
-});
-let bassDurations = [[2], [4, 4], [2], [2], [2], [2], [4, 4], [4, 4]];
-let bass = bassDurations.map((measure, i, arr) => {
-  return {
-    endBar: i === (arr.length - 1) ? 'end' : 'single',
-    notes: measure.map((duration) => {
-      const note = bassScore.shift();
-      if (_.isNumber(duration)) {
-        note.duration = duration.toString();
-        note.dots = 0;
-      } else {
-        note.duration = duration;
-        note.dots = 1;
-      }
-      return note;
-    })
-  };
-});
-[[0, 0], [1, 0], [6, 0], [7, 1]].forEach(([x, y]) => {
-  bass[x].notes[y].octave = 1;
-});
-treble[2].notes[2].octave = 1;
-treble[6].notes[5].octave = -1;
-
-const pSetData = {
-  options: {
-    rhythm: [
-      ['16', true], ['8', true], ['4', true], ['2', true], ['1', true]
-    ],
-    solfege: [
-      ['ti', true], ['la', true], ['so', true], ['fi', true], ['fa', true],
-      ['mi', true], ['re', true], ['do', true]
-    ],
-    keys: ['E', 'F', 'G'],
-    key: 'F'
-  },
-  staves: [
-    {
-      clef: 'treble',
-      name: 'Treble',
-      tonic: 'f4',
-      scale: 'major',
-      solution: treble,
-      answer: [
-        {endBar: 'single', notes: []},
-        {endBar: 'single', notes: []},
-        {endBar: 'single', notes: []},
-        {endBar: 'single', notes: []},
-        {endBar: 'single', notes: []},
-        {endBar: 'single', notes: []},
-        {endBar: 'single', notes: []},
-        {endBar: 'end', notes: []},
-      ],
-      audios: {
-        rhythm: [
-          {
-            name: 'Treble Rhythm',
-            url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Melodic+Rhythm.mp3'
-          },
-        ],
-        melody: [
-          {
-            name: 'Treble Line',
-            url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Melodic+Line.mp3'
-          },
-        ]
-      }
-    },
-    {
-      clef: 'bass',
-      name: 'Bass',
-      tonic: 'f2',
-      scale: 'major',
-      solution: bass,
-      answer: [
-        {endBar: 'single', notes: []},
-        {endBar: 'single', notes: []},
-        {endBar: 'single', notes: []},
-        {endBar: 'single', notes: []},
-        {endBar: 'single', notes: []},
-        {endBar: 'single', notes: []},
-        {endBar: 'single', notes: []},
-        {endBar: 'end', notes: []},
-      ],
-      audios: {
-        rhythm: [
-          {
-            name: 'Bass Rhythm',
-            url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Bass+Rhythm.mp3'
-          },
-        ],
-        melody: [
-          {
-            name: 'Bass Line',
-            url: 'https://s3.amazonaws.com/tuna-music-dication/Demo+Dictation+Bass+Line.mp3'
-          },
-        ]
-      }
-    }
-  ],
-  meter: {top: 2, bottom: 4},
-  measures: 8,
-};
+function pSetUrl(id) {
+  return `/admin/p_sets/${id}.json`;
+}
 
 export default class PSetStudentComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      vexData: pSetData,
       rhythmic: true,
       stave: 0,
       currentMeasure: 0,
@@ -148,7 +21,6 @@ export default class PSetStudentComponent extends React.Component {
       meter: {
         top: 0, bottom: 0
       },
-      keySignature: '',
       errors: []
     };
 
@@ -164,9 +36,19 @@ export default class PSetStudentComponent extends React.Component {
     this.showError = false;
   }
 
+  get rhythmic() {
+    return this.props.location.pathname.match(/\/rhythm\/?$/) !== null;
+  }
+
+  postUpdate(newState) {
+    this.setState({vexData: newState});
+    const { p_set_id } = this.props.match.params;
+    window.localStorage.setItem(pSetUrl(p_set_id), JSON.stringify(newState));
+  }
+
   handleScoreUpdate(answer, changeMeasure, changeNote) {
     const newVexData = _.cloneDeep(this.state.vexData);
-    const stave = newVexData.staves[this.state.stave];
+    const stave = newVexData.data.staves[this.state.stave];
     Object.assign(stave, {answer});
 
     if (this.errorModalEl) {
@@ -182,9 +64,9 @@ export default class PSetStudentComponent extends React.Component {
     }
 
     this.setState({
-      vexData: newVexData,
       staveErrors
     });
+    this.postUpdate(newVexData);
   }
 
   saveAndToggle() {
@@ -213,9 +95,9 @@ export default class PSetStudentComponent extends React.Component {
   handlePositionUpdate(pos) {
     this.setState(pos);
   }
-  
+
   handleMeterUpdate(meter) {
-    if (_.isEqual(meter, this.state.vexData.meter)) {
+    if (_.isEqual(meter, this.state.vexData.data.meter)) {
       alert('Correct!');
     } else {
       alert('Incorrect... please try again!');
@@ -224,7 +106,9 @@ export default class PSetStudentComponent extends React.Component {
   }
 
   handleKeySignatureUpdate(keySignature) {
-    if (keySignature === this.state.vexData.options.key) {
+    const stave = this.state.vexData.data.staves[0];
+    const key = stave.tonic.pitch;
+    if (keySignature === key) {
       alert('Correct!');
     } else {
       alert('Incorrect... please try again!');
@@ -272,7 +156,7 @@ export default class PSetStudentComponent extends React.Component {
     } else {
       // marking errors on stave
       errors = [];
-      const staveErrors = this.getErrors(this.state.rhythmic);
+      const staveErrors = this.getErrors(this.rhythmic);
       if (_.every(staveErrors, (es) => _.every(es, (e) => !e))) {
         this.showError = true;
         errors.push('No errors!');
@@ -282,6 +166,16 @@ export default class PSetStudentComponent extends React.Component {
   }
 
   componentDidMount() {
+    const { p_set_id } = this.props.match.params;
+    const url = pSetUrl(p_set_id);
+    let pSet = window.localStorage.getItem(url);
+    if (_.isUndefined(pSet)) {
+      alert('No PSet found by this ID!');
+    } else {
+      pSet = JSON.parse(pSet);
+      this.setState({vexData: pSet});
+    }
+
     if (!_.isUndefined(this.containerEl)) {
       $(this.containerEl).foundation();
     }
@@ -301,7 +195,11 @@ export default class PSetStudentComponent extends React.Component {
   }
 
   render() {
-    const { vexData } = this.state;
+    if (_.isUndefined(this.state.vexData)) {
+      return (<div></div>);
+    }
+
+    const vexData = this.state.vexData.data;
     const stave = vexData.staves[this.state.stave];
 
     const staveOptions = vexData.staves.map((s, i) => {
@@ -313,7 +211,7 @@ export default class PSetStudentComponent extends React.Component {
     let renderMode = VexflowComponent.RenderMode.RHYTHMIC;
 
     let entryComponent = null;
-    if (this.state.rhythmic) {
+    if (this.rhythmic) {
       entryComponent = (
         <RhythmicEntryComponent options={vexData.options}
           referenceMeter={vexData.meter}
@@ -324,6 +222,7 @@ export default class PSetStudentComponent extends React.Component {
           updateMeter={this.handleMeterUpdate}
           currentMeasure={this.state.currentMeasure}
           reportErrors={this.reportErrors}
+          instructor={false}
           save={this.saveAndToggle} />
       );
     } else {
@@ -339,12 +238,13 @@ export default class PSetStudentComponent extends React.Component {
           updateKeySignature={this.handleKeySignatureUpdate}
           reportErrors={this.reportErrors}
           save={this.saveAndToggle}
+          instructor={false}
           complete={this.saveAndRender} />
       );
     }
 
     const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
-    const mode = this.state.rhythmic ? 'rhythm' : 'melody';
+    const mode = this.rhythmic ? 'rhythm' : 'melody';
     const errors = this.state.errors.map((e, i) => {
       return (
         <li key={i}>{e}</li>
@@ -362,12 +262,13 @@ export default class PSetStudentComponent extends React.Component {
         </div>
         <div className="row">
           <div className="small-12 large-10 small-centered">
-            <h3>Demo Dication: {this.state.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
+            <h3>Demo Dication: {this.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
             <div className="row">
               <div className="small-10 columns">
                 <VexflowComponent staves={vexData.staves}
                                   editing={this.state.stave}
                                   meter={this.state.meter}
+                                  render="answer"
                                   mode={renderMode}
                                   keySignature={this.state.keySignature}
                                   currentMeasure={this.state.currentMeasure}

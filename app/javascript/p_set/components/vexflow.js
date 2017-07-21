@@ -364,6 +364,9 @@ export default class VexflowComponent extends React.Component {
     });
 
     this.connectors = _.chunk(firstStaves, 2).map(([s1, s2]) => {
+      if (_.isUndefined(s2)) {
+        return;
+      }
       const conn = new VF.StaveConnector(s1, s2);
       conn.setType(VF.StaveConnector.type.SINGLE_LEFT);
       conn.setContext(context);

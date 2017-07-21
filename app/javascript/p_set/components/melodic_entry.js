@@ -203,12 +203,15 @@ export default class MelodicEntryComponent extends React.Component {
       );
     });
 
-    const keyCorrect = this.props.keySignature === this.props.options.key;
-    const keyOptions = this.props.options.key.map((key, i) => {
+    const keyCorrect = this.props.keySignature === this.props.stave.tonic.pitch;
+    const keyOptions = this.props.options.key
+                           .filter(([_, v]) => v)
+                           .map(([key, _], i) => {
       return (
         <option key={i} value={key}>{key}</option>
       );
     });
+    keyOptions.unshift((<option key="null" value={undefined}>-</option>));
     const { instructor } = this.props;
     const showIf = (cond) => {
       return cond ?
@@ -274,7 +277,7 @@ export default class MelodicEntryComponent extends React.Component {
             <legend>Return to Rhythm</legend>
             <Link className="button" to="rhythm">Back</Link>
           </fieldset>
-          <fieldset>
+          <fieldset style={showIf(!instructor)}>
             <legend>Save</legend>
             <input type="submit"
               className="button"

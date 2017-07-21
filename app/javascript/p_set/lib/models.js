@@ -27,7 +27,15 @@ export function newStave(clef, name, measures) {
           notes: []
         };
       }),
-    answer: [],
+    answer: _.range(measures)
+      .map((i) => {
+        return {
+          endBar: (i === measures - 1) ?
+            'end' :
+            'single',
+          notes: []
+        };
+      }),
     audios: {
       rhythm: [],
       melody: []

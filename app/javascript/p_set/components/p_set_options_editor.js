@@ -85,7 +85,7 @@ export default class PSetOptionsEditor extends React.Component {
   onMeterChange(event) {
     const {name, value} = event.target;
     const newState = Object.assign({}, this.state);
-    newState.data.meter[name] = value;
+    newState.data.meter[name] = parseInt(value);
     this.postUpdate(newState);
   }
 
@@ -102,7 +102,7 @@ export default class PSetOptionsEditor extends React.Component {
     _.set(newState, 'data.measures', value);
     _.update(newState, 'data.staves', (staves) => {
       return _.map(staves, (stave) => {
-        return _.update(stave, 'solution', (solution) => {
+        _.update(stave, 'solution', (solution) => {
           if (solution.length > value) {
             return _.slice(solution, 0, value);
           } else {
@@ -119,6 +119,18 @@ export default class PSetOptionsEditor extends React.Component {
                     })
                     .value();
           }
+        });
+        return _.update(stave, 'answer', (answer) => {
+          const newMeasures = _.map(_.range(value),
+                                    () => {
+                                      return {notes: []};
+                                    });
+
+          return _.map(newMeasures, (m, i) => {
+                    const endBar = (i === value - 1) ?
+                                   'end' : 'single';
+                    return _.assign(m, {endBar});
+                  });
         });
       });
     });
