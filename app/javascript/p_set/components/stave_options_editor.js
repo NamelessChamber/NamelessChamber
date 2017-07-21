@@ -36,7 +36,7 @@ export default class StaveOptionsEditor extends React.Component {
     this.setState({[key]: e.target.value});
   }
 
-  updateStaves(action) {
+  updateStaves(action, e) {
     let staves = _.cloneDeep(this.props.staves);
 
     if (action === 'add') {
@@ -67,6 +67,12 @@ export default class StaveOptionsEditor extends React.Component {
         staves[next - 1] = old;
         this.setState({currentPSetStave: next});
       }
+    } else if (action === 'tonic') {
+      const stave = staves[this.state.currentPSetStave];
+      stave.tonic[e.target.name] = e.target.value;
+    } else if (action === 'scale') {
+      const stave = staves[this.state.currentPSetStave];
+      stave.scale = e.target.value;
     }
 
     this.props.updateStaves(staves);
@@ -77,9 +83,35 @@ export default class StaveOptionsEditor extends React.Component {
       <option key={k} value={k}>{v}</option>
     ));
 
-    const staves = _.map(this.props.staves, (s, i) => (
+    const staveOptions = _.map(this.props.staves, (s, i) => (
       <option key={i} value={i}>{STAVES[s.clef]}</option>
     ));
+
+    const emptyOption = (
+      <option value={undefined}>-</option>
+    );
+    let tonicOptions = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+    tonicOptions = _.chain(tonicOptions)
+                    .flatMap((x) => [x, `${x}#`, `${x}b`])
+                    .map((x) => (
+                      <option key={x} value={x}>{x}</option>
+                    ))
+                    .value();
+
+    const octaveOptions = _.range(8).map((o) => (
+      <option key={o} value={o}>{o}</option>
+    ));
+
+    const { staves } = this.props;
+    const stave = staves[this.state.currentPSetStave];
+    let tonic = {};
+    let scale = undefined;
+    if (!_.isUndefined(stave)) {
+      tonic = stave.tonic;
+      scale = stave.scale;
+    }
+    const staveDetailsStyle = _.isUndefined(stave) ?
+                              {display: 'none'} : {};
 
     return (
       <fieldset className="column column-block">
@@ -95,13 +127,46 @@ export default class StaveOptionsEditor extends React.Component {
           onClick={() => this.updateStaves('add')}>
           Add Stave
         </button>
-        <legend>Current Staves:</legend>
-        <select
-          multiple
-          value={[this.state.currentPSetStave]}
-          onChange={this.updateCurrentStave.bind(this, 'currentPSetStave')}>
-          {staves}
-        </select>
+        <div className="row" style={staveDetailsStyle}>
+          <div className="small-4 columns"><b>Stave</b></div>
+          <div className="small-4 columns"><b>Tonic</b></div>
+          <div className="small-4 columns"><b>Scale</b></div>
+        </div>
+        <div className="row" style={staveDetailsStyle}>
+          <div className="small-4 columns">
+            <select
+              multiple
+              value={[this.state.currentPSetStave]}
+              onChange={this.updateCurrentStave.bind(this, 'currentPSetStave')}>
+              {staveOptions}
+            </select>
+          </div>
+          <div className="small-4 columns">
+            <select
+              name="pitch"
+              value={tonic.pitch}
+              onChange={this.updateStaves.bind(this, 'tonic')}>
+              {emptyOption}
+              {tonicOptions}
+            </select>
+            <select
+              name="octave"
+              value={tonic.octave}
+              onChange={this.updateStaves.bind(this, 'tonic')}>
+              {emptyOption}
+              {octaveOptions}
+            </select>
+          </div>
+          <div className="small-4 columns">
+            <select
+              value={scale}
+              onChange={this.updateStaves.bind(this, 'scale')}>
+              <option value={undefined}>-</option>
+              <option value="major">Major</option>
+              <option value="minor">Minor</option>
+            </select>
+          </div>
+        </div>
         <div className="row">
           <div className="small-4 columns">
             <button

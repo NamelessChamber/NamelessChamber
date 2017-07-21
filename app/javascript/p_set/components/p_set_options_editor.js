@@ -179,7 +179,7 @@ export default class PSetOptionsEditor extends React.Component {
          </fieldset>
           <fieldset className="column column-block">
             <legend>Proceed</legend>
-            <Link className="button" to={this.pSetUrlBase('staves')}>
+            <Link className="button" to={this.pSetUrlBase('rhythm')}>
               Proceed to Music Entry
             </Link>
           </fieldset>

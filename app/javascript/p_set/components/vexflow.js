@@ -63,16 +63,20 @@ const noteRelEq = (n1, n2) => {
   return semisDiff % 12 == 0;
 };
 
+const tonicStr = (tonic) => {
+  return (`${tonic.pitch}${tonic.octave}`).toLowerCase();
+};
+
 const getNote = (tonic, octave, solfege) => {
   const interval = solfegeInterval[solfege];
-  const note = teoria.note(`${tonic}`);
+  const note = teoria.note(`${tonicStr(tonic)}`);
 
   note.coord[0] += octave;
   return note.interval(interval);
 };
 
 const getVFScaleName = (tonic, scale) => {
-  const note = teoria.note(tonic);
+  const note = teoria.note(tonicStr(tonic));
   let res = note.name() + note.accidental();
   res = res.toUpperCase();
 
@@ -101,8 +105,8 @@ const getAccidentalToRender = (scale, note) => {
   }
 };
 
-const staveComplete = (stave) => {
-  return _.every(stave[this.props.render], (measure) => {
+const staveComplete = (stave, render) => {
+  return _.every(stave[render], (measure) => {
     return _.every(measure.notes, (note) => {
       return _.endsWith(note.duration, 'r') ||
         (!_.isUndefined(note.solfege) && !_.isUndefined(note.octave));
@@ -174,7 +178,7 @@ export default class VexflowComponent extends React.Component {
     if (renderMode === RENDER_MODES.MELODIC &&
         !_.isUndefined(solfege) && !_.isUndefined(octave)) {
       const tNote = getNote(stave.tonic, octave, solfege);
-      const scale = teoria.scale(stave.tonic, stave.scale);
+      const scale = teoria.scale(tonicStr(stave.tonic), stave.scale);
       keys = [`${tNote.name()}/${tNote.octave()}`];
       accidental = getAccidentalToRender(scale, tNote);
     }
@@ -289,7 +293,7 @@ export default class VexflowComponent extends React.Component {
       let widthOffset = 5;
 
       let renderMode = props.mode;
-      if (e !== props.editing) {
+      if (e !== props.editing && staveComplete(stave, props.render)) {
         renderMode = RENDER_MODES.MELODIC;
       }
 
@@ -382,7 +386,7 @@ export default class VexflowComponent extends React.Component {
     const containerWidth = e.offsetWidth;
 
     this.renderer = new VF.Renderer(e, VF.Renderer.Backends.SVG);
-    const height = STAVE_HEIGHT * this.props.staves.length;
+    const height = STAVE_HEIGHT * this.props.staves.length + 50;
     this.renderer.resize(containerWidth, height);
 
     const context = this.renderer.getContext();

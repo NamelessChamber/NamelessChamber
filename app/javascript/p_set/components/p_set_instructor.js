@@ -42,9 +42,7 @@ export default class PSetInstructorComponent extends React.Component {
     const stave = newVexData.data.staves[this.state.stave];
     Object.assign(stave, {solution});
 
-    this.setState({
-      vexData: newVexData
-    });
+    this.postUpdate(newVexData);
   }
 
   get rhythmic() {

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
 
@@ -259,10 +260,9 @@ export default class RhythmicEntryComponent extends React.Component {
           </fieldset>
           <fieldset>
             <legend>Proceed to Melody</legend>
-            <input type="submit"
-              className="button"
-              value="Save and Continue"
-              onClick={this.props.save}/>
+            <Link to="melody" className="button">
+              Save and Continue
+            </Link>
           </fieldset>
           <fieldset>
             <legend>Keyboard Hints</legend>

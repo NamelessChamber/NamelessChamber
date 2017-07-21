@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
 
@@ -67,7 +68,7 @@ export default class MelodicEntryComponent extends React.Component {
     if (increment) {
       const measureLength = notes.length - 1;
       if (currentNote + 1 > measureLength) {
-        if (currentMeasure + 1 <= staveLength &&
+        if (currentMeasure + 1 < staveLength &&
             this.measures[currentMeasure + 1].notes.length > 0) {
           currentMeasure += 1;
           currentNote = 0;
@@ -271,10 +272,7 @@ export default class MelodicEntryComponent extends React.Component {
         <div className="row columns" style={showIf(keyCorrect || instructor)}>
           <fieldset>
             <legend>Return to Rhythm</legend>
-            <input type="submit"
-              className="button"
-              value="Back"
-              onClick={this.props.save}/>
+            <Link className="button" to="rhythm">Back</Link>
           </fieldset>
           <fieldset>
             <legend>Save</legend>

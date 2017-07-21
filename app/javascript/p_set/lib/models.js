@@ -16,8 +16,8 @@ export function newStave(clef, name, measures) {
   return {
     clef,
     name,
-    tonic: '',
-    scale: '',
+    tonic: {},
+    // scale: '',
     solution: _.range(measures)
       .map((i) => {
         return {
