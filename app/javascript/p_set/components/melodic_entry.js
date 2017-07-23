@@ -169,6 +169,13 @@ export default class MelodicEntryComponent extends React.Component {
     $(this.containerEl).foundation();
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.stave != this.props.stave) {
+      // obj identity
+      this.setState({octave: newProps.stave.tonic.octave});
+    }
+  }
+
   updateKey(e) {
     const keySignature = e.target.value;
     this.setState({keySignature});

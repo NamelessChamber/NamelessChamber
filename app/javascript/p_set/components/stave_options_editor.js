@@ -42,15 +42,18 @@ export default class StaveOptionsEditor extends React.Component {
     if (action === 'add') {
       const { currentStave } = this.state;
       let tonicPitch = undefined;
+      let scale = undefined;
       if (staves.length > 0) {
         tonicPitch = staves[0].tonic.pitch;
+        scale = staves[0].scale;
       }
       staves.push(
         newStave(
           currentStave,
           STAVES[currentStave],
           this.props.measures,
-          tonicPitch
+          tonicPitch,
+          scale
         )
       );
     } else if (action === 'remove') {
@@ -85,8 +88,9 @@ export default class StaveOptionsEditor extends React.Component {
         stave.tonic[e.target.name] = e.target.value;
       }
     } else if (action === 'scale') {
-      const stave = staves[this.state.currentPSetStave];
-      stave.scale = e.target.value;
+      staves.forEach((stave) => {
+        stave.scale = e.target.value;
+      })
     }
 
     this.props.updateStaves(staves);
