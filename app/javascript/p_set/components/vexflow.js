@@ -178,6 +178,7 @@ export default class VexflowComponent extends React.Component {
     if (renderMode === RENDER_MODES.MELODIC &&
         !_.isUndefined(solfege) && !_.isUndefined(octave)) {
       const tNote = getNote(stave.tonic, octave, solfege);
+      console.log(stave.tonic, stave.scale);
       const scale = teoria.scale(tonicStr(stave.tonic), stave.scale);
       keys = [`${tNote.name()}/${tNote.octave()}`];
       accidental = getAccidentalToRender(scale, tNote);
@@ -363,7 +364,13 @@ export default class VexflowComponent extends React.Component {
       yOffset += STAVE_HEIGHT;
     });
 
-    this.connectors = _.chunk(firstStaves, 2).map(([s1, s2]) => {
+    const stavePairs = firstStaves.reduce(([res, last], x) => {
+      if (!_.isUndefined(last)) {
+        res.push([last, x]);
+      }
+      return [res, x];
+    }, [[]])
+    this.connectors = stavePairs[0].map(([s1, s2]) => {
       if (_.isUndefined(s2)) {
         return;
       }
