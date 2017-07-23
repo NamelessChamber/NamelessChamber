@@ -11,7 +11,7 @@ function init() {
     ReactDOM.render(
       <BrowserRouter history={createBrowserHistory()}>
         <Switch>
-          <Route path="/admin/p_sets/:p_set_id/options"
+          <Route exact path="/admin/p_sets/:p_set_id/options"
             component={PSetOptionsEditor} />
           <Route exact path="/admin/p_sets/:p_set_id/rhythm"
             component={PSetInstructorComponent} />

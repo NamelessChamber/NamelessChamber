@@ -165,6 +165,7 @@ export default class PSetOptionsEditor extends React.Component {
           <fieldset className="column column-block">
             <legend>Name</legend>
             <input
+              autoComplete="off" autoCorrect="off" autoCapitalize="off"
               name="name"
               type="text"
               value={this.state.name}
