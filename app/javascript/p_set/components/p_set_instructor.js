@@ -185,35 +185,31 @@ export default class PSetInstructorComponent extends React.Component {
     const mode = this.rhythmic ? 'rhythm' : 'melody';
     return (
       <div className="small-12" ref={(el) => this.containerEl = el}>
+        <h3>{this.state.vexData.name}: {this.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
         <div className="row">
-          <div className="small-12 large-10 small-centered">
-            <h3>{this.state.vexData.name}: {this.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
-            <div className="row">
-              <div className="small-10 columns">
-                <VexflowComponent staves={vexData.staves}
-                                  render="solution"
-                                  editing={this.state.stave}
-                                  meter={this.state.vexData.data.meter}
-                                  mode={renderMode}
-                                  keySignature={this.state.keySignature}
-                                  currentMeasure={this.state.currentMeasure}
-                                  startMeasure={startMeasure}
-                                  measures={this.state.vexData.data.measures}
-                                  currentNote={this.state.currentNote} />
-              </div>
-              <div className="small-2 columns">
-                <div className="row columns">
-                  <fieldset>
-                    <legend>Stave</legend>
-                    <select value={this.state.stave}
-                            onChange={this.changeStave.bind(this)}>
-                      {staveOptions}
-                    </select>
-                  </fieldset>
-                </div>
-                {entryComponent}
-              </div>
+          <div className="small-10 columns">
+            <VexflowComponent staves={vexData.staves}
+                              render="solution"
+                              editing={this.state.stave}
+                              meter={this.state.vexData.data.meter}
+                              mode={renderMode}
+                              keySignature={this.state.keySignature}
+                              currentMeasure={this.state.currentMeasure}
+                              startMeasure={startMeasure}
+                              measures={this.state.vexData.data.measures}
+                              currentNote={this.state.currentNote} />
+          </div>
+          <div className="small-2 columns">
+            <div className="row columns">
+              <fieldset>
+                <legend>Stave</legend>
+                <select value={this.state.stave}
+                        onChange={this.changeStave.bind(this)}>
+                  {staveOptions}
+                </select>
+              </fieldset>
             </div>
+            {entryComponent}
           </div>
         </div>
       </div>
