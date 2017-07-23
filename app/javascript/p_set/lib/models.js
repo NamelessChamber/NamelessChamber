@@ -16,11 +16,11 @@ export function formatKey(key) {
   return key.replace(/([A-Z,a-z])b$/, '$1♭');
 }
 
-export function newStave(clef, name, measures) {
+export function newStave(clef, name, measures, tonicPitch) {
   return {
     clef,
     name,
-    tonic: {},
+    tonic: {pitch: tonicPitch},
     // scale: '',
     solution: _.range(measures)
       .map((i) => {
