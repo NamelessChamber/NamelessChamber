@@ -165,6 +165,7 @@ export default class RhythmicEntryComponent extends React.Component {
     if (_.isString(value)) {
       value = parseInt(value);
     }
+    value = Math.max(0, value);
 
     const meter = Object.assign({}, this.state.meter, {[pos]: value});
 

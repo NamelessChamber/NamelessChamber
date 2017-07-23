@@ -83,9 +83,10 @@ export default class PSetOptionsEditor extends React.Component {
   }
 
   onMeterChange(event) {
-    const {name, value} = event.target;
+    let {name, value} = event.target;
+    value = Math.max(0, parseInt(value));
     const newState = Object.assign({}, this.state);
-    newState.data.meter[name] = parseInt(value);
+    newState.data.meter[name] = value;
     this.postUpdate(newState);
   }
 
