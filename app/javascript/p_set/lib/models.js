@@ -76,11 +76,11 @@ export function newPSet() {
         ]),
         key: initBoolOpts([
           'C', 'D', 'E', 'F', 'G', 'A', 'B',
-          'Cb', 'Db', 'Eb', 'Fb', 'Gb', 'Ab', 'Bb',
-          'C#', 'D#', 'E#', 'F#', 'G#', 'A#', 'B#',
+          'Cb', 'Db', 'Eb', 'Gb', 'Ab', 'Bb',
+          'C#', 'F#', 'G#',
           'c', 'd', 'e', 'f', 'g', 'a', 'b',
-          'cb', 'db', 'eb', 'fb', 'gb', 'ab', 'bb',
-          'c#', 'd#', 'e#', 'f#', 'g#', 'a#', 'b#'
+          'cb', 'db', 'eb', 'gb', 'ab', 'bb',
+          'c#', 'e#', 'f#', 'g#'
         ]),
       },
       key: null,
