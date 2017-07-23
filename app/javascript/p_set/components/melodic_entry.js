@@ -5,6 +5,7 @@ import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
 
 import VexflowComponent from './vexflow';
+import { formatKey } from '../lib/models';
 
 const clefToOctave = (clef) => {
   if (clef === 'treble') {
@@ -208,7 +209,7 @@ export default class MelodicEntryComponent extends React.Component {
                            .filter(([_, v]) => v)
                            .map(([key, _], i) => {
       return (
-        <option key={i} value={key}>{key}</option>
+        <option key={i} value={key}>{formatKey(key)}</option>
       );
     });
     keyOptions.unshift((<option key="null" value={undefined}>-</option>));

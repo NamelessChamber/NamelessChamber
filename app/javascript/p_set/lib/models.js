@@ -12,6 +12,10 @@ import _ from 'lodash';
  * }
  */
 
+export function formatKey(key) {
+  return key.replace(/([A-Z,a-z])b$/, '$1♭');
+}
+
 export function newStave(clef, name, measures) {
   return {
     clef,
@@ -86,4 +90,3 @@ export function newPSet() {
     }
   };
 }
-

@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import BoolOptionsEditor from './bool_options_editor';
 import StaveOptionsEditor from './stave_options_editor';
-import { newPSet } from '../lib/models';
+import { newPSet, formatKey } from '../lib/models';
 
 import '../styles/p_set_options_editor.css';
 
@@ -146,7 +146,7 @@ export default class PSetOptionsEditor extends React.Component {
     }
 
     const boolSets =
-      ['Solfege', 'Rhythm', 'Harmony', 'Inversion', 'Key'];
+      ['Solfege', 'Rhythm', 'Harmony', 'Inversion'];
     let boolEditors = boolSets.map((name, i) => {
       const prop = name.toLowerCase();
       const options = this.state.data.options[prop];
@@ -199,6 +199,12 @@ export default class PSetOptionsEditor extends React.Component {
           </fieldset>
 
           {boolEditors}
+
+          <BoolOptionsEditor
+            options={this.state.data.options.key}
+            name="Key"
+            onChange={this.onOptionsChange.bind(this, 'key')}
+            formatLabel={formatKey} />
 
           <StaveOptionsEditor
             measures={this.state.data.measures}

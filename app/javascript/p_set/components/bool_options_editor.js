@@ -9,7 +9,12 @@ export default class BoolOptionsEditor extends React.Component {
   static propTypes = {
     options: PropTypes.array.isRequired,
     name: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    formatLabel: PropTypes.func
+  }
+
+  static defaultProps = {
+    formatLabel: _.identity
   }
 
   handleChange(event) {
@@ -37,7 +42,7 @@ export default class BoolOptionsEditor extends React.Component {
                  checked={value}
                  onChange={this.handleChange.bind(this)} />
           <label htmlFor={id}>
-            {option}
+            {this.props.formatLabel(option)}
           </label>
         </div>
       );
