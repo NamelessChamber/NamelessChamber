@@ -163,6 +163,10 @@ export default class VexflowComponent extends React.Component {
       return ['b/4'];
     } else if (clef === 'bass') {
       return ['d/3'];
+    } else if (clef === 'alto') {
+      return ['c/4'];
+    } else if (clef === 'tenor') {
+      return ['a/3'];
     } else {
       return ['c/4'];
     }
@@ -178,7 +182,6 @@ export default class VexflowComponent extends React.Component {
     if (renderMode === RENDER_MODES.MELODIC &&
         !_.isUndefined(solfege) && !_.isUndefined(octave)) {
       const tNote = getNote(stave.tonic, octave, solfege);
-      console.log(stave.tonic, stave.scale);
       const scale = teoria.scale(tonicStr(stave.tonic), stave.scale);
       keys = [`${tNote.name()}/${tNote.octave()}`];
       accidental = getAccidentalToRender(scale, tNote);

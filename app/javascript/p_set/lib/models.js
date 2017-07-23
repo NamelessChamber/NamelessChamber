@@ -57,8 +57,7 @@ export function newPSet() {
     data: {
       options: {
         rhythm: initBoolOpts([
-          '1', '2', '4', '8', '16', '32',
-          '1r', '2r', '4r', '8r', '16r', '32r'
+          '1', '2', '4', '8', '16', '32'
         ]),
         solfege: initBoolOpts([
           'do', 're', 'mi', 'fa', 'so', 'la', 'ti',
