@@ -255,7 +255,7 @@ export default class VexflowComponent extends React.Component {
       .joinVoices([voice])
       .format([voice], width);
 
-    return [voice, beams];
+    return [voice, beams, notes];
   }
 
   redrawVexflow(props) {
@@ -306,10 +306,15 @@ export default class VexflowComponent extends React.Component {
         props.startMeasure,
         lastMeasure
       );
+
+      let allVFNotes = [];
+      let allNotes = [];
+
       scoreSlice.forEach((score, i) => {
         const index = i + props.startMeasure;
 
         const { notes } = score;
+        allNotes = allNotes.concat(notes);
         let width = measureWidths[i] * 45;
         if (width === 0) {
           width = 50;
@@ -350,10 +355,11 @@ export default class VexflowComponent extends React.Component {
           }
         }
 
-        const [voice, beams] =
+        const [voice, beams, vfNotes] =
           this.scoreToVoice(props, index, notes, width, highlight, editing, stave, renderMode);
         voice.draw(context, staveObj);
         beams.forEach((b) => b.setContext(context).draw());
+        allVFNotes = allVFNotes.concat(vfNotes);
 
         staveObj.draw();
 
@@ -364,6 +370,18 @@ export default class VexflowComponent extends React.Component {
           firstStaves.push(staveObj);
         }
       });
+      _.zip(allNotes, _.tail(allNotes), allVFNotes, _.tail(allVFNotes))
+        .filter(([n1, n2, , ]) => !_.isUndefined(n2) && n1.tied)
+        .forEach(([ ,  , n1, n2]) => {
+          const tie = new VF.StaveTie({
+            first_note: n1,
+            last_note: n2,
+            first_indices: [0],
+            last_indices: [0]
+          });
+          tie.setContext(context);
+          tie.draw();
+        });
       yOffset += STAVE_HEIGHT;
     });
 
