@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import Fraction from 'fraction.js';
 
 /*
  * {
@@ -11,6 +12,33 @@ import _ from 'lodash';
  *   }
  * }
  */
+
+function scanl(f, initial, list) {
+  return list.reduce(([out, acc], x, i) => {
+    const res = f(acc, x, i);
+    out.push(res);
+    return [out, res];
+  }, [[], initial])[0];
+}
+
+export function countBeats(measure) {
+  return measure.notes.reduce((total, note, i) => {
+    let { duration, dots } = note;
+    duration = duration.replace('r', '');
+    duration = new Fraction(1, parseInt(duration));
+    dots = scanl((m) => m.div(2), duration, _.range(dots));
+    duration = dots.reduce((m, x) => m.add(x), duration);
+    return total.add(duration);
+  }, new Fraction(0));
+}
+
+export function compareMeter(meter, measure) {
+  const { top, bottom } = meter;
+  const expectedBeats = new Fraction(top, bottom);
+  const actualBeats = countBeats(measure);
+
+  return expectedBeats.compare(actualBeats);
+}
 
 export function formatKey(key) {
   return key.replace(/([A-Z,a-z])b$/, '$1♭');

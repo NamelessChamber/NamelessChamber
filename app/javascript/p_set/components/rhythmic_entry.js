@@ -41,6 +41,10 @@ export default class RhythmicEntryComponent extends React.Component {
     return this.props.stave[key];
   }
 
+  get measure() {
+    return this.measures[this.props.currentMeasure];
+  }
+
   setCurrentMeasure(increment, e) {
     e.preventDefault();
     let { currentMeasure } = this.props;
@@ -69,7 +73,8 @@ export default class RhythmicEntryComponent extends React.Component {
     const newNote = {
       type: 'note',
       duration: duration,
-      dots: 0
+      dots: 0,
+      tied: false
     };
 
     const { currentMeasure } = this.props;
@@ -79,13 +84,6 @@ export default class RhythmicEntryComponent extends React.Component {
 
     this.props.updateStave(measures, currentMeasure, measure.length - 1);
     this.setState({dotted: false});
-  }
-
-  toggleDotted(event) {
-    const { checked } = event.target;
-    this.setState({
-      dotted: checked
-    });
   }
 
   removeNote(event) {
@@ -125,6 +123,20 @@ export default class RhythmicEntryComponent extends React.Component {
     this.props.updateStave(measures, currentMeasure, currentNote);
   }
 
+  toggleTie() {
+    const measures = _.cloneDeep(this.measures);
+    const note = this.getCurrentNote(measures);
+
+    if (!_.isUndefined(note)) {
+      note.tied = !note.tied;
+    }
+
+    const { currentMeasure } = this.props;
+    const currentNote = measures[currentMeasure].notes.length - 1;
+
+    this.props.updateStave(measures, currentMeasure, currentNote);
+  }
+
   handleKeyDown(e) {
     switch (e.key) {
       case 'Enter':
@@ -142,6 +154,9 @@ export default class RhythmicEntryComponent extends React.Component {
         break;
       case 'D':
         this.changeDot(false);
+        break;
+      case 't':
+        this.toggleTie();
         break;
       case 'ArrowRight':
         this.setCurrentMeasure(true, e);
@@ -215,6 +230,9 @@ export default class RhythmicEntryComponent extends React.Component {
       );
     });
 
+    const note = this.getCurrentNote(this.measures);
+    const tied = _.isUndefined(note) ? false : note.tied;
+
     return (
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text-rhythmic" data-reveal>
@@ -248,7 +266,7 @@ export default class RhythmicEntryComponent extends React.Component {
         </div>
         <div className="row columns" style={showIf(meterCorrect || instructor)}>
           <fieldset>
-            <legend>Notes</legend>
+            <legend>Notes {tied ? '(Tied)' : ''}</legend>
             <select multiple
                     ref={(input) => this.noteInput = input}
                     onBlur={(e) => e.target.focus()}

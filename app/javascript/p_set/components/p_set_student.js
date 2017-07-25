@@ -254,45 +254,41 @@ export default class PSetStudentComponent extends React.Component {
     return (
       <div className="small-12" ref={(el) => this.containerEl = el}>
         <div className="reveal"
-             data-reveal
-             id="error-modal"
-             ref={(el) => this.errorModalEl = el}>
+          data-reveal
+          id="error-modal"
+          ref={(el) => this.errorModalEl = el}>
           <h4>Errors</h4>
           <ul>{errors}</ul>
         </div>
+        <h3>Demo Dication: {this.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
         <div className="row">
-          <div className="small-12 large-10 small-centered">
-            <h3>Demo Dication: {this.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
-            <div className="row">
-              <div className="small-10 columns">
-                <VexflowComponent staves={vexData.staves}
-                                  editing={this.state.stave}
-                                  meter={this.state.meter}
-                                  render="answer"
-                                  mode={renderMode}
-                                  keySignature={this.state.keySignature}
-                                  currentMeasure={this.state.currentMeasure}
-                                  startMeasure={startMeasure}
-                                  measures={this.state.vexData.data.measures}
-                                  staveErrors={this.state.staveErrors}
-                                  currentNote={this.state.currentNote} />
-              </div>
-              <div className="small-2 columns">
-                <div className="row columns">
-                  <fieldset>
-                    <legend>Stave</legend>
-                    <select value={this.state.stave}
-                            onChange={this.changeStave.bind(this)}>
-                      {staveOptions}
-                    </select>
-                  </fieldset>
-                </div>
-                {entryComponent}
-              </div>
+          <div className="small-10 columns">
+            <VexflowComponent staves={vexData.staves}
+              editing={this.state.stave}
+              meter={this.state.meter}
+              render="answer"
+              mode={renderMode}
+              keySignature={this.state.keySignature}
+              currentMeasure={this.state.currentMeasure}
+              startMeasure={startMeasure}
+              measures={this.state.vexData.data.measures}
+              staveErrors={this.state.staveErrors}
+              currentNote={this.state.currentNote} />
+          </div>
+          <div className="small-2 columns">
+            <div className="row columns">
+              <fieldset>
+                <legend>Stave</legend>
+                <select value={this.state.stave}
+                  onChange={this.changeStave.bind(this)}>
+                  {staveOptions}
+                </select>
+              </fieldset>
             </div>
+            {entryComponent}
           </div>
         </div>
       </div>
-    );
+      );
   }
 }

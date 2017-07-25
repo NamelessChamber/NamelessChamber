@@ -5,7 +5,7 @@ import _ from 'lodash';
 import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
-import { newPSet } from '../lib/models';
+import { newPSet, validateMeter } from '../lib/models';
 
 
 function pSetUrl(id) {
