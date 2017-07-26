@@ -74,6 +74,8 @@ export function validateOptions(data) {
 }
 
 export function newStave(clef, name, measures, tonicPitch, scale) {
+  tonicPitch = tonicPitch || 'C';
+  scale = scale || 'major';
   return {
     clef,
     name,

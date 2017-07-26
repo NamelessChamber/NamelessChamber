@@ -144,7 +144,7 @@ export default class PSetOptionsEditor extends React.Component {
     if (_.isUndefined(errors)) {
       this.props.history.push('rhythm');
     } else {
-      console.log(errors);
+      alert(errors.join("\n"));
     }
   }
 
