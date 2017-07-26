@@ -6,6 +6,7 @@ import _ from 'lodash';
 import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
+import HarmonicEntryComponent from './harmonic_entry';
 import { newPSet, validateMeter, validateOptions } from '../lib/models';
 
 function pSetUrl(id) {
@@ -200,6 +201,19 @@ export default class PSetInstructorComponent extends React.Component {
           save={this.saveAndToggle}
           instructor={true}
           complete={this.saveAndRender} />
+      );
+    } else {
+      renderMode = VexflowComponent.RenderMode.MELODIC;
+      entryComponent = (
+        <HarmonicEntryComponent options={vexData.options}
+          stave={vexData.staves[this.state.stave]}
+          staveId={this.state.stave}
+          updateStave={this.handleScoreUpdate}
+          currentMeasure={this.state.currentMeasure}
+          currentNote={this.state.currentNote}
+          updatePosition={this.handlePositionUpdate}
+          save={this.saveAndToggle}
+          instructor={true} />
       );
     }
 

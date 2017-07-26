@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       get 'options', to: 'home#index'
       get 'rhythm', to: 'home#index'
       get 'melody', to: 'home#index'
+      get 'harmony', to: 'home#index'
       get 'data', to: 'p_sets#show_data'
       put 'data', to: 'p_sets#update_data'
     end
