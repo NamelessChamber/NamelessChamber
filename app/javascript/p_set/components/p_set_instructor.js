@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
-import { newPSet, validateMeter } from '../lib/models';
+import { newPSet, validateMeter, validateOptions } from '../lib/models';
 
 function pSetUrl(id) {
   return `/admin/p_sets/${id}.json`;
@@ -108,7 +109,7 @@ export default class PSetInstructorComponent extends React.Component {
     const { p_set_id } = this.props.match.params;
     const url = pSetUrl(p_set_id);
     let pSet = window.localStorage.getItem(url);
-    if (_.isUndefined(pSet)) {
+    if (_.isUndefined(pSet) || _.isNull(pSet)) {
       alert('No PSet found by this ID!');
     } else {
       pSet = JSON.parse(pSet);
@@ -138,6 +139,18 @@ export default class PSetInstructorComponent extends React.Component {
       return (<div></div>);
     }
     const vexData = this.state.vexData.data;
+
+    let optionErrors = validateOptions(vexData);
+    if (_.isArray(optionErrors)) {
+      optionErrors = optionErrors.map((e) => (<li>{e}</li>));
+
+      return (
+        <div className="small-12 columns">
+          <ul>{optionErrors}</ul>
+          <Link to="options">Return to Options</Link>
+        </div>
+      );
+    }
 
     const stave = vexData.staves[this.state.stave];
 
@@ -183,7 +196,7 @@ export default class PSetInstructorComponent extends React.Component {
     const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
     const mode = this.rhythmic ? 'rhythm' : 'melody';
     return (
-      <div className="small-12" ref={(el) => this.containerEl = el}>
+      <div className="small-12 columns" ref={(el) => this.containerEl = el}>
         <h3>{this.state.vexData.name}: {this.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
         <div className="row">
           <div className="small-10 columns">
