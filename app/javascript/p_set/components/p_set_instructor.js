@@ -17,7 +17,6 @@ export default class PSetInstructorComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rhythmic: true,
       stave: 0,
       currentMeasure: 0,
       currentNote: 0,
@@ -59,9 +58,6 @@ export default class PSetInstructorComponent extends React.Component {
   }
 
   saveAndToggle() {
-    this.setState({
-      rhythmic: !this.state.rhythmic
-    });
   }
 
   postUpdate(newState) {
@@ -73,15 +69,16 @@ export default class PSetInstructorComponent extends React.Component {
   changeStave(e) {
     e.preventDefault();
     const stave = parseInt(e.target.value);
-    let {rhythmic} = this.state;
     const newStaveSolution = this.state.vexData.data.staves[stave].solution;
-    rhythmic = _.every(newStaveSolution, (s) => _.isEmpty(s.notes));
+    const rhythmic = _.every(newStaveSolution, (s) => _.isEmpty(s.notes));
     this.setState({
       stave,
-      rhythmic,
       currentNote: 0,
       currentMeasure: 0
     });
+    if (rhythmic) {
+      this.props.history.push('rhythm')
+    }
   }
 
   handlePositionUpdate(pos) {
