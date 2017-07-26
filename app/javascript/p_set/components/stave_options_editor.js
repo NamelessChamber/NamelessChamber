@@ -85,7 +85,7 @@ export default class StaveOptionsEditor extends React.Component {
           Object.assign(s.tonic, {pitch: e.target.value}
           ));
       } else {
-        stave.tonic[e.target.name] = e.target.value;
+        stave.tonic[e.target.name] = parseInt(e.target.value);
       }
     } else if (action === 'scale') {
       staves.forEach((stave) => {

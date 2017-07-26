@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
 
-import VexflowComponent from './vexflow';
-
 require('../styles/rhythmic_entry.css');
 
 export default class RhythmicEntryComponent extends React.Component {

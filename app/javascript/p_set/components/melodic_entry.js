@@ -39,10 +39,13 @@ export default class MelodicEntryComponent extends React.Component {
   static propTypes = {
     options: PropTypes.object.isRequired,
     stave: PropTypes.object.isRequired,
+    staveId: PropTypes.number.isRequired,
     keySignature: PropTypes.string,
     updateStave: PropTypes.func.isRequired,
     updatePosition: PropTypes.func.isRequired,
     updateKeySignature: PropTypes.func.isRequired,
+    currentMeasure: PropTypes.number.isRequired,
+    currentNote: PropTypes.number.isRequired,
     save: PropTypes.func.isRequired,
     reportErrors: PropTypes.func,
     complete: PropTypes.func.isRequired,
@@ -108,9 +111,7 @@ export default class MelodicEntryComponent extends React.Component {
     const note = this.currentNote(measures);
     note.octave = octave;
 
-    const { currentMeasure, currentNote } = this.props;
-
-    this.props.updateStave(measures, currentMeasure, currentNote);
+    this.props.updateStave(measures);
 
     this.setState({
       octave
@@ -127,12 +128,14 @@ export default class MelodicEntryComponent extends React.Component {
     const solfege = e.target.value;
     const measures = _.cloneDeep(this.measures);
     const note = this.currentNote(measures);
+    let { octave } = this.state;
+    if (_.isString(octave)) {
+      octave = parseInt(octave);
+    }
     note.solfege = solfege;
-    note.octave = this.state.octave;
+    note.octave = octave;
 
-    const { currentMeasure, currentNote } = this.props;
-
-    this.props.updateStave(measures, currentMeasure, currentNote);
+    this.props.updateStave(measures);
   }
 
   handleKeyDown(e) {
@@ -153,9 +156,6 @@ export default class MelodicEntryComponent extends React.Component {
       case 'ArrowDown':
         e.preventDefault();
         break;
-      case 'Enter':
-        this.noteChange(e);
-        break;
     }
   }
 
@@ -170,8 +170,7 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.stave != this.props.stave) {
-      // obj identity
+    if (newProps.staveId != this.props.staveId) {
       this.setState({octave: newProps.stave.tonic.octave});
     }
   }
@@ -197,10 +196,7 @@ export default class MelodicEntryComponent extends React.Component {
     const noteDisplay = `Note (${currentNote + 1}/${measureNotes.length})`;
     const solfege = this.props.options.solfege.filter(([_, v]) => v).map(([v, _]) => v);
     let selectedSolfege = _.isUndefined(note) ?
-      undefined : note.solfege;
-    if (_.isUndefined(selectedSolfege)) {
-      selectedSolfege = '';
-    }
+      '' : note.solfege;
     let octaveStr = this.state.octave.toString();
     if (this.state.octave > 0) {
       octaveStr = '+' + octaveStr;

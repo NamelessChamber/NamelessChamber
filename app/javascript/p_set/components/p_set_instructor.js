@@ -37,7 +37,7 @@ export default class PSetInstructorComponent extends React.Component {
     this.showError = false;
   }
 
-  handleScoreUpdate(solution, changeMeasure, changeNote) {
+  handleScoreUpdate(solution) {
     const newVexData = _.cloneDeep(this.state.vexData);
     const stave = newVexData.data.staves[this.state.stave];
     Object.assign(stave, {solution});
@@ -47,6 +47,14 @@ export default class PSetInstructorComponent extends React.Component {
 
   get rhythmic() {
     return this.props.location.pathname.match(/\/rhythm\/?$/) !== null;
+  }
+
+  get melodic() {
+    return this.props.location.pathname.match(/\/melody\/?$/) !== null;
+  }
+
+  get harmonic() {
+    return this.props.location.pathname.match(/\/harmony\/?$/) !== null;
   }
 
   saveAndToggle() {
@@ -168,6 +176,7 @@ export default class PSetInstructorComponent extends React.Component {
         <RhythmicEntryComponent options={vexData.options}
           referenceMeter={vexData.meter}
           stave={vexData.staves[this.state.stave]}
+          staveId={this.state.stave}
           meter={this.state.meter}
           updateStave={this.handleScoreUpdate}
           updatePosition={this.handlePositionUpdate}
@@ -176,12 +185,13 @@ export default class PSetInstructorComponent extends React.Component {
           instructor={true}
           save={this.saveAndToggle} />
       );
-    } else {
+    } else if (this.melodic) {
       renderMode = VexflowComponent.RenderMode.MELODIC;
       entryComponent = (
         <MelodicEntryComponent options={vexData.options}
           keySignature={this.state.keySignature}
           stave={vexData.staves[this.state.stave]}
+          staveId={this.state.stave}
           updateStave={this.handleScoreUpdate}
           currentMeasure={this.state.currentMeasure}
           currentNote={this.state.currentNote}
