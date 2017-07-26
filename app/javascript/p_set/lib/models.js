@@ -44,11 +44,40 @@ export function formatKey(key) {
   return key.replace(/([A-Z,a-z])b$/, '$1♭');
 }
 
+export function validateOptions(data) {
+  let errors = [];
+
+  if (data.staves.length === 0) {
+    errors.push('No staves added');
+  } else {
+    errors = errors.concat(_.flatMap(data.staves, (s) => {
+      function addErrors([path, name]) {
+          if (_.isUndefined(_.get(s, path))) {
+            return [`Stave ${s.name} is missing ${name}`];
+          }
+          return [];
+      }
+      const opts = [['tonic.pitch', 'tonic pitch'],
+                    ['tonic.octave', 'tonic octave'],
+                    ['scale', 'scale']];
+      return _.flatMap(opts, addErrors);
+    }));
+  }
+
+  if (data.meter.top === 0 || data.meter.bottom === 0) {
+    errors.push('Invalid meter, neither part can be 0');
+  }
+
+  if (errors.length > 0) {
+    return errors;
+  }
+}
+
 export function newStave(clef, name, measures, tonicPitch, scale) {
   return {
     clef,
     name,
-    tonic: {pitch: tonicPitch},
+    tonic: {pitch: tonicPitch, octave: 0},
     scale,
     solution: _.range(measures)
       .map((i) => {
@@ -75,6 +104,34 @@ export function newStave(clef, name, measures, tonicPitch, scale) {
   };
 }
 
+export const DEFAULTS = {
+  rhythm: [
+    '1', '2', '4', '8', '16', '32'
+  ],
+  solfege: [
+    'do', 're', 'mi', 'fa', 'so', 'la', 'ti',
+    'di', 'ri', 'fi', 'si', 'li', 'ra',
+    'meh', 'seh', 'leh', 'teh'
+  ],
+  harmony: [
+    'I', 'ii', 'iii', 'IV', 'V', 'vi', 'viio',
+    'vio', 'i', 'II', 'iio', 'III', 'III+', 'iv',
+    'v', 'VI', 'VII', 'VII+', 'N6', 'Gr+6', 'Fr+6',
+    'It+6', 'V/V', 'V/ii', 'V/iii', 'V/vi', 'V/IV'
+  ],
+  inversion: [
+    '6', '6/4', '4/3', '4/2', '6/3', '6/5', '7'
+  ],
+  key: [
+    'C', 'D', 'E', 'F', 'G', 'A', 'B',
+    'Cb', 'Db', 'Eb', 'Gb', 'Ab', 'Bb',
+    'C#', 'F#', 'G#',
+    'c', 'd', 'e', 'f', 'g', 'a', 'b',
+    'cb', 'db', 'eb', 'gb', 'ab', 'bb',
+    'c#', 'e#', 'f#', 'g#'
+  ]
+};
+
 export function newPSet() {
   function initBoolOpts(opts) {
     return opts.map(x => [x, false]);
@@ -84,33 +141,12 @@ export function newPSet() {
     name: '',
     data: {
       options: {
-        rhythm: initBoolOpts([
-          '1', '2', '4', '8', '16', '32'
-        ]),
-        solfege: initBoolOpts([
-          'do', 're', 'mi', 'fa', 'so', 'la', 'ti',
-          'di', 'ri', 'fi', 'si', 'li', 'ra',
-          'meh', 'seh', 'leh', 'teh'
-        ]),
-        harmony: initBoolOpts([
-          'I', 'ii', 'iii', 'IV', 'V', 'vi', 'viio',
-          'vio', 'i', 'II', 'iio', 'III', 'III+', 'iv',
-          'v', 'VI', 'VII', 'VII+', 'N6', 'Gr+6', 'Fr+6',
-          'It+6', 'V/V', 'V/ii', 'V/iii', 'V/vi', 'V/IV'
-        ]),
-        inversion: initBoolOpts([
-          '6', '6/4', '4/3', '4/2', '6/3', '6/5', '7'
-        ]),
-        key: initBoolOpts([
-          'C', 'D', 'E', 'F', 'G', 'A', 'B',
-          'Cb', 'Db', 'Eb', 'Gb', 'Ab', 'Bb',
-          'C#', 'F#', 'G#',
-          'c', 'd', 'e', 'f', 'g', 'a', 'b',
-          'cb', 'db', 'eb', 'gb', 'ab', 'bb',
-          'c#', 'e#', 'f#', 'g#'
-        ]),
+        rhythm: initBoolOpts(DEFAULTS.rhythm),
+        solfege: initBoolOpts(DEFAULTS.solfege),
+        harmony: initBoolOpts(DEFAULTS.harmony),
+        inversion: initBoolOpts(DEFAULTS.inversion),
+        key: initBoolOpts(DEFAULTS.key),
       },
-      key: null,
       staves: [],
       meter: {top: 0, bottom: 0},
       measures: 0

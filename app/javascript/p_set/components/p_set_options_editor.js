@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import BoolOptionsEditor from './bool_options_editor';
 import StaveOptionsEditor from './stave_options_editor';
-import { newPSet, formatKey } from '../lib/models';
+import { newPSet, formatKey, validateOptions } from '../lib/models';
 
 import '../styles/p_set_options_editor.css';
 
@@ -138,6 +138,16 @@ export default class PSetOptionsEditor extends React.Component {
     this.postUpdate(newState);
   }
 
+  toRhythmicEntry(e) {
+    e.preventDefault();
+    const errors = validateOptions(this.state.data);
+    if (_.isUndefined(errors)) {
+      this.props.history.push('rhythm');
+    } else {
+      console.log(errors);
+    }
+  }
+
   render() {
     if (_.isUndefined(this.state.data) || _.isNull(this.state.data)) {
       return (
@@ -193,9 +203,10 @@ export default class PSetOptionsEditor extends React.Component {
          </fieldset>
           <fieldset className="column column-block">
             <legend>Proceed</legend>
-            <Link className="button" to={this.pSetUrlBase('rhythm')}>
+            <button className="button"
+              onClick={this.toRhythmicEntry.bind(this)}>
               Proceed to Music Entry
-            </Link>
+            </button>
           </fieldset>
 
           {boolEditors}

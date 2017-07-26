@@ -11,6 +11,9 @@ class Admin::CoursesController < ApplicationController
     end
   end
 
+  def new
+  end
+
   def show
     @course = Course.where(id: params[:id]).includes(:classrooms).first
 

@@ -7,7 +7,6 @@ import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import { newPSet, validateMeter } from '../lib/models';
 
-
 function pSetUrl(id) {
   return `/admin/p_sets/${id}.json`;
 }
