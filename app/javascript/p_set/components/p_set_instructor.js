@@ -68,9 +68,12 @@ export default class PSetInstructorComponent extends React.Component {
 
   changeStave(e) {
     e.preventDefault();
-    const stave = parseInt(e.target.value);
+    let stave = this.harmonic ?
+      this.state.vexData.data.staves.length - 1 :
+      parseInt(e.target.value);
     const newStaveSolution = this.state.vexData.data.staves[stave].solution;
     const rhythmic = _.every(newStaveSolution, (s) => _.isEmpty(s.notes));
+
     this.setState({
       stave,
       currentNote: 0,
@@ -119,7 +122,8 @@ export default class PSetInstructorComponent extends React.Component {
       alert('No PSet found by this ID!');
     } else {
       pSet = JSON.parse(pSet);
-      this.setState({vexData: pSet});
+      const stave = this.harmonic ? pSet.data.staves.length - 1 : 0;
+      this.setState({vexData: pSet, stave});
     }
 
     if (!_.isUndefined(this.containerEl)) {
@@ -237,6 +241,7 @@ export default class PSetInstructorComponent extends React.Component {
               <fieldset>
                 <legend>Stave</legend>
                 <select value={this.state.stave}
+                        disabled={this.harmonic}
                         onChange={this.changeStave.bind(this)}>
                   {staveOptions}
                 </select>

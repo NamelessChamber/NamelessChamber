@@ -5,6 +5,7 @@ import _ from 'lodash';
 import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
+import HarmonicEntryComponent from './harmonic_entry';
 
 function pSetUrl(id) {
   return `/admin/p_sets/${id}.json`;
@@ -38,6 +39,14 @@ export default class PSetStudentComponent extends React.Component {
 
   get rhythmic() {
     return this.props.location.pathname.match(/\/rhythm\/?$/) !== null;
+  }
+
+  get melodic() {
+    return this.props.location.pathname.match(/\/melody\/?$/) !== null;
+  }
+
+  get harmonic() {
+    return this.props.location.pathname.match(/\/harmony\/?$/) !== null;
   }
 
   postUpdate(newState) {
@@ -77,19 +86,21 @@ export default class PSetStudentComponent extends React.Component {
 
   changeStave(e) {
     e.preventDefault();
-    const stave = parseInt(e.target.value);
-    let {rhythmic} = this.state;
-    const newStaveAnswer = this.state.vexData.staves[stave].answer;
-    if (_.every(newStaveAnswer, (a) => _.isEmpty(a.notes))) {
-      rhythmic = true;
-    }
+    const stave = this.harmonic ?
+      this.state.vexData.data.staves.length - 1 :
+      parseInt(e.target.value);
+    const newStaveAnswer = this.state.vexData.data.staves[stave].answer;
+    const rhythmic = _.every(newStaveAnswer, (a) => _.isEmpty(a.notes));
     this.setState({
       stave,
-      rhythmic,
       currentNote: 0,
       currentMeasure: 0,
       staveErrors: undefined
     });
+
+    if (rhythmic) {
+      this.props.history.push('rhythm');
+    }
   }
 
   handlePositionUpdate(pos) {
@@ -173,7 +184,8 @@ export default class PSetStudentComponent extends React.Component {
       alert('No PSet found by this ID!');
     } else {
       pSet = JSON.parse(pSet);
-      this.setState({vexData: pSet});
+      const stave = this.harmonic ? pSet.data.staves.length - 1 : 0;
+      this.setState({vexData: pSet, stave});
     }
 
     if (!_.isUndefined(this.containerEl)) {
@@ -216,6 +228,7 @@ export default class PSetStudentComponent extends React.Component {
         <RhythmicEntryComponent options={vexData.options}
           referenceMeter={vexData.meter}
           stave={vexData.staves[this.state.stave]}
+          staveId={this.state.stave}
           meter={this.state.meter}
           updateStave={this.handleScoreUpdate}
           updatePosition={this.handlePositionUpdate}
@@ -225,12 +238,13 @@ export default class PSetStudentComponent extends React.Component {
           instructor={false}
           save={this.saveAndToggle} />
       );
-    } else {
+    } else if (this.melodic) {
       renderMode = VexflowComponent.RenderMode.MELODIC;
       entryComponent = (
         <MelodicEntryComponent options={vexData.options}
           keySignature={this.state.keySignature}
           stave={vexData.staves[this.state.stave]}
+          staveId={this.state.stave}
           updateStave={this.handleScoreUpdate}
           currentMeasure={this.state.currentMeasure}
           currentNote={this.state.currentNote}
@@ -240,6 +254,19 @@ export default class PSetStudentComponent extends React.Component {
           save={this.saveAndToggle}
           instructor={false}
           complete={this.saveAndRender} />
+      );
+    } else {
+      renderMode = VexflowComponent.RenderMode.MELODIC;
+      entryComponent = (
+        <HarmonicEntryComponent options={vexData.options}
+          stave={vexData.staves[this.state.stave]}
+          staveId={this.state.stave}
+          updateStave={this.handleScoreUpdate}
+          currentMeasure={this.state.currentMeasure}
+          currentNote={this.state.currentNote}
+          updatePosition={this.handlePositionUpdate}
+          save={this.saveAndToggle}
+          instructor={false} />
       );
     }
 
@@ -280,6 +307,7 @@ export default class PSetStudentComponent extends React.Component {
               <fieldset>
                 <legend>Stave</legend>
                 <select value={this.state.stave}
+                  disabled={this.harmonic}
                   onChange={this.changeStave.bind(this)}>
                   {staveOptions}
                 </select>

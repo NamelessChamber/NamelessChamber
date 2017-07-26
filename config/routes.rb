@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   resources :p_sets do
     get 'rhythm', to: 'home#index'
     get 'melody', to: 'home#index'
+    get 'harmony', to: 'home#index'
   end
 
   root to: 'home#index'

@@ -23,6 +23,8 @@ function init() {
             component={PSetStudentComponent} />
           <Route exact path="/p_sets/:p_set_id/rhythm"
             component={PSetStudentComponent} />
+          <Route exact path="/p_sets/:p_set_id/harmony"
+            component={PSetStudentComponent} />
         </Switch>
       </BrowserRouter>,
       document.getElementById('app-root'),
