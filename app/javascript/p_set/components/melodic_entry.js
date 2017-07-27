@@ -278,6 +278,10 @@ export default class MelodicEntryComponent extends React.Component {
         </div>
         <div className="row columns" style={showIf(keyCorrect || instructor)}>
           <fieldset>
+            <legend>Proceed to Harmony</legend>
+            <Link className="button" to="harmony">Save and Continue</Link>
+          </fieldset>
+          <fieldset>
             <legend>Return to Rhythm</legend>
             <Link className="button" to="rhythm">Back</Link>
           </fieldset>

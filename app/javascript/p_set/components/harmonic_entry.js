@@ -6,6 +6,11 @@ import _ from 'lodash';
 export default class HarmonicEntryComponent extends React.Component {
   constructor(props) {
     super(props);
+    this.focused = {
+      harmony: true,
+      inversion: false
+    };
+    this.inputs = {};
   }
 
   static propTypes = {
@@ -88,7 +93,7 @@ export default class HarmonicEntryComponent extends React.Component {
     });
   }
 
-  updateHarmony(e) {
+  updateKey(key, e) {
     const { value } = e.target;
     const stave = _.cloneDeep(this.props.stave)
     const measures = this.getMeasures(stave);
@@ -100,15 +105,16 @@ export default class HarmonicEntryComponent extends React.Component {
     }
 
     if (value === '') {
-      delete note.harmony;
+      delete note[key];
     } else {
-      note.harmony = value;
+      note[key] = value;
     }
 
     this.props.updateStave(measures);
   }
 
   handleKeyDown(e) {
+    e.preventDefault();
     switch (e.key) {
       case 'ArrowRight':
         this.setCurrentNote(true, e);
@@ -119,13 +125,42 @@ export default class HarmonicEntryComponent extends React.Component {
     }
   }
 
+  handleFocus(key, e) {
+    const other = key === 'harmony' ? 'inversion' : 'harmony';
+    this.focused[key] = true;
+    this.focused[other] = false;
+  }
+
+  handleBlur(key, e) {
+    const other = key === 'harmony' ? 'inversion' : 'harmony';
+    setTimeout(() => {
+      if (!this.focused[other]) {
+        this.focused[key] = true;
+        this.focusElement();
+      } else {
+        this.focused[key] = false;
+      }
+    }, 0);
+  }
+
+  focusElement() {
+    const [key] = _.chain(this.focused)
+      .toPairs()
+      .filter(([, x]) => x)
+      .map(_.first)
+      .value();
+    const el = this.inputs[key];
+
+    el.focus();
+  }
+
   componentDidMount() {
-    this.harmonyInput.focus();
+    this.focusElement();
     $(this.containerEl).foundation();
   }
 
   componentDidUpdate() {
-    this.harmonyInput.focus();
+    this.focusElement();
     $(this.containerEl).foundation();
   }
 
@@ -137,8 +172,16 @@ export default class HarmonicEntryComponent extends React.Component {
     harmonyOptions.unshift((
       <option key={0} value="">-</option>
     ));
+    const inversionOptions = this.props.options.inversion.filter(([, x]) => x)
+      .map(([inversion,], i) => (
+        <option key={i + 1} value={inversion}>{inversion}</option>
+      ));
+    inversionOptions.unshift((
+      <option key={0} value="">-</option>
+    ));
 
     const currentHarmony = this.note.harmony || '';
+    const currentInversion = this.note.inversion || '';
 
     return (
       <div className="row columns" ref={(el) => this.containerEl = el}>
@@ -152,26 +195,40 @@ export default class HarmonicEntryComponent extends React.Component {
         <fieldset>
           <legend>Harmony</legend>
           <select multiple
-            ref={(input) => this.harmonyInput = input}
-            onBlur={(e) => e.target.focus()}
+            ref={(input) => this.inputs['harmony'] = input}
             onKeyDown={this.handleKeyDown.bind(this)}
+            onBlur={this.handleBlur.bind(this, 'harmony')}
             style={{width: '85px', height: '230px'}}
             value={[currentHarmony]}
-            onChange={this.updateHarmony.bind(this)}>
+            onFocus={this.handleFocus.bind(this, 'harmony')}
+            onChange={this.updateKey.bind(this, 'harmony')}>
             {harmonyOptions}
           </select>
         </fieldset>
         <fieldset>
-          <legend>Help</legend>
-          <button data-open="help-text-harmonic" className="button">
-            Show Help
-          </button>
+          <legend>Inversion</legend>
+          <select multiple
+            ref={(input) => this.inputs['inversion'] = input}
+            onKeyDown={this.handleKeyDown.bind(this)}
+            onBlur={this.handleBlur.bind(this, 'inversion')}
+            style={{width: '85px', height: '230px'}}
+            value={[currentInversion]}
+            onFocus={this.handleFocus.bind(this, 'inversion')}
+            onChange={this.updateKey.bind(this, 'inversion')}>
+            {inversionOptions}
+          </select>
         </fieldset>
         <fieldset>
           <legend>Back to Melody</legend>
           <Link to="melody" className="button">
             Save and Go Back
           </Link>
+        </fieldset>
+        <fieldset>
+          <legend>Help</legend>
+          <button data-open="help-text-harmonic" className="button">
+            Show Help
+          </button>
         </fieldset>
       </div>
     );
