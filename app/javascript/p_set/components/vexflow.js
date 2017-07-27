@@ -173,7 +173,7 @@ export default class VexflowComponent extends React.Component {
   }
 
   convertNote(props, error, highlight, editing, stave, renderMode, note, i) {
-    const { type, harmony } = note;
+    const { type, harmony, inversion } = note;
     const { mode } = props;
 
     const { solfege, octave, duration } = note;
@@ -209,7 +209,11 @@ export default class VexflowComponent extends React.Component {
 
     if (_.isString(harmony) &&
         renderMode === RENDER_MODES.MELODIC) {
-      const annotation = new VF.Annotation(harmony)
+      let annStr = harmony;
+      if (_.isString(inversion)) {
+        annStr = `${annStr} ${inversion}`;
+      }
+      const annotation = new VF.Annotation(annStr)
         .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
       staveNote.addModifier(0, annotation);
     }
