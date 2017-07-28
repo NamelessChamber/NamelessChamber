@@ -151,7 +151,7 @@ export default class PSetOptionsEditor extends React.Component {
     });
 
     return (
-      <div>
+      <div className="small-12 columns">
         <div className="row large-up-3">
           <fieldset className="column column-block">
             <legend>Name</legend>
