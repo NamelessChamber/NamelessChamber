@@ -181,6 +181,7 @@ export default class PSetInstructorComponent extends React.Component {
         <RhythmicEntryComponent options={vexData.options}
           referenceMeter={vexData.meter}
           stave={vexData.staves[this.state.stave]}
+          measures={stave.solution}
           staveId={this.state.stave}
           meter={this.state.meter}
           updateStave={this.handleScoreUpdate}
@@ -196,6 +197,7 @@ export default class PSetInstructorComponent extends React.Component {
         <MelodicEntryComponent options={vexData.options}
           keySignature={this.state.keySignature}
           stave={vexData.staves[this.state.stave]}
+          measures={stave.solution}
           staveId={this.state.stave}
           updateStave={this.handleScoreUpdate}
           currentMeasure={this.state.currentMeasure}
@@ -211,6 +213,7 @@ export default class PSetInstructorComponent extends React.Component {
       entryComponent = (
         <HarmonicEntryComponent options={vexData.options}
           stave={vexData.staves[this.state.stave]}
+          measures={stave.solution}
           staveId={this.state.stave}
           updateStave={this.handleScoreUpdate}
           currentMeasure={this.state.currentMeasure}
