@@ -124,7 +124,7 @@ export const DEFAULTS = {
   solfege: [
     'do', 're', 'mi', 'fa', 'so', 'la', 'ti',
     'di', 'ri', 'fi', 'si', 'li', 'ra',
-    'meh', 'seh', 'leh', 'teh'
+    'me', 'se', 'le', 'te'
   ],
   harmony: [
     'I', 'ii', 'iii', 'IV', 'V', 'vi', 'viio',

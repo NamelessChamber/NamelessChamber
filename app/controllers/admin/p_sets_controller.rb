@@ -2,8 +2,11 @@ class Admin::PSetsController < ApplicationController
   before_action :assert_course_admin!
 
   def show
-    find_or_404 do
+    begin
       @p_set = PSet.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      head :not_found
+      return
     end
 
     respond_to do |format|
@@ -25,8 +28,11 @@ class Admin::PSetsController < ApplicationController
   end
 
   def edit
-    find_or_404 do
+    begin
       @p_set = PSet.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      head :not_found
+      return
     end
 
     @exercise_subcategory = ExerciseSubcategory
@@ -38,12 +44,15 @@ class Admin::PSetsController < ApplicationController
   end
 
   def update
-    find_or_404 do
+    begin
       @p_set = PSet.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      head :not_found
+      return
     end
 
-    p_set = params.require(:p_set).permit(:name, :data).to_h
-    p_set[:data] = JSON(p_set[:data])
+    fields = ['data', 'name']
+    p_set = params[:p_set].to_unsafe_h.select { |k| fields.include?(k) }
     @p_set.update_attributes(p_set)
 
     respond_to do |format|

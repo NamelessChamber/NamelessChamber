@@ -7,9 +7,14 @@ function railsFetch(url, options) {
     credentials: 'same-origin',
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
-      'X-CSRF-Token': token
+      'X-CSRF-Token': token,
+      'Content-Type': 'application/json'
     }
   }, options);
+
+  if (_.isObject(options.body)) {
+    options.body = JSON.stringify(options.body);
+  }
 
   return fetch(url, options);
 }
@@ -31,9 +36,12 @@ export function fetchPSet(id, admin) {
 export function updatePSet(id, pSet, admin) {
   const prefix = admin ? '/admin' : '';
   const url = `${prefix}/p_sets/${id}.json`;
-  const data = new FormData();
-  data.append('p_set[name]', pSet.name);
-  data.append('p_set[data]', JSON.stringify(pSet.data));
+  const data = {
+    p_set: {
+      name: pSet.name,
+      data: pSet.data
+    }
+  };
   return railsFetch(url, {
     method: 'PUT',
     body: data
@@ -49,8 +57,7 @@ export function fetchPSetAnswer(id) {
 
 export function updatePSetAnswer(id, answer) {
   const url = `/p_sets/${id}/answer.json`;
-  const data = new FormData();
-  data.append('answer', JSON.stringify(answer));
+  const data = {answer};
   return railsFetch(url, {
     method: 'PUT',
     body: data

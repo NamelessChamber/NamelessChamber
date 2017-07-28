@@ -26,7 +26,7 @@ export default class PSetOptionsEditor extends React.Component {
 
   componentDidMount() {
     const { p_set_id } = this.props.match.params;
-    fetchPSet(p_set_id).then((pSet) => {
+    fetchPSet(p_set_id, true).then((pSet) => {
       this.setState(pSet);
     }).catch((e) => {
       console.log(e.status);
@@ -35,7 +35,7 @@ export default class PSetOptionsEditor extends React.Component {
 
   postUpdateXhr = _.debounce((newState) => {
     const { p_set_id } = this.props.match.params;
-    updatePSet(p_set_id, newState).then((pSet) => {
+    updatePSet(p_set_id, newState, true).then((pSet) => {
       this.setState(pSet);
       this.posting = false;
     }).catch((e) => {

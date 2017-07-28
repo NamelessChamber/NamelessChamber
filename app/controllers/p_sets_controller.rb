@@ -37,8 +37,15 @@ class PSetsController < ApplicationController
     if @p_set_answer.nil?
       head :not_found
     else
-      answer = JSON(params[:answer])
+      answer = params[:answer]
       @p_set_answer.data['answers'].push(answer)
+
+      if !params[:completed].nil?
+        if !@p_set_answer.completed && params[:completed]
+          @p_set_answer.completed = params[:completed]
+        end
+      end
+
       @p_set_answer.save
 
       respond_to do |format|

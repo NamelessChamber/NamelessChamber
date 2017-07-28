@@ -41,6 +41,7 @@ const intervalSolfege = {
   'AA6': 'lai',
   'd7': 'taw',
   'm7': 'te',
+  'm7': 'te',
   'M7': 'ti',
   'A7': 'tai',
   // 'dd8': 'daw',
