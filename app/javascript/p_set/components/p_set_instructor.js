@@ -247,14 +247,13 @@ export default class PSetInstructorComponent extends React.Component {
                   {staveOptions}
                 </select>
               </fieldset>
-              <fieldset>
-                <legend>Save</legend>
+              <div>
                 <button
                   className="button"
                   onClick={this.postUpdate.bind(this)}>
                   {this.state.posting ? 'Saving...' : 'Save'}
                 </button>
-              </fieldset>
+              </div>
             </div>
             {entryComponent}
           </div>

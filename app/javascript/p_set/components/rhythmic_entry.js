@@ -275,24 +275,21 @@ export default class RhythmicEntryComponent extends React.Component {
               {noteOptions}
             </select>
           </fieldset>
-          <fieldset>
-            <legend>Proceed to Melody</legend>
+          <div>
             <Link to="melody" className="button">
-              Save and Continue
+              Proceed to Melody
             </Link>
-          </fieldset>
-          <fieldset style={showIf(instructor)}>
-            <legend>Back to Options</legend>
+          </div>
+          <div style={showIf(instructor)}>
             <Link to="options" className="button">
               Back to Options
             </Link>
-          </fieldset>
-          <fieldset>
-            <legend>Keyboard Hints</legend>
+          </div>
+          <div>
             <button data-open="help-text-rhythmic" className="button">
               Show Help
             </button>
-          </fieldset>
+          </div>
         </div>
         <div className="row columns">
           <fieldset>

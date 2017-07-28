@@ -218,18 +218,16 @@ export default class HarmonicEntryComponent extends React.Component {
             {inversionOptions}
           </select>
         </fieldset>
-        <fieldset>
-          <legend>Back to Melody</legend>
+        <div>
           <Link to="melody" className="button">
-            Save and Go Back
+            Back to Melody
           </Link>
-        </fieldset>
-        <fieldset>
-          <legend>Help</legend>
+        </div>
+        <div>
           <button data-open="help-text-harmonic" className="button">
             Show Help
           </button>
-        </fieldset>
+        </div>
       </div>
     );
   }

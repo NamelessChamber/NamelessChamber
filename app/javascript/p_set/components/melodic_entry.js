@@ -277,27 +277,24 @@ export default class MelodicEntryComponent extends React.Component {
           </fieldset>
         </div>
         <div className="row columns" style={showIf(keyCorrect || instructor)}>
-          <fieldset>
-            <legend>Proceed to Harmony</legend>
-            <Link className="button" to="harmony">Save and Continue</Link>
-          </fieldset>
-          <fieldset>
-            <legend>Return to Rhythm</legend>
-            <Link className="button" to="rhythm">Back</Link>
-          </fieldset>
-          <fieldset style={showIf(!instructor)}>
-            <legend>Save</legend>
-            <input type="submit"
+          <div>
+            <Link className="button" to="harmony">Proceed to Harmony</Link>
+          </div>
+          <div>
+            <Link className="button" to="rhythm">Back to Rhythm</Link>
+          </div>
+          <div style={showIf(!instructor)}>
+            <button
               className="button"
-              value="Save"
-              onClick={this.props.complete} />
-          </fieldset>
-          <fieldset>
-            <legend>Keyboard Hints</legend>
+              onClick={this.props.complete}>
+              Submit Work
+            </button>
+          </div>
+          <div>
             <button data-open="help-text-melodic" className="button">
               Show Help
             </button>
-          </fieldset>
+          </div>
         </div>
         <div className="row columns">
           <fieldset>
