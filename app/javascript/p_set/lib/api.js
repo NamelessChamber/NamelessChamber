@@ -33,13 +33,16 @@ export function fetchPSet(id, admin) {
   });
 }
 
-export function updatePSet(id, pSet, admin) {
+export function updatePSet(id, pSet, admin, completed) {
+  // boolify it
+  completed = completed || false;
   const prefix = admin ? '/admin' : '';
   const url = `${prefix}/p_sets/${id}.json`;
   const data = {
     p_set: {
       name: pSet.name,
-      data: pSet.data
+      data: pSet.data,
+      completed
     }
   };
   return railsFetch(url, {

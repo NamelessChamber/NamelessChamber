@@ -23,7 +23,8 @@ export default class PSetStudentComponent extends React.Component {
         top: 0, bottom: 0
       },
       errors: [],
-      posting: false
+      posting: false,
+      completing: false
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
@@ -102,14 +103,23 @@ export default class PSetStudentComponent extends React.Component {
     this.setState(pos);
   }
 
-  postAnswer(answer) {
-    this.setState({posting: true});
+  postAnswer(answer, completed) {
+    if (completed) {
+      if (!confirm('Submission is final. Are you sure you want to proceed?')) {
+        return;
+      }
+    }
+    const postingKey = completed ? 'completing' : 'posting';
+    this.setState({[postingKey]: true});
     const { p_set_id } = this.props.match.params;
-    updatePSetAnswer(p_set_id, answer).then((answer) => {
-      this.setState({answer, posting: false});
+    updatePSetAnswer(p_set_id, answer, completed).then((answer) => {
+      this.setState({answer, [postingKey]: false});
+      if (completed) {
+        window.location = '/classrooms';
+      }
     }).catch((e) => {
       console.log('error', e);
-      this.setState({posting: false});
+      this.setState({[postingKey]: false});
     });
   }
 
@@ -118,7 +128,7 @@ export default class PSetStudentComponent extends React.Component {
     answer.meter = meter;
     if (_.isEqual(meter, this.state.vexData.data.meter)) {
       alert('Correct!');
-      this.postAnswer(answer);
+      this.postAnswer(answer, false);
     } else {
       alert('Incorrect... please try again!');
       this.setState({answer});
@@ -132,7 +142,7 @@ export default class PSetStudentComponent extends React.Component {
     answer.keySignature = keySignature;
     if (keySignature === key) {
       alert('Correct!');
-      this.postAnswer(answer);
+      this.postAnswer(answer, false);
     } else {
       alert('Incorrect... please try again!');
       this.setState({answer});
@@ -279,8 +289,7 @@ export default class PSetStudentComponent extends React.Component {
           updateKeySignature={this.handleKeySignatureUpdate}
           reportErrors={this.reportErrors}
           save={this.saveAndToggle}
-          instructor={false}
-          complete={this.saveAndRender} />
+          instructor={false} />
       );
       audios = stave.audios.melody.map(({name, url}, i) => {
         return (
@@ -322,7 +331,7 @@ export default class PSetStudentComponent extends React.Component {
       });
 
     return (
-      <div className="small-12" ref={(el) => this.containerEl = el}>
+      <div className="small-12 columns" ref={(el) => this.containerEl = el}>
         <div className="reveal"
           data-reveal
           id="error-modal"
@@ -355,11 +364,20 @@ export default class PSetStudentComponent extends React.Component {
                   {staveOptions}
                 </select>
               </fieldset>
-              <button
-                className="button"
-                onClick={() => this.postAnswer(this.state.answer)}>
-                {this.state.posting ? 'Saving...' : 'Save'}
-              </button>
+              <p>
+                <button
+                  className="button"
+                  onClick={() => this.postAnswer(this.state.answer, false)}>
+                  {this.state.posting ? 'Saving...' : 'Save'}
+                </button>
+              </p>
+              <p>
+                <button
+                  className="button"
+                  onClick={() => this.postAnswer(this.state.answer, true)}>
+                  {this.state.completing ? 'Submitting...' : 'Submit PSet'}
+                </button>
+              </p>
             </div>
 
             {entryComponent}

@@ -49,7 +49,6 @@ export default class MelodicEntryComponent extends React.Component {
     currentNote: PropTypes.number.isRequired,
     save: PropTypes.func.isRequired,
     reportErrors: PropTypes.func,
-    complete: PropTypes.func.isRequired,
     instructor: PropTypes.bool
   }
 
@@ -272,13 +271,6 @@ export default class MelodicEntryComponent extends React.Component {
           </div>
           <div>
             <Link className="button" to="rhythm">Back to Rhythm</Link>
-          </div>
-          <div style={showIf(!instructor)}>
-            <button
-              className="button"
-              onClick={this.props.complete}>
-              Submit Work
-            </button>
           </div>
           <div>
             <button data-open="help-text-melodic" className="button">

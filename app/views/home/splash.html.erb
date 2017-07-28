@@ -1,0 +1,13 @@
+<div class="small-12 columns">
+  <h1>Welcome to Tuna!</h1>
+  <p>
+    Tuna is a platform for practicing music dictation learning skills.
+  </p>
+  <p>
+    <% if current_user.nil? %>
+      <%= link_to 'Sign up', new_user_registration_path %> to get started.
+    <% else %>
+      <%= link_to 'Check out your classes', classrooms_path %> to get started.
+    <% end %>
+  </p>
+</div>

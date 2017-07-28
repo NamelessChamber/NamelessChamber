@@ -28,5 +28,7 @@ Rails.application.routes.draw do
     put 'answer', to: 'p_sets#update_answer'
   end
 
-  root to: 'home#index'
+  resources :classrooms
+
+  root to: 'home#splash'
 end
