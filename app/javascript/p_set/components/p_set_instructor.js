@@ -61,11 +61,13 @@ export default class PSetInstructorComponent extends React.Component {
   postUpdate() {
     const { p_set_id } = this.props.match.params;
     this.setState({posting: true});
-    updatePSet(p_set_id, this.state.vexData).done((pSet) => {
-      this.setState({vexData: pSet});
-    }).fail((e) => {
+    updatePSet(p_set_id, this.state.vexData).then((pSet) => {
+      this.setState({
+        vexData: pSet,
+        posting: false
+      });
+    }).catch((e) => {
       console.log(e.status);
-    }).always(() => {
       this.setState({posting: false});
     });
   }
@@ -120,10 +122,10 @@ export default class PSetInstructorComponent extends React.Component {
 
   componentDidMount() {
     const { p_set_id } = this.props.match.params;
-    fetchPSet(p_set_id).done((pSet) => {
+    fetchPSet(p_set_id).then((pSet) => {
       const stave = this.harmonic ? pSet.data.staves.length - 1 : 0;
       this.setState({vexData: pSet, stave});
-    }).fail((e) => {
+    }).catch((e) => {
       console.log(e.status);
     });
 

@@ -26,20 +26,20 @@ export default class PSetOptionsEditor extends React.Component {
 
   componentDidMount() {
     const { p_set_id } = this.props.match.params;
-    fetchPSet(p_set_id).done((pSet) => {
+    fetchPSet(p_set_id).then((pSet) => {
       this.setState(pSet);
-    }).fail((e) => {
+    }).catch((e) => {
       console.log(e.status);
     });
   }
 
   postUpdateXhr = _.debounce((newState) => {
     const { p_set_id } = this.props.match.params;
-    updatePSet(p_set_id, newState).done((pSet) => {
+    updatePSet(p_set_id, newState).then((pSet) => {
       this.setState(pSet);
-    }).fail((e) => {
+      this.posting = false;
+    }).catch((e) => {
       console.log(e.status);
-    }).always(() => {
       this.posting = false;
     });
   }, 1000)
