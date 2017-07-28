@@ -73,6 +73,17 @@ export function validateOptions(data) {
   }
 }
 
+export function newAnswer(pSet) {
+  pSet = _.cloneDeep(pSet);
+  return {
+    meter: {top: 0, bottom: 0},
+    keySignature: '',
+    staves: pSet.data.staves.map((stave) =>
+      stave.solution.map((measure) => _.set(measure, 'notes', []))
+    )
+  }
+}
+
 export function newStave(clef, name, measures, tonicPitch, scale) {
   tonicPitch = tonicPitch || 'C';
   scale = scale || 'major';
@@ -138,7 +149,7 @@ export function newPSet() {
   function initBoolOpts(opts) {
     return opts.map(x => [x, false]);
   }
-  
+
   return {
     options: {
       rhythm: initBoolOpts(DEFAULTS.rhythm),

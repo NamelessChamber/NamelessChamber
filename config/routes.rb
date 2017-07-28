@@ -16,8 +16,6 @@ Rails.application.routes.draw do
       get 'rhythm', to: 'home#index'
       get 'melody', to: 'home#index'
       get 'harmony', to: 'home#index'
-      get 'data', to: 'p_sets#show_data'
-      put 'data', to: 'p_sets#update_data'
     end
   end
 
@@ -25,6 +23,9 @@ Rails.application.routes.draw do
     get 'rhythm', to: 'home#index'
     get 'melody', to: 'home#index'
     get 'harmony', to: 'home#index'
+
+    get 'answer', to: 'p_sets#show_answer'
+    put 'answer', to: 'p_sets#update_answer'
   end
 
   root to: 'home#index'

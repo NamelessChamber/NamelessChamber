@@ -18,6 +18,7 @@ export default class RhythmicEntryComponent extends React.Component {
   static propTypes = {
     options: PropTypes.object.isRequired,
     stave: PropTypes.object.isRequired,
+    measures: PropTypes.array.isRequired,
     referenceMeter: PropTypes.object.isRequired,
     meter: PropTypes.object,
     updateStave: PropTypes.func.isRequired,
@@ -34,9 +35,7 @@ export default class RhythmicEntryComponent extends React.Component {
   }
 
   get measures() {
-    const key = this.props.instructor ?
-                'solution' : 'answer';
-    return this.props.stave[key];
+    return this.props.measures;
   }
 
   get measure() {
@@ -290,12 +289,6 @@ export default class RhythmicEntryComponent extends React.Component {
               Show Help
             </button>
           </div>
-        </div>
-        <div className="row columns">
-          <fieldset>
-            <legend>Audio Samples</legend>
-            <ul>{audios}</ul>
-          </fieldset>
         </div>
       </div>
     );

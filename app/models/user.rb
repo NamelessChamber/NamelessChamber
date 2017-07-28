@@ -29,4 +29,5 @@ class User < ApplicationRecord
   has_many :classroom_users
   has_many :courses, :through => :course_users
   has_many :classrooms, :through => :classroom_users
+  has_many :p_set_answers
 end

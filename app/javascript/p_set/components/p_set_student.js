@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import ReactAudioPlayer from 'react-audio-player';
 
 import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
 
-function pSetUrl(id) {
-  return `/admin/p_sets/${id}.json`;
-}
+import { newAnswer } from '../lib/models';
+import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from '../lib/api';
 
 export default class PSetStudentComponent extends React.Component {
   constructor(props) {
@@ -22,7 +22,8 @@ export default class PSetStudentComponent extends React.Component {
       meter: {
         top: 0, bottom: 0
       },
-      errors: []
+      errors: [],
+      posting: false
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
@@ -49,16 +50,9 @@ export default class PSetStudentComponent extends React.Component {
     return this.props.location.pathname.match(/\/harmony\/?$/) !== null;
   }
 
-  postUpdate(newState) {
-    this.setState({vexData: newState});
-    const { p_set_id } = this.props.match.params;
-    window.localStorage.setItem(pSetUrl(p_set_id), JSON.stringify(newState));
-  }
-
   handleScoreUpdate(answer, changeMeasure, changeNote) {
-    const newVexData = _.cloneDeep(this.state.vexData);
-    const stave = newVexData.data.staves[this.state.stave];
-    Object.assign(stave, {answer});
+    const newAnswer = _.cloneDeep(this.state.answer);
+    const stave = newAnswer.staves[this.state.stave] = answer;
 
     if (this.errorModalEl) {
       try {
@@ -67,15 +61,16 @@ export default class PSetStudentComponent extends React.Component {
       }
     }
 
-    const staveErrors = _.cloneDeep(this.state.staveErrors);
-    if (_.isArray(staveErrors)) {
-      staveErrors[changeMeasure][changeNote] = false;
-    }
+    // const staveErrors = _.cloneDeep(this.state.staveErrors);
+    // if (_.isArray(staveErrors)) {
+    //   staveErrors[changeMeasure][changeNote] = false;
+    // }
+    //
+    // this.setState({
+    //   staveErrors
+    // });
 
-    this.setState({
-      staveErrors
-    });
-    this.postUpdate(newVexData);
+    this.setState({answer: newAnswer});
   }
 
   saveAndToggle() {
@@ -107,24 +102,41 @@ export default class PSetStudentComponent extends React.Component {
     this.setState(pos);
   }
 
+  postAnswer(answer) {
+    this.setState({posting: true});
+    const { p_set_id } = this.props.match.params;
+    updatePSetAnswer(p_set_id, answer).then((answer) => {
+      this.setState({answer, posting: false});
+    }).catch((e) => {
+      console.log('error', e);
+      this.setState({posting: false});
+    });
+  }
+
   handleMeterUpdate(meter) {
+    const answer = _.cloneDeep(this.state.answer);
+    answer.meter = meter;
     if (_.isEqual(meter, this.state.vexData.data.meter)) {
       alert('Correct!');
+      this.postAnswer(answer);
     } else {
       alert('Incorrect... please try again!');
+      this.setState({answer});
     }
-    this.setState({meter});
   }
 
   handleKeySignatureUpdate(keySignature) {
     const stave = this.state.vexData.data.staves[0];
     const key = stave.tonic.pitch;
+    const answer = _.cloneDeep(this.state.answer);
+    answer.keySignature = keySignature;
     if (keySignature === key) {
       alert('Correct!');
+      this.postAnswer(answer);
     } else {
       alert('Incorrect... please try again!');
+      this.setState({answer});
     }
-    this.setState({keySignature});
   }
 
   updateCurrentMeasure(measure) {
@@ -178,15 +190,17 @@ export default class PSetStudentComponent extends React.Component {
 
   componentDidMount() {
     const { p_set_id } = this.props.match.params;
-    const url = pSetUrl(p_set_id);
-    let pSet = window.localStorage.getItem(url);
-    if (_.isUndefined(pSet)) {
-      alert('No PSet found by this ID!');
-    } else {
-      pSet = JSON.parse(pSet);
+    const pSetPromise = fetchPSet(p_set_id).then((pSet) => {
       const stave = this.harmonic ? pSet.data.staves.length - 1 : 0;
-      this.setState({vexData: pSet, stave});
-    }
+      return {vexData: pSet, stave};
+    });
+    const answerPromise = fetchPSetAnswer(p_set_id);
+    Promise.all([pSetPromise, answerPromise]).then(([state, answer]) => {
+      if (_.isEmpty(answer)) {
+        answer = newAnswer(state.vexData);
+      }
+      this.setState(Object.assign(state, {answer}));
+    });
 
     if (!_.isUndefined(this.containerEl)) {
       $(this.containerEl).foundation();
@@ -213,6 +227,7 @@ export default class PSetStudentComponent extends React.Component {
 
     const vexData = this.state.vexData.data;
     const stave = vexData.staves[this.state.stave];
+    const answer = this.state.answer.staves[this.state.stave];
 
     const staveOptions = vexData.staves.map((s, i) => {
       return (
@@ -223,13 +238,15 @@ export default class PSetStudentComponent extends React.Component {
     let renderMode = VexflowComponent.RenderMode.RHYTHMIC;
 
     let entryComponent = null;
+    let audios = [];
     if (this.rhythmic) {
       entryComponent = (
         <RhythmicEntryComponent options={vexData.options}
           referenceMeter={vexData.meter}
-          stave={vexData.staves[this.state.stave]}
+          stave={stave}
+          measures={answer}
           staveId={this.state.stave}
-          meter={this.state.meter}
+          meter={this.state.answer.meter}
           updateStave={this.handleScoreUpdate}
           updatePosition={this.handlePositionUpdate}
           updateMeter={this.handleMeterUpdate}
@@ -238,12 +255,22 @@ export default class PSetStudentComponent extends React.Component {
           instructor={false}
           save={this.saveAndToggle} />
       );
+      audios = stave.audios.rhythm.map(({name, url}, i) => {
+        return (
+          <li key={i}>
+            <p>{name}</p>
+            <ReactAudioPlayer src={url}
+              controls />
+          </li>
+        );
+      });
     } else if (this.melodic) {
       renderMode = VexflowComponent.RenderMode.MELODIC;
       entryComponent = (
         <MelodicEntryComponent options={vexData.options}
-          keySignature={this.state.keySignature}
-          stave={vexData.staves[this.state.stave]}
+          keySignature={this.state.answer.keySignature}
+          stave={stave}
+          measures={answer}
           staveId={this.state.stave}
           updateStave={this.handleScoreUpdate}
           currentMeasure={this.state.currentMeasure}
@@ -255,6 +282,15 @@ export default class PSetStudentComponent extends React.Component {
           instructor={false}
           complete={this.saveAndRender} />
       );
+      audios = stave.audios.melody.map(({name, url}, i) => {
+        return (
+          <li key={i}>
+            <p>{name}</p>
+            <ReactAudioPlayer src={url}
+              controls />
+          </li>
+        );
+      });
     } else {
       renderMode = VexflowComponent.RenderMode.MELODIC;
       entryComponent = (
@@ -278,6 +314,13 @@ export default class PSetStudentComponent extends React.Component {
       );
     });
 
+    const vfStaves = _.zipWith(
+      vexData.staves,
+      this.state.answer.staves,
+      (s, a) => {
+        return Object.assign(s, {answer: a});
+      });
+
     return (
       <div className="small-12" ref={(el) => this.containerEl = el}>
         <div className="reveal"
@@ -287,15 +330,15 @@ export default class PSetStudentComponent extends React.Component {
           <h4>Errors</h4>
           <ul>{errors}</ul>
         </div>
-        <h3>Demo Dication: {this.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
+        <h3>{this.state.vexData.name}: {this.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
         <div className="row">
           <div className="small-10 columns">
-            <VexflowComponent staves={vexData.staves}
+            <VexflowComponent staves={vfStaves}
               editing={this.state.stave}
               meter={this.state.meter}
               render="answer"
               mode={renderMode}
-              keySignature={this.state.keySignature}
+              keySignature={this.state.answer.keySignature}
               currentMeasure={this.state.currentMeasure}
               startMeasure={startMeasure}
               measures={this.state.vexData.data.measures}
@@ -312,8 +355,19 @@ export default class PSetStudentComponent extends React.Component {
                   {staveOptions}
                 </select>
               </fieldset>
+              <button
+                className="button"
+                onClick={() => this.postAnswer(this.state.answer)}>
+                {this.state.posting ? 'Saving...' : 'Save'}
+              </button>
             </div>
+
             {entryComponent}
+
+            <fieldset>
+              <legend>Audio Samples</legend>
+              <ul>{audios}</ul>
+            </fieldset>
           </div>
         </div>
       </div>

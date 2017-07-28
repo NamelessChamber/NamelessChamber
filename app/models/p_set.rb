@@ -17,10 +17,7 @@ class PSet < ApplicationRecord
   belongs_to :exercise_subcategory
   has_many :classroom_psets
   has_many :classrooms, :through => :classroom_psets
+  has_many :p_set_answers
 
   serialize :data, JSON
-
-  def initialize_pairs(items)
-    items.map { |item| [item, false] }
-  end
 end

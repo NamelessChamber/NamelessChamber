@@ -14,11 +14,12 @@ function railsFetch(url, options) {
   return fetch(url, options);
 }
 
-export function fetchPSet(id) {
-  const url = `/admin/p_sets/${id}.json`;
+export function fetchPSet(id, admin) {
+  const prefix = admin ? '/admin' : '';
+  const url = `${prefix}/p_sets/${id}.json`;
   return railsFetch(url, {method: 'GET'}).then((data) => {
     return data.json().then((pSet) => {
-      if (_.isEmpty(pSet.data)) {
+      if (admin && _.isEmpty(pSet.data)) {
         pSet.data = newPSet();
       }
 
@@ -27,11 +28,29 @@ export function fetchPSet(id) {
   });
 }
 
-export function updatePSet(id, pSet) {
-  const url = `/admin/p_sets/${id}.json`;
+export function updatePSet(id, pSet, admin) {
+  const prefix = admin ? '/admin' : '';
+  const url = `${prefix}/p_sets/${id}.json`;
   const data = new FormData();
   data.append('p_set[name]', pSet.name);
   data.append('p_set[data]', JSON.stringify(pSet.data));
+  return railsFetch(url, {
+    method: 'PUT',
+    body: data
+  }).then((data) => data.json());
+}
+
+export function fetchPSetAnswer(id) {
+  const url = `/p_sets/${id}/answer.json`;
+  return railsFetch(url, {method: 'GET'}).then((data) => {
+    return data.json().then(({answer}) => answer);
+  });
+}
+
+export function updatePSetAnswer(id, answer) {
+  const url = `/p_sets/${id}/answer.json`;
+  const data = new FormData();
+  data.append('answer', JSON.stringify(answer));
   return railsFetch(url, {
     method: 'PUT',
     body: data

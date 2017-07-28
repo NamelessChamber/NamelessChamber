@@ -39,6 +39,7 @@ export default class MelodicEntryComponent extends React.Component {
   static propTypes = {
     options: PropTypes.object.isRequired,
     stave: PropTypes.object.isRequired,
+    measures: PropTypes.array.isRequired,
     staveId: PropTypes.number.isRequired,
     keySignature: PropTypes.string,
     updateStave: PropTypes.func.isRequired,
@@ -57,9 +58,7 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   get measures() {
-    const key = this.props.instructor ?
-                'solution' : 'answer';
-    return this.props.stave[key];
+    return this.props.measures;
   }
 
   setCurrentNote(increment, e) {
@@ -221,15 +220,6 @@ export default class MelodicEntryComponent extends React.Component {
       return cond ?
         {} : {display: 'none'};
     };
-    const audios = this.props.stave.audios.melody.map(({name, url}, i) => {
-      return (
-        <li key={i}>
-          <p>{name}</p>
-          <ReactAudioPlayer src={url}
-                            controls />
-        </li>
-      );
-    });
 
     return (
       <div className="row columns" ref={(el) => this.containerEl = el}>
@@ -295,12 +285,6 @@ export default class MelodicEntryComponent extends React.Component {
               Show Help
             </button>
           </div>
-        </div>
-        <div className="row columns">
-          <fieldset>
-            <legend>Audio Samples</legend>
-            <ul>{audios}</ul>
-          </fieldset>
         </div>
       </div>
     );

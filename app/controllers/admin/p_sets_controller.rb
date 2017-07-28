@@ -51,28 +51,4 @@ class Admin::PSetsController < ApplicationController
       format.html { redirect_to edit_admin_p_set_path(@p_set) }
     end
   end
-
-  def show_data
-    find_or_404 do
-      @p_set = PSet.find(params[:p_set_id])
-    end
-
-    respond_to do |format|
-      format.json { render json: @p_set.data }
-    end
-  end
-
-  def update_data
-    find_or_404 do
-      @p_set = PSet.find(params[:p_set_id])
-    end
-
-    @p_set.update_attributes(params.permit(
-      :data
-    ))
-
-    respond_to do |format|
-      format.json { render json: @p_set.data }
-    end
-  end
 end

@@ -12,4 +12,6 @@
 #
 
 class ClassroomPset < ApplicationRecord
+  belongs_to :p_set
+  belongs_to :classroom
 end
