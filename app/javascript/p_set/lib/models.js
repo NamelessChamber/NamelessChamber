@@ -138,20 +138,17 @@ export function newPSet() {
   function initBoolOpts(opts) {
     return opts.map(x => [x, false]);
   }
-
+  
   return {
-    name: '',
-    data: {
-      options: {
-        rhythm: initBoolOpts(DEFAULTS.rhythm),
-        solfege: initBoolOpts(DEFAULTS.solfege),
-        harmony: initBoolOpts(DEFAULTS.harmony),
-        inversion: initBoolOpts(DEFAULTS.inversion),
-        key: initBoolOpts(DEFAULTS.key),
-      },
-      staves: [],
-      meter: {top: 0, bottom: 0},
-      measures: 0
-    }
+    options: {
+      rhythm: initBoolOpts(DEFAULTS.rhythm),
+      solfege: initBoolOpts(DEFAULTS.solfege),
+      harmony: initBoolOpts(DEFAULTS.harmony),
+      inversion: initBoolOpts(DEFAULTS.inversion),
+      key: initBoolOpts(DEFAULTS.key),
+    },
+    staves: [],
+    meter: {top: 0, bottom: 0},
+    measures: 0
   };
 }

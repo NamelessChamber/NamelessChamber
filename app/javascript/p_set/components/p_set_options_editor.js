@@ -6,12 +6,9 @@ import _ from 'lodash';
 import BoolOptionsEditor from './bool_options_editor';
 import StaveOptionsEditor from './stave_options_editor';
 import { newPSet, formatKey, validateOptions } from '../lib/models';
+import { fetchPSet, updatePSet } from '../lib/api';
 
 import '../styles/p_set_options_editor.css';
-
-function pSetUrl(id) {
-  return `/admin/p_sets/${id}.json`;
-}
 
 export default class PSetOptionsEditor extends React.Component {
   constructor(props) {
@@ -27,46 +24,30 @@ export default class PSetOptionsEditor extends React.Component {
     match: PropTypes.object.isRequired
   }
 
-  pSetUrlBase(page) {
-    const { p_set_id } = this.props.match.params;
-    return `/admin/p_sets/${p_set_id}/${page}`;
-  }
-
   componentDidMount() {
     const { p_set_id } = this.props.match.params;
-    const params = {method: 'get', dataType: 'json'};
-    const url = pSetUrl(p_set_id);
-    let pSet = window.localStorage.getItem(url);
-    if (_.isUndefined(pSet) || _.isNull(pSet)) {
-      pSet = newPSet();
-      window.localStorage.setItem(url, JSON.stringify(pSet));
-    } else {
-      try {
-        pSet = JSON.parse(pSet);
-      } catch (e) {
-        console.log('error', e);
-        pSet = newPSet();
-        window.localStorage.setItem(url, JSON.stringify(pSet));
-      }
-    }
-    this.setState(pSet);
-    /* $.ajax(pSetUrl(p_set_id), params).then((data) => {
-     *   this.setState(data);
-     * });*/
+    fetchPSet(p_set_id).done((pSet) => {
+      this.setState(pSet);
+    }).fail((e) => {
+      console.log(e.status);
+    });
   }
+
+  postUpdateXhr = _.debounce((newState) => {
+    const { p_set_id } = this.props.match.params;
+    updatePSet(p_set_id, newState).done((pSet) => {
+      this.setState(pSet);
+    }).fail((e) => {
+      console.log(e.status);
+    }).always(() => {
+      this.posting = false;
+    });
+  }, 1000)
 
   postUpdate(newState) {
     this.setState(newState);
-    const { p_set_id } = this.props.match.params;
-    window.localStorage.setItem(pSetUrl(p_set_id), JSON.stringify(newState));
-    /* const params = {
-     *   method: 'put',
-     *   dataType: 'json',
-     *   data: {p_set: newState}
-     * };
-     * $.ajax(this.props.url, params).then((data) => {
-     *   this.setState(data);
-     * });*/
+    this.posting = true;
+    this.postUpdateXhr(newState);
   }
 
   onOptionsChange(option, values) {

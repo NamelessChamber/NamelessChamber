@@ -42,12 +42,14 @@ class Admin::PSetsController < ApplicationController
       @p_set = PSet.find(params[:id])
     end
 
-    @p_set.update_attributes(params[:p_set].permit(
-      :name,
-      :data
-    ))
+    p_set = params.require(:p_set).permit(:name, :data).to_h
+    p_set[:data] = JSON(p_set[:data])
+    @p_set.update_attributes(p_set)
 
-    redirect_to edit_admin_p_set_path(@p_set)
+    respond_to do |format|
+      format.json { render json: @p_set }
+      format.html { redirect_to edit_admin_p_set_path(@p_set) }
+    end
   end
 
   def show_data

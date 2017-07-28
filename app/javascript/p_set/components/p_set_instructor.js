@@ -8,10 +8,7 @@ import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
 import { newPSet, validateMeter, validateOptions } from '../lib/models';
-
-function pSetUrl(id) {
-  return `/admin/p_sets/${id}.json`;
-}
+import { fetchPSet, updatePSet } from '../lib/api';
 
 export default class PSetInstructorComponent extends React.Component {
   constructor(props) {
@@ -24,6 +21,7 @@ export default class PSetInstructorComponent extends React.Component {
         top: 0, bottom: 0
       },
       keySignature: '',
+      posting: false
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
@@ -42,7 +40,7 @@ export default class PSetInstructorComponent extends React.Component {
     const stave = newVexData.data.staves[this.state.stave];
     Object.assign(stave, {solution});
 
-    this.postUpdate(newVexData);
+    this.setState({vexData: newVexData});
   }
 
   get rhythmic() {
@@ -60,10 +58,16 @@ export default class PSetInstructorComponent extends React.Component {
   saveAndToggle() {
   }
 
-  postUpdate(newState) {
-    this.setState({vexData: newState});
+  postUpdate() {
     const { p_set_id } = this.props.match.params;
-    window.localStorage.setItem(pSetUrl(p_set_id), JSON.stringify(newState));
+    this.setState({posting: true});
+    updatePSet(p_set_id, this.state.vexData).done((pSet) => {
+      this.setState({vexData: pSet});
+    }).fail((e) => {
+      console.log(e.status);
+    }).always(() => {
+      this.setState({posting: false});
+    });
   }
 
   changeStave(e) {
@@ -116,15 +120,12 @@ export default class PSetInstructorComponent extends React.Component {
 
   componentDidMount() {
     const { p_set_id } = this.props.match.params;
-    const url = pSetUrl(p_set_id);
-    let pSet = window.localStorage.getItem(url);
-    if (_.isUndefined(pSet) || _.isNull(pSet)) {
-      alert('No PSet found by this ID!');
-    } else {
-      pSet = JSON.parse(pSet);
+    fetchPSet(p_set_id).done((pSet) => {
       const stave = this.harmonic ? pSet.data.staves.length - 1 : 0;
       this.setState({vexData: pSet, stave});
-    }
+    }).fail((e) => {
+      console.log(e.status);
+    });
 
     if (!_.isUndefined(this.containerEl)) {
       $(this.containerEl).foundation();
@@ -245,6 +246,14 @@ export default class PSetInstructorComponent extends React.Component {
                         onChange={this.changeStave.bind(this)}>
                   {staveOptions}
                 </select>
+              </fieldset>
+              <fieldset>
+                <legend>Save</legend>
+                <button
+                  className="button"
+                  onClick={this.postUpdate.bind(this)}>
+                  {this.state.posting ? 'Saving...' : 'Save'}
+                </button>
               </fieldset>
             </div>
             {entryComponent}
