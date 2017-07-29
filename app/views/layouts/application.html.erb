@@ -32,6 +32,16 @@
         <div class="top-bar-right">
           <ul class="menu">
             <% if user_signed_in? %>
+              <% if @current_user_is_admin %>
+                <li class="menu-text">
+                  <%= link_to 'courses', admin_courses_path %>
+                </li>
+              <% end %>
+              <% if @current_user_is_enrolled %>
+                <li class="menu-text">
+                  <%= link_to 'classrooms', classrooms_path %>
+                </li>
+              <% end %>
               <li class="menu-text">
                 <%= link_to 'sign out', destroy_user_session_path, method: :delete %>
               </li>

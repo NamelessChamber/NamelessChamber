@@ -33,16 +33,14 @@ export function fetchPSet(id, admin) {
   });
 }
 
-export function updatePSet(id, pSet, admin, completed) {
+export function updatePSet(id, pSet, admin) {
   // boolify it
-  completed = completed || false;
   const prefix = admin ? '/admin' : '';
   const url = `${prefix}/p_sets/${id}.json`;
   const data = {
     p_set: {
       name: pSet.name,
-      data: pSet.data,
-      completed
+      data: pSet.data
     }
   };
   return railsFetch(url, {
@@ -58,9 +56,10 @@ export function fetchPSetAnswer(id) {
   });
 }
 
-export function updatePSetAnswer(id, answer) {
+export function updatePSetAnswer(id, answer, completed) {
+  completed = completed || false;
   const url = `/p_sets/${id}/answer.json`;
-  const data = {answer};
+  const data = {answer, completed};
   return railsFetch(url, {
     method: 'PUT',
     body: data

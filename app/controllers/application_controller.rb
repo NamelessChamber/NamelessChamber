@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   # protect_from_forgery unless: -> { request.format.json? }
+  before_action :prefetch_admin_status
 
   def not_found
     respond_to do |format|
@@ -21,6 +22,13 @@ class ApplicationController < ActionController::Base
   def assert_course_admin!
     if current_user.nil? || current_user.courses.empty?
       redirect_to root_path
+    end
+  end
+
+  def prefetch_admin_status
+    unless current_user.nil?
+      @current_user_is_admin = current_user.courses.count > 0
+      @current_user_is_enrolled = current_user.classrooms.count > 0
     end
   end
 end
