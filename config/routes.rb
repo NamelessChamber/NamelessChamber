@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :classroom_psets, only: [:create, :destroy]
 
+    resources :p_set_answers, only: [:show]
+
     resources :courses do
       resources :classrooms do
         get 'assign', to: 'classrooms#assign'

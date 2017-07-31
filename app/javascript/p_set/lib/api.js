@@ -82,3 +82,8 @@ export function updatePSetAnswer(id, answer, submission, completed) {
     body: data
   }).then((data) => data.json());
 }
+
+export function fetchPSetAnswerAdmin(id) {
+  const url = `/admin/p_set_answers/${id}.json`;
+  return railsFetch(url, {method: 'GET'}).then((data) => data.json());
+}
