@@ -16,7 +16,7 @@ class PSetsController < ApplicationController
         @p_set_answer = PSetAnswer.create(
           user: current_user,
           p_set: @p_set,
-          data: {answers: []}
+          data: {answer: nil, submissions: []}
         )
       else
         error = {error: 'User not enrolled in class'}
@@ -25,7 +25,7 @@ class PSetsController < ApplicationController
       end
     end
 
-    answer = @p_set_answer.data['answers'].last
+    answer = @p_set_answer.data['answer']
     respond_to do |format|
       format.json { render json: {answer: answer} }
     end
@@ -38,7 +38,11 @@ class PSetsController < ApplicationController
       head :not_found
     else
       answer = params[:answer]
-      @p_set_answer.data['answers'].push(answer)
+      @p_set_answer.data['answer'] = answer
+
+      if params[:submission]
+        @p_set_answer.data['submissions'].push(answer)
+      end
 
       if !params[:completed].nil?
         if !@p_set_answer.completed && params[:completed]

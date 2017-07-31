@@ -24,7 +24,8 @@ export default class PSetStudentComponent extends React.Component {
       },
       errors: [],
       posting: false,
-      completing: false
+      completing: false,
+      submitting: false
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
@@ -103,16 +104,21 @@ export default class PSetStudentComponent extends React.Component {
     this.setState(pos);
   }
 
-  postAnswer(answer, completed) {
+  postAnswer(answer, submission, completed) {
     if (completed) {
       if (!confirm('Submission is final. Are you sure you want to proceed?')) {
         return;
       }
     }
-    const postingKey = completed ? 'completing' : 'posting';
+    let postingKey = 'posting';
+    if (completed) {
+      postingKey = 'completing';
+    } else if (submission) {
+      postingKey = 'submitting';
+    }
     this.setState({[postingKey]: true});
     const { p_set_id } = this.props.match.params;
-    updatePSetAnswer(p_set_id, answer, completed).then((answer) => {
+    updatePSetAnswer(p_set_id, answer, submission, completed).then((answer) => {
       this.setState({answer, [postingKey]: false});
       if (completed) {
         window.location = '/classrooms';
@@ -367,15 +373,22 @@ export default class PSetStudentComponent extends React.Component {
               <p>
                 <button
                   className="button"
-                  onClick={() => this.postAnswer(this.state.answer, false)}>
+                  onClick={() => this.postAnswer(this.state.answer, false, false)}>
                   {this.state.posting ? 'Saving...' : 'Save'}
                 </button>
               </p>
               <p>
                 <button
                   className="button"
-                  onClick={() => this.postAnswer(this.state.answer, true)}>
-                  {this.state.completing ? 'Submitting...' : 'Submit PSet'}
+                  onClick={() => this.postAnswer(this.state.answer, true, false)}>
+                  {this.state.submitting ? 'Submitting...' : 'Check Answer'}
+                </button>
+              </p>
+              <p>
+                <button
+                  className="button"
+                  onClick={() => this.postAnswer(this.state.answer, true, true)}>
+                  {this.state.completing ? 'Submitting...' : 'Complete PSet'}
                 </button>
               </p>
             </div>

@@ -12,6 +12,22 @@ function railsFetch(url, options) {
     }
   }, options);
 
+  let { queryParams } = options;
+
+  if (_.isObject(queryParams)) {
+    _.unset(options.queryParams);
+    queryParams = _.map((v, k, i) => {
+      v = encodeURIComponent(v);
+      return `${k}=${v}`;
+    }).join('&');
+
+    if (url.indexOf('?') > -1) {
+      url = `${url}&${queryParams}`;
+    } else {
+      url = `${url}?${queryParams}`;
+    }
+  }
+
   if (_.isObject(options.body)) {
     options.body = JSON.stringify(options.body);
   }
@@ -56,10 +72,11 @@ export function fetchPSetAnswer(id) {
   });
 }
 
-export function updatePSetAnswer(id, answer, completed) {
+export function updatePSetAnswer(id, answer, submission, completed) {
   completed = completed || false;
+  submission = submission || false;
   const url = `/p_sets/${id}/answer.json`;
-  const data = {answer, completed};
+  const data = {answer, completed, submission};
   return railsFetch(url, {
     method: 'PUT',
     body: data
