@@ -3,8 +3,12 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   namespace :admin do
+    resources :classroom_psets, only: [:create, :destroy]
+
     resources :courses do
-      resources :classrooms
+      resources :classrooms do
+        get 'assign', to: 'classrooms#assign'
+      end
     end
 
     resources :exercise_categories do

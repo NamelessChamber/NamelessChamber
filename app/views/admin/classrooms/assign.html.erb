@@ -1,0 +1,52 @@
+<div class="small-12 columns">
+  <div class="row columns">
+    <h3>assign pset to: <%= @course.name %> / <%= @classroom.name %></h3>
+  </div>
+  <% if @p_set.nil? %>
+    <% @exercise_categories.each do |category| %>
+      <div class="card">
+        <div class="card-divider">
+          <h4><%= category.name %></h4>
+        </div>
+        <% if category.exercise_subcategories.count > 0 %>
+          <% category.exercise_subcategories.each do |subcategory| %>
+            <div class="card-section">
+              <h5><%= subcategory.name %></h5>
+              <% if subcategory.p_sets.count > 0 %>
+                <ul>
+                  <% subcategory.p_sets.each do |p_set| %>
+                    <li><%= link_to (p_set.name || 'new pset'), admin_course_classroom_assign_path(@course, @classroom, p_set_id: p_set.id) %></li>
+                  <% end %>
+                </ul>
+              <% else %>
+                no psets in subcategory.
+              <% end %>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="card-section">
+            no subcategories in category.
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+      <%= form_for @classroom_pset, url: admin_classroom_psets_path do |f| %>
+        <div class="row">
+          <%= f.hidden_field :classroom_id, value: @classroom.id %>
+          <%= f.hidden_field :p_set_id, value: @p_set.id %>
+          <div class="small-6 columns">
+            <%= f.label :start_date %>
+            <%= date_field(:classroom_pset, :start_date) %>
+          </div>
+          <div class="small-6 columns">
+            <%= f.label :end_date %>
+            <%= date_field(:classroom_pset, :end_date) %>
+          </div>
+        </div>
+        <div class="row columns">
+          <%= f.submit class: 'button' %>
+        </div>
+      <% end %>
+  <% end %>
+</div>

@@ -35,6 +35,21 @@ class Admin::ClassroomsController < ApplicationController
     end
   end
 
+  def assign
+    @exercise_categories = ExerciseCategory
+      .all
+      .includes(:exercise_subcategories => :p_sets)
+      .group('exercise_categories.id')
+      .order('name ASC')
+
+    @classroom = Classroom.find(params[:classroom_id])
+
+    unless params[:p_set_id].nil?
+      @p_set = PSet.find(params[:p_set_id])
+      @classroom_pset = ClassroomPset.new(p_set: @p_set, classroom: @classroom)
+    end
+  end
+
   private
 
   def find_course

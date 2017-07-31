@@ -5,8 +5,6 @@ class Admin::ExerciseCategoriesController < ApplicationController
       .includes(:exercise_subcategories => :p_sets)
       .group('exercise_categories.id')
       .order('name ASC')
-
-    puts @exercise_categories.inspect
   end
 
   def new
