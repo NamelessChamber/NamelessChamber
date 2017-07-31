@@ -13,4 +13,17 @@ class Admin::ClassroomPsetsController < ApplicationController
 
   def destroy
   end
+
+  def show
+    begin
+      @classroom_pset = ClassroomPset.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      not_found
+      return
+    end
+
+    @classroom = @classroom_pset.classroom
+    @p_set = @classroom_pset.p_set
+    @answers = @classroom_pset.answers
+  end
 end

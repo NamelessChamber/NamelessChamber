@@ -41,7 +41,7 @@
               </td>
               <td><%= crp.start_date %></td>
               <td><%= crp.end_date %></td>
-              <td><%= link_to 'submissions', '#', class: 'button' %></td>
+              <td><%= link_to 'submissions', admin_classroom_pset_path(crp), class: 'button' %></td>
             </tr>
           <% end %>
         </tbody>

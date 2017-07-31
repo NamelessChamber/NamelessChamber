@@ -1,0 +1,20 @@
+<div class="small-12 columns">
+  <h3><%= @classroom.name %></h3>
+  <h5>submissions for <%= @p_set.name %></h5>
+  <table>
+    <thead>
+      <th>student</th>
+      <th>submission date</th>
+      <th>submission</th>
+    </thead>
+    <tbody>
+      <% @answers.each do |answer| %>
+        <tr>
+          <td><%= answer.user.whole_name %></td>
+          <td><%= answer.updated_at %></td>
+          <td><%= link_to 'submission', admin_p_set_answer_path(answer), class: 'button' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
