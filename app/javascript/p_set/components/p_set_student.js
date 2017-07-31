@@ -215,7 +215,7 @@ export default class PSetStudentComponent extends React.Component {
       if (_.isEmpty(answer)) {
         answer = newAnswer(state.vexData);
       }
-      this.setState(Object.assign(state, {answer}));
+      this.setState(Object.assign(state, {answer}, {meter: answer.meter}));
     });
 
     if (!_.isUndefined(this.containerEl)) {
@@ -350,7 +350,7 @@ export default class PSetStudentComponent extends React.Component {
           <div className="small-10 columns">
             <VexflowComponent staves={vfStaves}
               editing={this.state.stave}
-              meter={this.state.meter}
+              meter={this.state.answer.meter}
               render="answer"
               mode={renderMode}
               keySignature={this.state.answer.keySignature}
