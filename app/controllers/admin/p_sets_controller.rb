@@ -24,7 +24,7 @@ class Admin::PSetsController < ApplicationController
       .merge(user: current_user)
     p_set = PSet.create(p)
 
-    redirect_to edit_admin_p_set_path(id: p_set.id)
+    redirect_to admin_p_set_options_path(p_set.id)
   end
 
   def edit

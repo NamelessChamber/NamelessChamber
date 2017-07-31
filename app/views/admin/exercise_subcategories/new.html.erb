@@ -1,0 +1,7 @@
+<div class="small-12 columns">
+  <%= form_for @exercise_subcategory, url: {action: :create} do |f| %>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+    <%= f.submit class: 'button' %>
+  <% end %>
+</div>

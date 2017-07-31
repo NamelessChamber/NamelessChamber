@@ -1,0 +1,20 @@
+<div class="small-12 columns">
+  <h3 class="float-left">classrooms for: <%= @course.name %></h3>
+  <%= link_to 'create new classroom', new_admin_course_classroom_path(@course), class: 'button float-right' %>
+  <table>
+    <thead>
+      <th>name</th>
+      <th>start date</th>
+      <th>end date</th>
+    </thead>
+    <tbody>
+      <% @classrooms.each do |classroom| %>
+        <tr>
+          <td><%= link_to classroom.name, admin_course_classroom_path(@course, classroom) %></td>
+          <td><%= classroom.start_date %></td>
+          <td><%= classroom.end_date %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

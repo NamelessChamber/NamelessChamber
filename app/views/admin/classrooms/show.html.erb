@@ -1,0 +1,51 @@
+<div class="small-12 columns">
+  <h3><%= @course.name %> / <%= @classroom.name %></h3>
+  <div class="row">
+    <div class="small-4 columns">
+      <h5>students</h5>
+      <table>
+        <thead>
+          <th>name</th>
+          <th>submissions</th>
+        </thead>
+        <tbody>
+          <% @students.each do |student| %>
+            <tr>
+              <td><%= student.whole_name %></td>
+              <td><%= link_to 'submissions', '#', class: 'button' %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="small-8 columns">
+      <h5 class="float-left">assignments</h5>
+      <%= link_to 'assign pset', '#', class: 'button float-right' %>
+      <table>
+        <thead>
+          <th>name</th>
+          <th>category</th>
+          <th>start date</th>
+          <th>end date</th>
+          <th>submissions</th>
+        </thead>
+        <tbody>
+          <% @classroom_psets.each do |crp| %>
+            <tr>
+              <td><%= crp.p_set.name %></td>
+              <td>
+                <%= crp.p_set.exercise_subcategory.exercise_category.name %>
+                >
+                <%= crp.p_set.exercise_subcategory.name %>
+                <%= crp.p_set.exercise_subcategory_level %>
+              </td>
+              <td><%= crp.start_date %></td>
+              <td><%= crp.end_date %></td>
+              <td><%= link_to 'submissions', '#', class: 'button' %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

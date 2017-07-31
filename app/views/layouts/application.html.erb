@@ -36,6 +36,9 @@
                 <li class="menu-text">
                   <%= link_to 'courses', admin_courses_path %>
                 </li>
+                <li class="menu-text">
+                  <%= link_to 'psets', admin_exercise_categories_path %>
+                </li>
               <% end %>
               <% if @current_user_is_enrolled %>
                 <li class="menu-text">

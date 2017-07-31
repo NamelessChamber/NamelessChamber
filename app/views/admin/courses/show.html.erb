@@ -14,24 +14,24 @@
     </div>
   </div>
   <div class="card-divider">
-    <h2>Classrooms</h2>
+    <h2>classrooms</h2>
   </div>
   <div class="card-section">
     <% if @course.classrooms.empty? %>
       <h3>
         No classrooms for this course.
       </h3>
-      <%= link_to 'Create one.', new_admin_course_classroom_path(@course.id), class: 'button' %>
+      <%= link_to 'Create one.', new_admin_course_classroom_path(@course), class: 'button' %>
     <% else %>
       <table class="hover">
         <thead>
-          <th>Name</th>
-          <th>Created</th>
+          <th>name</th>
+          <th>created</th>
         </thead>
         <tbody>
           <% @course.classrooms.each do |classroom| %>
             <tr>
-              <td><%= classroom.name %></td>
+              <td><%= link_to classroom.name, admin_course_classroom_path(@course, classroom) %></td>
               <td><%= classroom.created_at %></td>
             </tr>
           <% end %>
