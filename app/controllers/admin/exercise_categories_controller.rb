@@ -16,6 +16,6 @@ class Admin::ExerciseCategoriesController < ApplicationController
       params.require(:exercise_category).permit(:name)
     )
 
-    redirect_to admin_p_exercise_categories_path
+    redirect_to admin_exercise_categories_path
   end
 end
