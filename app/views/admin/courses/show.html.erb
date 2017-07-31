@@ -7,36 +7,16 @@
       <div class="small-12 medium-4 large-4 columns">
         <ul class="menu align-right">
           <li class="menu-item">
-            <%= link_to 'Edit', edit_admin_course_path(@course.id), class: ['button', 'align-right'] %>
+            <%= link_to 'edit', edit_admin_course_path(@course.id), class: ['button', 'align-right'] %>
           </li>
         </ul>
       </div>
     </div>
   </div>
   <div class="card-divider">
-    <h2>classrooms</h2>
+    <h3>classrooms</h3>
   </div>
   <div class="card-section">
-    <% if @course.classrooms.empty? %>
-      <h3>
-        No classrooms for this course.
-      </h3>
-      <%= link_to 'Create one.', new_admin_course_classroom_path(@course), class: 'button' %>
-    <% else %>
-      <table class="hover">
-        <thead>
-          <th>name</th>
-          <th>created</th>
-        </thead>
-        <tbody>
-          <% @course.classrooms.each do |classroom| %>
-            <tr>
-              <td><%= link_to classroom.name, admin_course_classroom_path(@course, classroom) %></td>
-              <td><%= classroom.created_at %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    <% end %>
+    <%= link_to 'manage classrooms', admin_course_classrooms_path(@course.id), class: 'button' %>
   </div>
 </div>
