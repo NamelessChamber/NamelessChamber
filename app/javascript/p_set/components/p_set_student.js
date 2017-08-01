@@ -8,7 +8,7 @@ import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
 
-import { newAnswer } from '../lib/models';
+import { newAnswer, compareMeter } from '../lib/models';
 import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from '../lib/api';
 
 export default class PSetStudentComponent extends React.Component {
@@ -199,10 +199,21 @@ export default class PSetStudentComponent extends React.Component {
     const staveErrors = this.getErrors(this.rhythmic);
     if (_.every(staveErrors, (es) => _.every(es, (e) => !e))) {
       errors.push('No errors!');
-    }
-
-    if (this.rhythmic) {
-      const solutionMeters = this.state.vexData.data;
+    } else {
+      const { meter, staves } = this.state.vexData.data;
+      const solutionMeters = this.state.answer.staves.map((stave) => {
+        return stave.map(compareMeter.bind(this, meter));
+      });
+      solutionMeters.forEach((stave, i) => {
+        const staveName = staves[i].name;
+        stave.forEach((measure, e) => {
+          if (measure > 0) {
+            errors.push(`Measure ${e + 1} in ${staveName} has too few beats`);
+          } else if (measure < 0) {
+            errors.push(`Measure ${e + 1} in ${staveName} has too many beats`);
+          }
+        });
+      });
     }
 
     this.setState({staveErrors, errors});
@@ -340,6 +351,11 @@ export default class PSetStudentComponent extends React.Component {
         return Object.assign(s, {answer: a});
       });
 
+    const showIf = (cond) => {
+      return cond ?
+        {} : {display: 'none'};
+    };
+
     return (
       <div className="small-12 columns" ref={(el) => this.containerEl = el}>
         <div className="reveal"
@@ -363,6 +379,9 @@ export default class PSetStudentComponent extends React.Component {
               measures={this.state.vexData.data.measures}
               staveErrors={this.state.staveErrors}
               currentNote={this.state.currentNote} />
+            <div style={showIf(!_.isEmpty(this.state.errors))}>
+              <ul>{errors}</ul>
+            </div>
           </div>
           <div className="small-2 columns">
             <div className="row columns">
