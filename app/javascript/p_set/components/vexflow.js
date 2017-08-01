@@ -194,7 +194,7 @@ export default class VexflowComponent extends React.Component {
       clef: stave.clef
     });
 
-    if (error && editing) {
+    if (error) {
       const annotation = new VF.Annotation('x')
         .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
       staveNote.addModifier(0, annotation);
@@ -240,7 +240,7 @@ export default class VexflowComponent extends React.Component {
     return staveNote;
   }
 
-  scoreToVoice(props, measureIndex, score, width, highlight, editing, stave, renderMode) {
+  scoreToVoice(props, measureIndex, staveIndex, score, width, highlight, editing, stave, renderMode) {
     const context = this.renderer.getContext();
 
     const voiceOpts = (props.meter.top && props.meter.bottom) ?
@@ -256,7 +256,7 @@ export default class VexflowComponent extends React.Component {
       );
     } else {
       notes = score.map((n, i) => {
-        const error = props.staveErrors[measureIndex][i];
+        const error = props.staveErrors[staveIndex][measureIndex][i];
         return this.convertNote(props, error, highlight, editing, stave, renderMode, n, i)
       });
     }
@@ -371,7 +371,7 @@ export default class VexflowComponent extends React.Component {
         }
 
         const [voice, beams, vfNotes] =
-          this.scoreToVoice(props, index, notes, width, highlight, editing, stave, renderMode);
+          this.scoreToVoice(props, index, e, notes, width, highlight, editing, stave, renderMode);
         voice.draw(context, staveObj);
         beams.forEach((b) => b.setContext(context).draw());
         allVFNotes = allVFNotes.concat(vfNotes);

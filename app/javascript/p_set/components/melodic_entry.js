@@ -109,7 +109,8 @@ export default class MelodicEntryComponent extends React.Component {
     const note = this.currentNote(measures);
     note.octave = octave;
 
-    this.props.updateStave(measures);
+    const { currentMeasure, currentNote } = this.props;
+    this.props.updateStave(measures, currentMeasure, currentNote);
 
     this.setState({
       octave
@@ -133,7 +134,8 @@ export default class MelodicEntryComponent extends React.Component {
     note.solfege = solfege;
     note.octave = octave;
 
-    this.props.updateStave(measures);
+    const { currentMeasure, currentNote } = this.props;
+    this.props.updateStave(measures, currentMeasure, currentNote);
   }
 
   handleKeyDown(e) {

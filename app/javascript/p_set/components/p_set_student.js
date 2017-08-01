@@ -36,8 +36,6 @@ export default class PSetStudentComponent extends React.Component {
     this.saveAndToggle = this.saveAndToggle.bind(this);
     this.saveAndRender = this.saveAndRender.bind(this);
     this.reportErrors = this.reportErrors.bind(this);
-
-    this.showError = false;
   }
 
   get rhythmic() {
@@ -63,16 +61,12 @@ export default class PSetStudentComponent extends React.Component {
       }
     }
 
-    // const staveErrors = _.cloneDeep(this.state.staveErrors);
-    // if (_.isArray(staveErrors)) {
-    //   staveErrors[changeMeasure][changeNote] = false;
-    // }
-    //
-    // this.setState({
-    //   staveErrors
-    // });
+    const staveErrors = _.cloneDeep(this.state.staveErrors);
+    if (_.isArray(staveErrors)) {
+      staveErrors[this.state.stave][changeMeasure][changeNote] = false;
+    }
 
-    this.setState({answer: newAnswer});
+    this.setState({answer: newAnswer, staveErrors});
   }
 
   saveAndToggle() {
@@ -120,6 +114,9 @@ export default class PSetStudentComponent extends React.Component {
     const { p_set_id } = this.props.match.params;
     updatePSetAnswer(p_set_id, answer, submission, completed).then((answer) => {
       this.setState({answer, [postingKey]: false});
+      if (submission) {
+        this.reportErrors();
+      }
       if (completed) {
         window.location = '/classrooms';
       }
@@ -164,44 +161,51 @@ export default class PSetStudentComponent extends React.Component {
   }
 
   getErrors(rhythmic) {
-    const stave = this.state.vexData.staves[this.state.stave];
-    const { answer, solution } = stave;
+    const staves = _.zipWith(
+      this.state.vexData.data.staves,
+      this.state.answer.staves,
+      (s, a) => {
+        return Object.assign(s, {answer: a});
+      });
 
-    return _.zipWith(answer, solution, (m1, m2) => {
-      return _.zipWith(m1.notes, m2.notes, (n1, n2) => {
-        if (_.isUndefined(n1)) {
-          return false;
-        }
+    return staves.map((stave) => {
+      const { answer, solution } = stave;
 
-        if (_.isUndefined(n2)) {
-          return true;
-        }
+      return _.zipWith(answer, solution, (m1, m2) => {
+        return _.zipWith(m1.notes, m2.notes, (n1, n2) => {
+          if (_.isUndefined(n1)) {
+            return false;
+          }
 
-        if (rhythmic) {
-          return n1.duration !== n2.duration ||
+          if (_.isUndefined(n2)) {
+            return true;
+          }
+
+          if (rhythmic) {
+            return n1.duration !== n2.duration ||
+            n1.tied !== n2.tied ||
             n1.dots !== n2.dots;
-        } else {
-          return !_.isEqual(n1, n2);
-        }
+          } else {
+            return !_.isEqual(n1, n2);
+          }
+        });
       });
     });
   }
 
-  reportErrors(errors) {
-    if (!_.isUndefined(errors)) {
-      // reporting an error modal
-      this.showError = true;
-      this.setState({errors});
-    } else {
-      // marking errors on stave
-      errors = [];
-      const staveErrors = this.getErrors(this.rhythmic);
-      if (_.every(staveErrors, (es) => _.every(es, (e) => !e))) {
-        this.showError = true;
-        errors.push('No errors!');
-      }
-      this.setState({staveErrors, errors});
+  reportErrors() {
+    // marking errors on stave
+    let errors = [];
+    const staveErrors = this.getErrors(this.rhythmic);
+    if (_.every(staveErrors, (es) => _.every(es, (e) => !e))) {
+      errors.push('No errors!');
     }
+
+    if (this.rhythmic) {
+      const solutionMeters = this.state.vexData.data;
+    }
+
+    this.setState({staveErrors, errors});
   }
 
   componentDidMount() {
