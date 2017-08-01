@@ -95,6 +95,17 @@ export default class PSetStudentComponent extends React.Component {
   }
 
   handlePositionUpdate(pos) {
+    if (this.rhythmic) {
+      const measure =
+        this.state.answer.staves[this.state.stave][this.state.currentMeasure];
+      const { meter } = this.state.vexData.data;
+      const meterCheck = compareMeter(meter, measure);
+      if (meterCheck > 0) {
+        alert('Measure has too few beats! Please go back and correct it.');
+      } else if (meterCheck < 0) {
+        alert('Measure has too many beats! Please go back and correct it.');
+      }
+    }
     this.setState(pos);
   }
 
