@@ -297,14 +297,11 @@ export default class PSetStudentComponent extends React.Component {
           instructor={false}
           save={this.saveAndToggle} />
       );
-      audios = stave.audios.rhythm.map(({name, url}, i) => {
-        return (
-          <li key={i}>
-            <p>{name}</p>
-            <ReactAudioPlayer src={url}
-              controls />
-          </li>
-        );
+      audios = _.flatMap(stave.audios.rhythm, ({name, url}, i) => {
+        return [
+          (<dt key={i*2}>{name}</dt>),
+          (<dd key={i*2+1}><ReactAudioPlayer src={url} controls /></dd>)
+        ];
       });
     } else if (this.melodic) {
       renderMode = VexflowComponent.RenderMode.MELODIC;
@@ -431,7 +428,7 @@ export default class PSetStudentComponent extends React.Component {
 
             <fieldset>
               <legend>Audio Samples</legend>
-              <ul>{audios}</ul>
+              <dl>{audios}</dl>
             </fieldset>
           </div>
         </div>

@@ -60,4 +60,17 @@ class Admin::PSetsController < ApplicationController
       format.html { redirect_to edit_admin_p_set_path(@p_set) }
     end
   end
+
+  def destroy
+    begin
+      @p_set = PSet.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      head :not_found
+      return
+    end
+
+    @p_set.destroy
+
+    redirect_to admin_exercise_categories_path
+  end
 end

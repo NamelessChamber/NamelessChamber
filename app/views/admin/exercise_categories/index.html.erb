@@ -24,7 +24,11 @@
           <% if subcategory.p_sets.count > 0 %>
             <ul>
               <% subcategory.p_sets.each do |p_set| %>
-                <li><%= link_to (p_set.name || 'new pset'), admin_p_set_options_path(p_set) %></li>
+                <li>
+                  <%= p_set.name || 'new pset' %>
+                  <%= link_to 'edit', admin_p_set_options_path(p_set), class: 'button small' %>
+                  <%= link_to 'delete', admin_p_set_path(p_set), method: :delete, class: 'alert button small' %>
+                </li>
               <% end %>
             </ul>
           <% else %>
