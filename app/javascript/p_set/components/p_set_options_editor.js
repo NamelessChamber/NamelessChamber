@@ -80,7 +80,7 @@ export default class PSetOptionsEditor extends React.Component {
   onMeasuresChange(e) {
     const newState = _.cloneDeep(this.state);
     let { value } = e.target;
-    value = parseInt(value);
+    value = Math.max(parseInt(value), 0);
     _.set(newState, 'data.measures', value);
     _.update(newState, 'data.staves', (staves) => {
       return _.map(staves, (stave) => {
