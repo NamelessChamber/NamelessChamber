@@ -167,6 +167,7 @@ export default class StaveOptionsEditor extends React.Component {
               {emptyOption}
               {tonicOptions}
             </select>
+            <div><b>Default Octave</b></div>
             <select
               name="octave"
               value={tonic.octave}
