@@ -7,11 +7,7 @@ const STAVES = {
   treble: 'Treble',
   bass: 'Bass',
   alto: 'Alto',
-  tenor: 'Tenor',
-  soprano: 'Soprano',
-  'mezzo-soprano': 'Mezzo-Soprano',
-  'baritone-c': 'Baritone (C Clef)',
-  'baritone-f': 'Baritone (F Clef)'
+  tenor: 'Tenor'
 };
 
 export default class StaveOptionsEditor extends React.Component {
@@ -111,6 +107,7 @@ export default class StaveOptionsEditor extends React.Component {
     let tonicOptions = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
     tonicOptions = _.chain(tonicOptions)
                     .flatMap((x) => [x, `${x}#`, `${x}b`])
+                    .filter((x) => !_.includes(['E#', 'D#', 'Fb', 'A#', 'B#'], x))
                     .map((x) => (
                       <option key={x} value={x}>{x}</option>
                     ))
