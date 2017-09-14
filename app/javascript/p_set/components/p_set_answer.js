@@ -92,6 +92,9 @@ export default class PSetAnswerComponent extends React.Component {
               onClick={this.updateSubmission.bind(this, true)}>
               &gt;&gt;
             </button>
+            <p>
+              Submitted at: {submission.created_at}
+            </p>
           </fieldset>
           <fieldset>
             <legend>Page {this.state.page + 1} / {pages}</legend>

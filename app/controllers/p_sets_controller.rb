@@ -38,6 +38,7 @@ class PSetsController < ApplicationController
       head :not_found
     else
       answer = params[:answer]
+      answer['created_at'] = Time.now
       @p_set_answer.data['answer'] = answer
 
       if params[:submission]
