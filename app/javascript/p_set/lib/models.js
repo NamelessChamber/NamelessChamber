@@ -127,10 +127,11 @@ export const DEFAULTS = {
     'me', 'se', 'le', 'te'
   ],
   harmony: [
-    'I', 'ii', 'iii', 'IV', 'V', 'vi', 'viio',
+    'I', 'ii', 'iiØ', 'iii', 'IV', 'V', 'vi', 'viio', 'viiØ',
     'vio', 'i', 'II', 'iio', 'III', 'III+', 'iv',
     'v', 'VI', 'VII', 'VII+', 'N6', 'Gr+6', 'Fr+6',
-    'It+6', 'V/V', 'V/ii', 'V/iii', 'V/vi', 'V/IV'
+    'It+6', 'V/V', 'V/ii', 'V/iii', 'V/vi', 'V/IV',
+    'V/iio', 'V/IIIo', 'V/ivo', 'V/VIo', 'V/VIIo'
   ],
   inversion: [
     '6', '6/4', '4/3', '4/2', '6/5', '7'
