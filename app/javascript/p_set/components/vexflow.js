@@ -202,7 +202,7 @@ export default class VexflowComponent extends React.Component {
 
     if (renderMode === RENDER_MODES.MELODIC &&
         (_.isUndefined(solfege) || _.isUndefined(octave)) &&
-        editing) {
+        editing && !duration.endsWith('r')) {
       const annotation = new VF.Annotation('?')
         .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
       staveNote.addModifier(0, annotation);
