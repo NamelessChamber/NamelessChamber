@@ -244,6 +244,7 @@ export default class RhythmicEntryComponent extends React.Component {
             <li><b>Backspace/Delete</b> removes the last note in a measure</li>
             <li><b>d</b> adds a dot to the last note in a measure</li>
             <li><b>Shift+d</b> removes a dot from the last note in a measure</li>
+            <li><b>t</b> Toggles note ties. A tied note will show a tie to the next note entered.</li>
           </ul>
         </div>
         <div className="row columns" style={showIf(!meterCorrect && !instructor)}>
