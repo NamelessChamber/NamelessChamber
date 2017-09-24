@@ -184,15 +184,23 @@ export default class PSetStudentComponent extends React.Component {
     } else {
       const { meter, staves } = this.state.vexData.data;
       const solutionMeters = this.state.answer.staves.map((stave) => {
-        return stave.map(compareMeter.bind(this, meter));
+        return stave.map((measure) => {
+          if (measure.notes === 0) {
+            return null;
+          } else {
+            return compareMeter(meter, measure);
+          }
+        });
       });
       solutionMeters.forEach((stave, i) => {
         const staveName = staves[i].name;
         stave.forEach((measure, e) => {
-          if (measure > 0) {
-            errors.push(`Measure ${e + 1} in ${staveName} has too few beats`);
-          } else if (measure < 0) {
-            errors.push(`Measure ${e + 1} in ${staveName} has too many beats`);
+          if (!_.isNull(measure)) {
+            if (measure > 0) {
+              errors.push(`Measure ${e + 1} in ${staveName} has too few beats`);
+            } else if (measure < 0) {
+              errors.push(`Measure ${e + 1} in ${staveName} has too many beats`);
+            }
           }
         });
       });

@@ -10,8 +10,11 @@ export default class RhythmicEntryComponent extends React.Component {
   constructor(props) {
     super(props);
 
+    const defaultNote = _.find(props.options.rhythm, ([,x]) => x);
+
     this.state = {
-      meter: props.meter
+      meter: props.meter,
+      currentNote: _.isUndefined(defaultNote) ? undefined : defaultNote[0]
     };
   }
 

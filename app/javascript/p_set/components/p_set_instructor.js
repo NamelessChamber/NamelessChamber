@@ -7,7 +7,7 @@ import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
-import { newPSet, validateMeter, validateOptions } from '../lib/models';
+import { newPSet, validateMeter, validateOptions, compareMeter } from '../lib/models';
 import { fetchPSet, updatePSet } from '../lib/api';
 
 export default class PSetInstructorComponent extends React.Component {
@@ -21,7 +21,8 @@ export default class PSetInstructorComponent extends React.Component {
         top: 0, bottom: 0
       },
       keySignature: '',
-      posting: false
+      posting: false,
+      errors: []
     };
 
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
@@ -40,7 +41,18 @@ export default class PSetInstructorComponent extends React.Component {
     const stave = newVexData.data.staves[this.state.stave];
     Object.assign(stave, {solution});
 
-    this.setState({vexData: newVexData});
+    const { meter } = newVexData.data;
+    const { currentMeasure } = this.state;
+    const measure = solution[currentMeasure];
+    const errors = [];
+    const result = compareMeter(meter, measure);
+    if (result < 0) {
+      errors.push(`Measure ${currentMeasure + 1} in ${stave.name} has too few beats`);
+    } else if (result > 0) {
+      errors.push(`Measure ${currentMeasure + 1} in ${stave.name} has too many beats`);
+    }
+
+    this.setState({vexData: newVexData, errors});
   }
 
   get rhythmic() {
@@ -224,6 +236,14 @@ export default class PSetInstructorComponent extends React.Component {
       );
     }
 
+    const errors = this.state.errors.map((e, i) => (
+      <li key={i}>{e}</li>
+    ));
+    const showIf = (cond) => {
+      return cond ?
+        {} : {display: 'none'};
+    };
+
     const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
     const mode = this.rhythmic ? 'rhythm' : 'melody';
     return (
@@ -241,6 +261,9 @@ export default class PSetInstructorComponent extends React.Component {
                               startMeasure={startMeasure}
                               measures={this.state.vexData.data.measures}
                               currentNote={this.state.currentNote} />
+            <div style={showIf(!_.isEmpty(errors))}>
+              <ul>{errors}</ul>
+            </div>
           </div>
           <div className="small-2 columns">
             <div className="row columns">
