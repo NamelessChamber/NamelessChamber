@@ -8,7 +8,7 @@ import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
 
-import { newAnswer, compareMeter } from '../lib/models';
+import { newAnswer, compareMeter, getAnswerErrors } from '../lib/models';
 import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from '../lib/api';
 
 export default class PSetStudentComponent extends React.Component {
@@ -171,43 +171,14 @@ export default class PSetStudentComponent extends React.Component {
     alert('Mind our dust! Thanks for completing the exercise. Please leave any feedback in the survey!');
   }
 
-  getErrors(rhythmic) {
-    const staves = _.zipWith(
-      this.state.vexData.data.staves,
-      this.state.answer.staves,
-      (s, a) => {
-        return Object.assign(s, {answer: a});
-      });
-
-    return staves.map((stave) => {
-      const { answer, solution } = stave;
-
-      return _.zipWith(answer, solution, (m1, m2) => {
-        return _.zipWith(m1.notes, m2.notes, (n1, n2) => {
-          if (_.isUndefined(n1)) {
-            return false;
-          }
-
-          if (_.isUndefined(n2)) {
-            return true;
-          }
-
-          if (rhythmic) {
-            return n1.duration !== n2.duration ||
-            n1.tied !== n2.tied ||
-            n1.dots !== n2.dots;
-          } else {
-            return !_.isEqual(n1, n2);
-          }
-        });
-      });
-    });
-  }
-
   reportErrors() {
     // marking errors on stave
     let errors = [];
-    const staveErrors = this.getErrors(this.rhythmic);
+    const staveErrors = getAnswerErrors(
+      this.state.vexData.data.staves,
+      this.state.answer.staves,
+      this.rhythmic
+    );
     if (_.every(staveErrors, (es) => _.every(es, (e) => !e))) {
       errors.push('No errors!');
     } else {

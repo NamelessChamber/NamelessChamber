@@ -5,6 +5,7 @@ import _ from 'lodash';
 import VexflowComponent from './vexflow';
 
 import { fetchPSetAnswerAdmin, fetchPSet } from '../lib/api';
+import { getAnswerErrors } from '../lib/models';
 
 export default class PSetAnswerComponent extends React.Component {
   constructor(props) {
@@ -66,6 +67,8 @@ export default class PSetAnswerComponent extends React.Component {
         return Object.assign(s, {answer: a});
       });
 
+    const staveErrors = getAnswerErrors(pSet.staves, submission.staves, false);
+
     const pages = Math.ceil(pSet.measures / 4);
 
     return (
@@ -78,7 +81,8 @@ export default class PSetAnswerComponent extends React.Component {
             mode={VexflowComponent.RenderMode.MELODIC}
             keySignature={submission.keySignature}
             startMeasure={this.state.page * 4}
-            measures={pSet.measures} />
+            measures={pSet.measures}
+            staveErrors={staveErrors} />
         </div>
         <div className="small-2 columns">
           <fieldset>

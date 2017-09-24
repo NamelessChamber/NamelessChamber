@@ -73,6 +73,39 @@ export function validateOptions(data) {
   }
 }
 
+export function getAnswerErrors(solution, answer, rhythmic) {
+  const staves = _.zipWith(
+    solution,
+    answer,
+    (s, a) => {
+      return Object.assign(s, {answer: a});
+    });
+
+  return staves.map((stave) => {
+    const { answer, solution } = stave;
+
+    return _.zipWith(answer, solution, (m1, m2) => {
+      return _.zipWith(m1.notes, m2.notes, (n1, n2) => {
+        if (_.isUndefined(n1)) {
+          return false;
+        }
+
+        if (_.isUndefined(n2)) {
+          return true;
+        }
+
+        if (rhythmic) {
+          return n1.duration !== n2.duration ||
+          n1.tied !== n2.tied ||
+          n1.dots !== n2.dots;
+        } else {
+          return !_.isEqual(n1, n2);
+        }
+      });
+    });
+  });
+}
+
 export function newAnswer(pSet) {
   pSet = _.cloneDeep(pSet);
   return {
