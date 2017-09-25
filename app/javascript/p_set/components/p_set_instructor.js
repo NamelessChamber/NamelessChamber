@@ -46,9 +46,9 @@ export default class PSetInstructorComponent extends React.Component {
     const measure = solution[currentMeasure];
     const errors = [];
     const result = compareMeter(meter, measure);
-    if (result < 0) {
+    if (result > 0) {
       errors.push(`Measure ${currentMeasure + 1} in ${stave.name} has too few beats`);
-    } else if (result > 0) {
+    } else if (result < 0) {
       errors.push(`Measure ${currentMeasure + 1} in ${stave.name} has too many beats`);
     }
 
