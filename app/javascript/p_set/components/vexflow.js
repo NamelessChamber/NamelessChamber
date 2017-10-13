@@ -51,6 +51,11 @@ const intervalSolfege = {
   // 'AA8': 'dai'
 };
 
+// The minor key starts three semitones below its relative major
+function minorToMajor(tonic) {
+  return tonic.interval('m3');
+};
+
 const solfegeInterval = _.invert(intervalSolfege);
 
 const noteEq = (n1, n2) => {
@@ -68,9 +73,13 @@ const tonicStr = (tonic) => {
   return (`${tonic.pitch}${tonic.octave}`).toLowerCase();
 };
 
-const getNote = (tonic, octave, solfege) => {
+const getNote = (tonic, octave, solfege, minor) => {
   const interval = solfegeInterval[solfege];
-  const note = teoria.note(`${tonicStr(tonic)}`);
+  let note = teoria.note(`${tonicStr(tonic)}`);
+
+  if (minor) {
+    note = minorToMajor(note);
+  }
 
   note.coord[0] += octave;
   return note.interval(interval);
@@ -182,7 +191,7 @@ export default class VexflowComponent extends React.Component {
     let accidental = null;
     if (renderMode === RENDER_MODES.MELODIC &&
         !_.isUndefined(solfege) && !_.isUndefined(octave)) {
-      const tNote = getNote(stave.tonic, octave, solfege);
+      const tNote = getNote(stave.tonic, octave, solfege, stave.scale === 'minor');
       const scale = teoria.scale(tonicStr(stave.tonic), stave.scale);
       keys = [`${tNote.name()}/${tNote.octave()}`];
       accidental = getAccidentalToRender(scale, tNote);
