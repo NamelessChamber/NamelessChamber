@@ -17,7 +17,7 @@ class PSetAudioUploader < CarrierWave::Uploader::Base
   def store_dir
     # "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
     Rails.env.production? ?
-      "tuna-music-dictation/p_set_audios" :
+      "p_set_audios" :
       "uploads/p_set_audios"
   end
 
