@@ -73,4 +73,49 @@ class Admin::PSetsController < ApplicationController
 
     redirect_to admin_exercise_categories_path
   end
+
+  def create_audio
+    begin
+      @p_set = PSet.find(params[:p_set_id])
+    rescue ActiveRecord::RecordNotFound
+      not_found
+    end
+    p_set_audio_params =
+      params.require(:p_set_audio).permit(:audio, :name)
+    p_set_audio = PSetAudio.find_or_create_by_file(p_set_audio_params)
+
+    if p_set_audio.p_set_to_audio.where(p_set_id: @p_set.id).empty?
+      PSetToAudio.create(
+        p_set_id: params[:p_set_id],
+        p_set_audio_id: p_set_audio.id
+      )
+    end
+
+    redirect_to edit_admin_p_set_path(@p_set)
+  end
+
+  def destroy_audio
+    p_set_to_audio = PSetToAudio.where(
+      p_set_id: params[:p_set_id],
+      p_set_audio_id: params[:p_set_audio_id]
+    ).first
+
+    unless p_set_to_audio.nil?
+      p_set_to_audio.destroy
+      p_set_audio = PSetAudio.find(params[:p_set_audio_id])
+      if p_set_audio.p_sets.count == 0
+        p_set_audio.destroy
+      end
+    end
+
+    redirect_to edit_admin_p_set_path(@p_set)
+  end
+
+  def new_audio
+    begin
+      @p_set = PSet.find(params[:p_set_id])
+    rescue ActiveRecord::RecordNotFound
+      not_found
+    end
+  end
 end

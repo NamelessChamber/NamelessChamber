@@ -22,6 +22,10 @@ Rails.application.routes.draw do
       get 'rhythm', to: 'home#index'
       get 'melody', to: 'home#index'
       get 'harmony', to: 'home#index'
+
+      get 'audios/new', to: 'p_sets#new_audio'
+      post 'audios', to: 'p_sets#create_audio'
+      delete 'audios/:p_set_audio_id', to: 'p_sets#destroy_audio', as: 'audio'
     end
   end
 

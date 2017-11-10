@@ -100,6 +100,7 @@ ActiveRecord::Schema.define(version: 20171110201113) do
 
   create_table "p_set_audios", force: :cascade do |t|
     t.string   "audio"
+    t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -110,6 +111,7 @@ ActiveRecord::Schema.define(version: 20171110201113) do
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
     t.index ["p_set_audio_id"], name: "index_p_set_to_audios_on_p_set_audio_id", using: :btree
+    t.index ["p_set_id", "p_set_audio_id"], name: "index_p_set_to_audios_on_p_set_id_and_p_set_audio_id", unique: true, using: :btree
     t.index ["p_set_id"], name: "index_p_set_to_audios_on_p_set_id", using: :btree
   end
 

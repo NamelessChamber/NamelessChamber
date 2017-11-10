@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: p_set_to_audios
+#
+#  id             :integer          not null, primary key
+#  p_set_id       :integer
+#  p_set_audio_id :integer
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#
+
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 # This model initially had no columns defined. If you add columns to the

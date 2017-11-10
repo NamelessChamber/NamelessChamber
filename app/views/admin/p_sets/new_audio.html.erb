@@ -1,0 +1,12 @@
+<div class="small-10 small-offset-1 columns">
+  <div class="row">
+    <h1>Add Audio to: <%= @p_set.name %></h1>
+    <%= form_for :p_set_audio, url: admin_p_set_audios_path do |f| %>
+      <%= f.label :Name %>
+      <%= f.text_field :name %>
+      <%= f.label :File %>
+      <%= f.file_field :audio %>
+      <%= f.submit 'Add Audio', class: 'button' %>
+    <% end %>
+  </div>
+</div>

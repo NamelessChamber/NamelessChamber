@@ -9,6 +9,7 @@
 #  updated_at :datetime         not null
 #  start_date :date
 #  end_date   :date
+#  password   :string
 #
 
 class Classroom < ApplicationRecord
