@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170731043541) do
+ActiveRecord::Schema.define(version: 20171110201113) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,6 +96,21 @@ ActiveRecord::Schema.define(version: 20170731043541) do
     t.index ["p_set_id", "user_id"], name: "index_p_set_answers_on_p_set_id_and_user_id", unique: true, using: :btree
     t.index ["p_set_id"], name: "index_p_set_answers_on_p_set_id", using: :btree
     t.index ["user_id"], name: "index_p_set_answers_on_user_id", using: :btree
+  end
+
+  create_table "p_set_audios", force: :cascade do |t|
+    t.string   "audio"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "p_set_to_audios", force: :cascade do |t|
+    t.integer  "p_set_id"
+    t.integer  "p_set_audio_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.index ["p_set_audio_id"], name: "index_p_set_to_audios_on_p_set_audio_id", using: :btree
+    t.index ["p_set_id"], name: "index_p_set_to_audios_on_p_set_id", using: :btree
   end
 
   create_table "p_sets", force: :cascade do |t|

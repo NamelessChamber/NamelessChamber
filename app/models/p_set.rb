@@ -18,6 +18,8 @@ class PSet < ApplicationRecord
   has_many :classroom_psets
   has_many :classrooms, :through => :classroom_psets
   has_many :p_set_answers
+  has_many :p_set_to_audio
+  has_many :p_set_audios, :through => :p_set_to_audio
 
   serialize :data, JSON
 end
