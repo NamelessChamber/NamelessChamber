@@ -259,7 +259,12 @@ export default class PSetStudentComponent extends React.Component {
     let renderMode = VexflowComponent.RenderMode.RHYTHMIC;
 
     let entryComponent = null;
-    let audios = [];
+    let audios = _.flatMap(this.state.vexData.p_set_audios, ({name, audio}, i) => {
+      return [
+        (<dt key={i*2}>{name}</dt>),
+        (<dd key={i*2+1}><ReactAudioPlayer src={audio} controls /></dd>)
+      ];
+    });
     if (this.rhythmic) {
       entryComponent = (
         <RhythmicEntryComponent options={vexData.options}
@@ -276,12 +281,6 @@ export default class PSetStudentComponent extends React.Component {
           instructor={false}
           save={this.saveAndToggle} />
       );
-      audios = _.flatMap(stave.audios.rhythm, ({name, url}, i) => {
-        return [
-          (<dt key={i*2}>{name}</dt>),
-          (<dd key={i*2+1}><ReactAudioPlayer src={url} controls /></dd>)
-        ];
-      });
     } else if (this.melodic) {
       renderMode = VexflowComponent.RenderMode.MELODIC;
       entryComponent = (
@@ -299,15 +298,6 @@ export default class PSetStudentComponent extends React.Component {
           save={this.saveAndToggle}
           instructor={false} />
       );
-      audios = stave.audios.melody.map(({name, url}, i) => {
-        return (
-          <li key={i}>
-            <p>{name}</p>
-            <ReactAudioPlayer src={url}
-              controls />
-          </li>
-        );
-      });
     } else {
       renderMode = VexflowComponent.RenderMode.MELODIC;
       entryComponent = (
