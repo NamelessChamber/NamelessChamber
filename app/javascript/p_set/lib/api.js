@@ -87,3 +87,8 @@ export function fetchPSetAnswerAdmin(id) {
   const url = `/admin/p_set_answers/${id}.json`;
   return railsFetch(url, {method: 'GET'}).then((data) => data.json());
 }
+
+export function deletePSetAudio(pSetId, pSetAudioId) {
+  const url = `/admin/p_sets/${pSetId}/audios/${pSetAudioId}.json`;
+  return railsFetch(url, {method: 'DELETE'}).then((data) => data.json());
+}

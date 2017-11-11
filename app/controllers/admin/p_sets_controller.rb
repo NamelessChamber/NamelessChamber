@@ -91,10 +91,16 @@ class Admin::PSetsController < ApplicationController
       )
     end
 
-    redirect_to edit_admin_p_set_path(@p_set)
+    redirect_to admin_p_set_options_path(@p_set)
   end
 
   def destroy_audio
+    begin
+      @p_set = PSet.find(params[:p_set_id])
+    rescue ActiveRecord::RecordNotFound
+      not_found
+    end
+    
     p_set_to_audio = PSetToAudio.where(
       p_set_id: params[:p_set_id],
       p_set_audio_id: params[:p_set_audio_id]
@@ -108,7 +114,10 @@ class Admin::PSetsController < ApplicationController
       end
     end
 
-    redirect_to edit_admin_p_set_path(@p_set)
+    respond_to do |format|
+      format.html { redirect_to admin_p_set_options_path(@p_set) }
+      format.json { render json: @p_set }
+    end
   end
 
   def new_audio

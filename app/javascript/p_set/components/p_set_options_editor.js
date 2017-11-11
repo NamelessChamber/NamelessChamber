@@ -2,11 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import ReactAudioPlayer from 'react-audio-player';
 
 import BoolOptionsEditor from './bool_options_editor';
 import StaveOptionsEditor from './stave_options_editor';
 import { newPSet, formatKey, validateOptions } from '../lib/models';
-import { fetchPSet, updatePSet } from '../lib/api';
+import { fetchPSet, updatePSet, deletePSetAudio } from '../lib/api';
 
 import '../styles/p_set_options_editor.css';
 
@@ -29,7 +30,7 @@ export default class PSetOptionsEditor extends React.Component {
     fetchPSet(p_set_id, true).then((pSet) => {
       this.setState(pSet);
     }).catch((e) => {
-      console.log(e.status);
+      console.log(e, e.status);
     });
   }
 
@@ -150,6 +151,26 @@ export default class PSetOptionsEditor extends React.Component {
       );
     });
 
+    let audios = _.flatMap(this.state.p_set_audios, ({name, audio, id}, i) => {
+      const deleteAudio = () => {
+        deletePSetAudio(this.state.id, id).then((data) => {
+          this.setState(data);
+        });
+      };
+
+      return [
+        (<dt key={i*2}>{name}</dt>),
+        (
+          <dd key={i*2+1}>
+            <ReactAudioPlayer src={audio} controls />
+            <button onClick={() => deleteAudio()} className="button alert">
+              Delete
+            </button>
+          </dd>
+        )
+      ];
+    });
+
     return (
       <div className="small-12 columns">
         <div className="row large-up-3">
@@ -202,6 +223,15 @@ export default class PSetOptionsEditor extends React.Component {
             measures={this.state.data.measures}
             staves={this.state.data.staves}
             updateStaves={this.onStavesChange} />
+
+          <fieldset className="column column-block">
+            <legend>Audios</legend>
+            <a href={`/admin/p_sets/${this.state.id}/audios/new`}
+               className="button">
+               Add New
+             </a>
+            <dl>{audios}</dl>
+          </fieldset>
         </div>
       </div>
     );
