@@ -17,6 +17,7 @@ export default class PSetOptionsEditor extends React.Component {
     this.onNameChange = this.onNameChange.bind(this);
     this.onMeterChange = this.onMeterChange.bind(this);
     this.onMeasuresChange = this.onMeasuresChange.bind(this);
+    this.onPickUpChange = this.onPickUpChange.bind(this);
     this.onStavesChange = this.onStavesChange.bind(this);
     this.state = {};
   }
@@ -56,6 +57,26 @@ export default class PSetOptionsEditor extends React.Component {
     const newOptions = Object.assign({}, this.state.data.options, update);
     const newData = Object.assign({}, this.state.data, {options: newOptions});
     const newState = Object.assign({}, this.state, {data: newData});
+    this.postUpdate(newState);
+  }
+
+  onPickUpChange(e) {
+    const newState = _.cloneDeep(this.state);
+    const { checked } = e.target;
+    newState.data.pickUpBeat = checked;
+    if (newState.data.measures > 1) {
+      if (checked) {
+        _.each(newState.data.staves, (stave) => {
+          const [measure,] = stave.solution;
+          measure.endBar = 'double';
+        });
+      } else {
+        _.each(newState.data.staves, (stave) => {
+          const [measure,] = stave.solution;
+          measure.endBar = 'single';
+        });
+      }
+    }
     this.postUpdate(newState);
   }
 
@@ -202,6 +223,11 @@ export default class PSetOptionsEditor extends React.Component {
               className="meter-input"
               value={this.state.data.meter.bottom}
               onChange={this.onMeterChange} />
+            <legend>Pick-up beat</legend>
+            <input type="checkbox"
+              name="pickUpBeat"
+              checked={this.state.data.pickUpBeat}
+              onChange={this.onPickUpChange} />
          </fieldset>
           <fieldset className="column column-block">
             <legend>Proceed</legend>

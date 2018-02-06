@@ -44,6 +44,54 @@ export function formatKey(key) {
   return key.replace(/([A-Z,a-z])b$/, '$1♭');
 }
 
+export function validatePickupBeat(meter, beat) {
+  // strictly LT, otherwise it's not a pickup
+  return (beat.top / beat.bottom) < (meter.top / meter.bottom) &&
+    beat.top > 0 &&
+    beat.bottom > 0;
+}
+
+export function pickupOptions(meter, rhythmicOptions) {
+  const m = new Fraction(meter.top, meter.bottom);
+  const denominator = _
+    .chain(rhythmicOptions)
+    .filter(([_, enabled]) => enabled)
+    .map(([n, _]) => n)
+    .sortBy(n => 1 / n)
+    .head()
+    .value();
+  const numerators = _.range(1, denominator);
+  const options = _
+    .chain(numerators)
+    .map(n => new Fraction(n, denominator))
+    .filter(x => x.compare(m) < 0)
+    .map(x => x.toFraction())
+    .value();
+
+  return options;
+}
+
+export function pickupRests(meter, pickupBeat) {
+  const goal = new Fraction(meter.top, meter.bottom)
+    .sub(new Fraction(pickupBeat.top, pickupBeat.bottom));
+  let increment = new Fraction(1, meter.bottom);
+  let sum = new Fraction(0);
+  const rests = [];
+  while (sum.compare(goal) < 0) {
+    if (sum.add(increment).compare(goal) > 0) {
+      increment = increment.div(2);
+    }
+    rests.push(increment);
+    sum = sum.add(increment);
+  }
+
+  return rests
+    .map(x => x.toFraction() + 'r')
+    .map(x => {
+      return {type: 'note', duration: x, dots: 0, tied: false};
+    });
+}
+
 export function validateOptions(data) {
   let errors = [];
 
@@ -146,7 +194,8 @@ export function newStave(clef, name, measures, tonicPitch, scale) {
     audios: {
       rhythm: [],
       melody: []
-    }
+    },
+    pickupBeat: undefined
   };
 }
 
@@ -163,8 +212,8 @@ export const DEFAULTS = {
     'I', 'ii', 'iiØ', 'iii', 'IV', 'V', 'vi', 'viio', 'viiØ',
     'vio', 'i', 'II', 'iio', 'III', 'III+', 'iv',
     'v', 'VI', 'VII', 'VII+', 'N6', 'Gr+6', 'Fr+6',
-    'It+6', 'V/V', 'V/ii', 'V/iii', 'V/vi', 'V/IV',
-    'V/iio', 'V/IIIo', 'V/ivo', 'V/VIo', 'V/VIIo'
+    'It+6', 'V/V', 'viio/V', 'V/ii', 'V/iii', 'V/vi', 'V/IV',
+    'V/iio', 'V/III', 'V/ivo', 'V/VI', 'viio/VI', 'V/VII', 'viio/VII'
   ],
   inversion: [
     '6', '6/4', '4/3', '4/2', '6/5', '7'
@@ -192,6 +241,7 @@ export function newPSet() {
       inversion: initBoolOpts(DEFAULTS.inversion),
       key: initBoolOpts(DEFAULTS.key),
     },
+    pickUpBeat: false,
     staves: [],
     meter: {top: 0, bottom: 0},
     measures: 0

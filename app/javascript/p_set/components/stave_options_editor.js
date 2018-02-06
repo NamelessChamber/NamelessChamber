@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import { newStave } from '../lib/models';
 
+import '../styles/stave_options_editor.css';
+
 const STAVES = {
   treble: 'Treble',
   bass: 'Bass',
@@ -92,6 +94,14 @@ export default class StaveOptionsEditor extends React.Component {
     this.props.updateStaves(staves);
   }
 
+  componentDidMount() {
+    $(this.octaveLabelEl).foundation();
+  }
+
+  componentDidUpdate() {
+    $(this.octaveLabelEl).foundation();
+  }
+
   render() {
     const options = _.map(STAVES, (v, k) => (
       <option key={k} value={k}>{v}</option>
@@ -164,14 +174,6 @@ export default class StaveOptionsEditor extends React.Component {
               {emptyOption}
               {tonicOptions}
             </select>
-            <div><b>Default Octave</b></div>
-            <select
-              name="octave"
-              value={tonic.octave}
-              onChange={this.updateStaves.bind(this, 'tonic')}>
-              {emptyOption}
-              {octaveOptions}
-            </select>
           </div>
           <div className="small-4 columns">
             <select
@@ -181,6 +183,42 @@ export default class StaveOptionsEditor extends React.Component {
               <option value="major">Major</option>
               <option value="minor">Minor</option>
             </select>
+          </div>
+        </div>
+        <div className="row">
+          <div className="small-4 columns">
+            &nbsp;
+          </div>
+          <div className="small-4 columns">
+            <span data-tooltip
+              aria-haspopup="true"
+              data-disable-hover="false"
+              tabIndex="2"
+              className="has-tip top"
+              title="The octave to default students on when entering melodic entry mode"
+              ref={(el) => this.octaveLabelEl = el}>
+              <b>Default Octave</b>
+            </span>
+          </div>
+          <div className="small-4 columns">
+            <b>Pick-up Beat</b>
+          </div>
+        </div>
+        <div className="row">
+          <div className="small-4 columns">
+            &nbsp;
+          </div>
+          <div className="small-4 columns">
+            <select
+              name="octave"
+              value={tonic.octave}
+              onChange={this.updateStaves.bind(this, 'tonic')}>
+              {emptyOption}
+              {octaveOptions}
+            </select>
+          </div>
+          <div className="small-4 columns">
+            <input type="checkbox" /><label>Enable</label>
           </div>
         </div>
         <div className="row">

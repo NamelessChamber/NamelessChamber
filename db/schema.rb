@@ -75,17 +75,6 @@ ActiveRecord::Schema.define(version: 20171110201113) do
     t.index ["exercise_category_id"], name: "index_exercise_subcategories_on_exercise_category_id", using: :btree
   end
 
-  create_table "exercises", force: :cascade do |t|
-    t.json     "data"
-    t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer  "p_set_id"
-    t.integer  "user_id"
-    t.index ["p_set_id"], name: "index_exercises_on_p_set_id", using: :btree
-    t.index ["user_id"], name: "index_exercises_on_user_id", using: :btree
-  end
-
   create_table "p_set_answers", force: :cascade do |t|
     t.integer  "p_set_id"
     t.integer  "user_id"
