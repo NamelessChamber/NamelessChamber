@@ -27,7 +27,6 @@ const staveComplete = (stave) => {
 export default class MelodicEntryComponent extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       octave: 0,
       keySignature: props.keySignature
@@ -171,7 +170,7 @@ export default class MelodicEntryComponent extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.staveId != this.props.staveId) {
-      this.setState({octave: newProps.stave.tonic.octave});
+      this.setState({octave: 0});
     }
   }
 
