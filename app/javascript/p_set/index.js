@@ -5,12 +5,12 @@ import PSetOptionsEditor from './components/p_set_options_editor';
 import PSetStudentComponent from './components/p_set_student';
 import PSetInstructorComponent from './components/p_set_instructor';
 import PSetAnswerComponent from './components/p_set_answer';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 
 function init() {
   document.addEventListener('DOMContentLoaded', () => {
     ReactDOM.render(
-      <BrowserRouter history={createBrowserHistory()}>
+      <Router history={createBrowserHistory()}>
         <Switch>
           <Route exact path="/admin/p_sets/:p_set_id/options"
             component={PSetOptionsEditor} />
@@ -29,7 +29,7 @@ function init() {
           <Route exact path="/p_sets/:p_set_id/harmony"
             component={PSetStudentComponent} />
         </Switch>
-      </BrowserRouter>,
+      </Router>,
       document.getElementById('app-root'),
     );
   });
