@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
+import { durationString } from '../lib/models';
 
 require('../styles/rhythmic_entry.css');
 
@@ -200,24 +201,6 @@ export default class RhythmicEntryComponent extends React.Component {
   }
 
   render() {
-    const durationString = (duration) => {
-      const NOTE_MAP = {
-        '1': '\u{1D15D}',
-        '2': '\u{1D15E}',
-        '4': '\u{1D15F}',
-        '8': '\u{1D160}',
-        '16': '\u{1D161}',
-        '32': '\u{1D162}',
-        '1r': '\u{1D13B}',
-        '2r': '\u{1D13C}',
-        '4r': '\u{1D13D}',
-        '8r': '\u{1D13E}',
-        '16r': '\u{1D13F}',
-        '32r': '\u{1D140}'
-      };
-
-      return NOTE_MAP[duration];
-    };
     const noteOptions = this.props.options.rhythm.filter(x => x[1])
       .map(([duration, _], i) => {
         return (

@@ -6,7 +6,7 @@ import ReactAudioPlayer from 'react-audio-player';
 
 import BoolOptionsEditor from './bool_options_editor';
 import StaveOptionsEditor from './stave_options_editor';
-import { newPSet, formatKey, validateOptions } from '../lib/models';
+import { newPSet, formatKey, validateOptions, durationString } from '../lib/models';
 import { fetchPSet, updatePSet, deletePSetAudio } from '../lib/api';
 
 import '../styles/p_set_options_editor.css';
@@ -159,7 +159,7 @@ export default class PSetOptionsEditor extends React.Component {
     }
 
     const boolSets =
-      ['Solfege', 'Rhythm', 'Harmony', 'Inversion'];
+      ['Solfege', 'Harmony', 'Inversion'];
     let boolEditors = boolSets.map((name, i) => {
       const prop = name.toLowerCase();
       const options = this.state.data.options[prop];
@@ -238,6 +238,13 @@ export default class PSetOptionsEditor extends React.Component {
           </fieldset>
 
           {boolEditors}
+
+          <BoolOptionsEditor
+            options={this.state.data.options.rhythm}
+            name="Rhythm"
+            onChange={this.onOptionsChange.bind(this, 'rhythm')}
+            formatLabel={durationString}
+            labelStyle={{fontFamily: 'Bravura'}} />
 
           <BoolOptionsEditor
             options={this.state.data.options.key}

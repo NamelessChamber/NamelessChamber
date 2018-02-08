@@ -165,6 +165,25 @@ export function newAnswer(pSet) {
   }
 }
 
+export function durationString(duration) {
+  const NOTE_MAP = {
+    '1': '\u{1D15D}',
+    '2': '\u{1D15E}',
+    '4': '\u{1D15F}',
+    '8': '\u{1D160}',
+    '16': '\u{1D161}',
+    '32': '\u{1D162}',
+    '1r': '\u{1D13B}',
+    '2r': '\u{1D13C}',
+    '4r': '\u{1D13D}',
+    '8r': '\u{1D13E}',
+    '16r': '\u{1D13F}',
+    '32r': '\u{1D140}'
+  };
+
+  return NOTE_MAP[duration];
+};
+
 export function newStave(clef, name, measures, tonicPitch, scale) {
   tonicPitch = tonicPitch || 'C';
   scale = scale || 'major';
@@ -213,7 +232,7 @@ export const DEFAULTS = {
     'vio', 'i', 'II', 'iio', 'III', 'III+', 'iv',
     'v', 'VI', 'VII', 'VII+', 'N6', 'Gr+6', 'Fr+6',
     'It+6', 'V/V', 'viio/V', 'V/ii', 'V/iii', 'V/vi', 'V/IV',
-    'V/iio', 'V/III', 'V/ivo', 'V/VI', 'viio/VI', 'V/VII', 'viio/VII'
+    'V/iio', 'V/III', 'V/iv', 'V/VI', 'viio/VI', 'V/VII', 'viio/VII'
   ],
   inversion: [
     '6', '6/4', '4/3', '4/2', '6/5', '7'
