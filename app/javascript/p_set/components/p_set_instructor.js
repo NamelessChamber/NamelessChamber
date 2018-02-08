@@ -46,9 +46,10 @@ export default class PSetInstructorComponent extends React.Component {
     const measure = solution[currentMeasure];
     const errors = [];
     const result = compareMeter(meter, measure);
-    if (result > 0) {
-      errors.push(`Measure ${currentMeasure + 1} in ${stave.name} has too few beats`);
-    } else if (result < 0) {
+    // if (result > 0) {
+    //   errors.push(`Measure ${currentMeasure + 1} in ${stave.name} has too few beats`);
+    // } else
+    if (result < 0) {
       errors.push(`Measure ${currentMeasure + 1} in ${stave.name} has too many beats`);
     }
 
@@ -103,24 +104,25 @@ export default class PSetInstructorComponent extends React.Component {
   }
 
   handlePositionUpdate(pos) {
+    if (this.rhythmic) {
+      const { meter, staves } = this.state.vexData.data;
+      const measure =
+        staves[this.state.stave].solution[this.state.currentMeasure];
+      const meterCheck = compareMeter(meter, measure);
+      if (meterCheck > 0) {
+        alert('Measure has too few beats! Please go back and correct it.');
+      } else if (meterCheck < 0) {
+        alert('Measure has too many beats! Please go back and correct it.');
+      }
+    }
     this.setState(pos);
   }
 
   handleMeterUpdate(meter) {
-    if (_.isEqual(meter, this.state.vexData.meter)) {
-      alert('Correct!');
-    } else {
-      alert('Incorrect... please try again!');
-    }
     this.setState({meter});
   }
 
   handleKeySignatureUpdate(keySignature) {
-    if (keySignature === this.state.vexData.options.key) {
-      alert('Correct!');
-    } else {
-      alert('Incorrect... please try again!');
-    }
     this.setState({keySignature});
   }
 

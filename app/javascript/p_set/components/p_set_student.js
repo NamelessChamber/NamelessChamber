@@ -196,9 +196,10 @@ export default class PSetStudentComponent extends React.Component {
         const staveName = staves[i].name;
         stave.forEach((measure, e) => {
           if (!_.isNull(measure)) {
-            if (measure > 0) {
-              errors.push(`Measure ${e + 1} in ${staveName} has too few beats`);
-            } else if (measure < 0) {
+            // if (measure > 0) {
+            //   errors.push(`Measure ${e + 1} in ${staveName} has too few beats`);
+            // } else
+            if (measure < 0) {
               errors.push(`Measure ${e + 1} in ${staveName} has too many beats`);
             }
           }
