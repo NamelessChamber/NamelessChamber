@@ -223,7 +223,7 @@ export default class PSetInstructorComponent extends React.Component {
           complete={this.saveAndRender} />
       );
     } else {
-      renderMode = VexflowComponent.RenderMode.MELODIC;
+      renderMode = VexflowComponent.RenderMode.HARMONIC;
       entryComponent = (
         <HarmonicEntryComponent options={vexData.options}
           stave={vexData.staves[this.state.stave]}

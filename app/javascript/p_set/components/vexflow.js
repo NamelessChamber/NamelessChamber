@@ -128,7 +128,8 @@ const STAVE_HEIGHT = 125;
 const RENDER_MODES = {
   RHYTHMIC: 0,
   MELODIC: 1,
-  STANDARD: 2
+  STANDARD: 2,
+  HARMONIC: 3
 };
 
 
@@ -314,13 +315,22 @@ export default class VexflowComponent extends React.Component {
                 }, 0);
               });
 
-    props.staves.forEach((stave, e) => {
+    const staves = props.mode === RENDER_MODES.HARMONIC ?
+      _.slice(props.staves, props.staves.length - 1) :
+      props.staves;
+
+    staves.forEach((stave, e) => {
+      let editing = e === props.editing;
       let widthOffset = 5;
 
       let renderMode = props.mode;
-      if (e !== props.editing && staveComplete(stave, props.render)) {
+      if (renderMode === RENDER_MODES.HARMONIC) {
+        renderMode = RENDER_MODES.MELODIC;
+        editing = true;
+      } else if (!editing && staveComplete(stave, props.render)) {
         renderMode = RENDER_MODES.MELODIC;
       }
+
 
       const scoreSlice = _.slice(
         stave[this.props.render],
@@ -356,7 +366,6 @@ export default class VexflowComponent extends React.Component {
 
         staveObj.setMeasure(index + 1);
         let highlight = false;
-        const editing = e === props.editing;
         if (index === props.currentMeasure && editing) {
           highlight = true
           if (props.mode === RENDER_MODES.RHYTHMIC) {
