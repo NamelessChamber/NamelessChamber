@@ -75,7 +75,7 @@ const tonicStr = (tonic) => {
 
 const getNote = (tonic, octave, solfege, minor) => {
   const interval = solfegeInterval[solfege];
-  let note = teoria.note(`${tonicStr(tonic)}`);
+  let note = teoria.note(tonicStr(tonic));
 
   if (minor) {
     note = minorToMajor(note);
@@ -348,7 +348,7 @@ export default class VexflowComponent extends React.Component {
         allNotes = allNotes.concat(notes);
         let width = measureWidths[i] * 45;
         if (width === 0) {
-          width = 50;
+          width = 65;
         }
         let offsetIncrement = width;
 
