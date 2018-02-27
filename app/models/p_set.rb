@@ -15,7 +15,7 @@
 class PSet < ApplicationRecord
   belongs_to :user
   belongs_to :exercise_subcategory
-  has_many :classroom_psets
+  has_many :classroom_psets, :dependent => :destroy
   has_many :classrooms, :through => :classroom_psets
   has_many :p_set_answers
   has_many :p_set_to_audio
