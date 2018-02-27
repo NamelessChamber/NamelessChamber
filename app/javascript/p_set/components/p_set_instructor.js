@@ -38,7 +38,7 @@ export default class PSetInstructorComponent extends React.Component {
 
   handleScoreUpdate(solution) {
     const newVexData = _.cloneDeep(this.state.vexData);
-    const stave = newVexData.data.staves[this.state.stave];
+    const stave = newVexData.data.staves[this.stave];
     Object.assign(stave, {solution});
 
     const { meter } = newVexData.data;
@@ -66,6 +66,12 @@ export default class PSetInstructorComponent extends React.Component {
 
   get harmonic() {
     return this.props.location.pathname.match(/\/harmony\/?$/) !== null;
+  }
+
+  get stave() {
+    return this.harmonic ?
+      this.state.vexData.data.staves.length - 1 :
+      this.state.stave;
   }
 
   saveAndToggle() {
@@ -107,7 +113,7 @@ export default class PSetInstructorComponent extends React.Component {
     if (this.rhythmic) {
       const { meter, staves } = this.state.vexData.data;
       const measure =
-        staves[this.state.stave].solution[this.state.currentMeasure];
+        staves[this.stave].solution[this.state.currentMeasure];
       const meterCheck = compareMeter(meter, measure);
       if (meterCheck > 0) {
         alert('Measure has too few beats! Please go back and correct it.');
@@ -179,7 +185,7 @@ export default class PSetInstructorComponent extends React.Component {
       );
     }
 
-    const stave = vexData.staves[this.state.stave];
+    const stave = vexData.staves[this.stave];
 
     const staveOptions = vexData.staves.map((s, i) => {
       return (
@@ -194,9 +200,9 @@ export default class PSetInstructorComponent extends React.Component {
       entryComponent = (
         <RhythmicEntryComponent options={vexData.options}
           referenceMeter={vexData.meter}
-          stave={vexData.staves[this.state.stave]}
+          stave={vexData.staves[this.stave]}
           measures={stave.solution}
-          staveId={this.state.stave}
+          staveId={this.stave}
           meter={this.state.meter}
           updateStave={this.handleScoreUpdate}
           updatePosition={this.handlePositionUpdate}
@@ -210,9 +216,9 @@ export default class PSetInstructorComponent extends React.Component {
       entryComponent = (
         <MelodicEntryComponent options={vexData.options}
           keySignature={this.state.keySignature}
-          stave={vexData.staves[this.state.stave]}
+          stave={vexData.staves[this.stave]}
           measures={stave.solution}
-          staveId={this.state.stave}
+          staveId={this.stave}
           updateStave={this.handleScoreUpdate}
           currentMeasure={this.state.currentMeasure}
           currentNote={this.state.currentNote}
@@ -226,9 +232,9 @@ export default class PSetInstructorComponent extends React.Component {
       renderMode = VexflowComponent.RenderMode.HARMONIC;
       entryComponent = (
         <HarmonicEntryComponent options={vexData.options}
-          stave={vexData.staves[this.state.stave]}
+          stave={vexData.staves[this.stave]}
           measures={stave.solution}
-          staveId={this.state.stave}
+          staveId={this.stave}
           updateStave={this.handleScoreUpdate}
           currentMeasure={this.state.currentMeasure}
           currentNote={this.state.currentNote}
@@ -255,7 +261,7 @@ export default class PSetInstructorComponent extends React.Component {
           <div className="small-10 columns">
             <VexflowComponent staves={vexData.staves}
                               render="solution"
-                              editing={this.state.stave}
+                              editing={this.stave}
                               meter={this.state.vexData.data.meter}
                               mode={renderMode}
                               keySignature={this.state.keySignature}
@@ -271,7 +277,7 @@ export default class PSetInstructorComponent extends React.Component {
             <div className="row columns">
               <fieldset>
                 <legend>Stave</legend>
-                <select value={this.state.stave}
+                <select value={this.stave}
                         disabled={this.harmonic}
                         onChange={this.changeStave.bind(this)}>
                   {staveOptions}

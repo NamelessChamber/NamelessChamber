@@ -50,9 +50,15 @@ export default class PSetStudentComponent extends React.Component {
     return this.props.location.pathname.match(/\/harmony\/?$/) !== null;
   }
 
+  get stave() {
+    return this.harmonic ?
+      this.state.vexData.data.staves.length - 1 :
+      this.stave;
+  }
+
   handleScoreUpdate(answer, changeMeasure, changeNote) {
     const newAnswer = _.cloneDeep(this.state.answer);
-    const stave = newAnswer.staves[this.state.stave] = answer;
+    const stave = newAnswer.staves[this.stave] = answer;
 
     if (this.errorModalEl) {
       try {
@@ -63,7 +69,7 @@ export default class PSetStudentComponent extends React.Component {
 
     const staveErrors = _.cloneDeep(this.state.staveErrors);
     if (_.isArray(staveErrors)) {
-      staveErrors[this.state.stave][changeMeasure][changeNote] = false;
+      staveErrors[this.stave][changeMeasure][changeNote] = false;
     }
 
     this.setState({answer: newAnswer, staveErrors});
@@ -97,7 +103,7 @@ export default class PSetStudentComponent extends React.Component {
   handlePositionUpdate(pos) {
     if (this.rhythmic) {
       const measure =
-        this.state.answer.staves[this.state.stave][this.state.currentMeasure];
+        this.state.answer.staves[this.stave][this.state.currentMeasure];
       const { meter } = this.state.vexData.data;
       const meterCheck = compareMeter(meter, measure);
       if (meterCheck > 0) {
@@ -248,8 +254,8 @@ export default class PSetStudentComponent extends React.Component {
     }
 
     const vexData = this.state.vexData.data;
-    const stave = vexData.staves[this.state.stave];
-    const answer = this.state.answer.staves[this.state.stave];
+    const stave = vexData.staves[this.stave];
+    const answer = this.state.answer.staves[this.stave];
 
     const staveOptions = vexData.staves.map((s, i) => {
       return (
@@ -272,7 +278,7 @@ export default class PSetStudentComponent extends React.Component {
           referenceMeter={vexData.meter}
           stave={stave}
           measures={answer}
-          staveId={this.state.stave}
+          staveId={this.stave}
           meter={this.state.answer.meter}
           updateStave={this.handleScoreUpdate}
           updatePosition={this.handlePositionUpdate}
@@ -289,7 +295,7 @@ export default class PSetStudentComponent extends React.Component {
           keySignature={this.state.answer.keySignature}
           stave={stave}
           measures={answer}
-          staveId={this.state.stave}
+          staveId={this.stave}
           updateStave={this.handleScoreUpdate}
           currentMeasure={this.state.currentMeasure}
           currentNote={this.state.currentNote}
@@ -303,8 +309,8 @@ export default class PSetStudentComponent extends React.Component {
       renderMode = VexflowComponent.RenderMode.MELODIC;
       entryComponent = (
         <HarmonicEntryComponent options={vexData.options}
-          stave={vexData.staves[this.state.stave]}
-          staveId={this.state.stave}
+          stave={vexData.staves[this.stave]}
+          staveId={this.stave}
           updateStave={this.handleScoreUpdate}
           currentMeasure={this.state.currentMeasure}
           currentNote={this.state.currentNote}
@@ -347,7 +353,7 @@ export default class PSetStudentComponent extends React.Component {
         <div className="row">
           <div className="small-10 columns">
             <VexflowComponent staves={vfStaves}
-              editing={this.state.stave}
+              editing={this.stave}
               meter={this.state.answer.meter}
               render="answer"
               mode={renderMode}
@@ -365,7 +371,7 @@ export default class PSetStudentComponent extends React.Component {
             <div className="row columns">
               <fieldset>
                 <legend>Stave</legend>
-                <select value={this.state.stave}
+                <select value={this.stave}
                   disabled={this.harmonic}
                   onChange={this.changeStave.bind(this)}>
                   {staveOptions}
