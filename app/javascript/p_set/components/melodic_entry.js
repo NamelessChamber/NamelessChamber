@@ -151,10 +151,6 @@ export default class MelodicEntryComponent extends React.Component {
       case '-':
       this.setOctave(false, e);
         break;
-      case 'ArrowUp':
-      case 'ArrowDown':
-        e.preventDefault();
-        break;
     }
   }
 

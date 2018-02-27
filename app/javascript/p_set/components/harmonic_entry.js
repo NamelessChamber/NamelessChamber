@@ -114,7 +114,6 @@ export default class HarmonicEntryComponent extends React.Component {
   }
 
   handleKeyDown(e) {
-    e.preventDefault();
     switch (e.key) {
       case 'ArrowRight':
         this.setCurrentNote(true, e);

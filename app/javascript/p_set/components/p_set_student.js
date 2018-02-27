@@ -349,7 +349,7 @@ export default class PSetStudentComponent extends React.Component {
           <h4>Errors</h4>
           <ul>{errors}</ul>
         </div>
-        <h3>{this.state.vexData.name}: {this.rhythmic ? 'Rhythmic' : 'Melodic'} Entry</h3>
+        <h3>{this.state.vexData.name}: {this.rhythmic ? 'Rhythmic' : this.melodic ? 'Melodic' : 'Harmonic'} Entry</h3>
         <div className="row">
           <div className="small-10 columns">
             <VexflowComponent staves={vfStaves}
