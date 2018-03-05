@@ -5,6 +5,7 @@ import Vex from 'vexflow';
 import teoria from 'teoria';
 import { fromSemitones } from 'tonal-interval';
 import _ from 'lodash';
+import { currentPage } from '../lib/models';
 
 const VF = Vex.Flow;
 
@@ -138,6 +139,25 @@ export default class VexflowComponent extends React.Component {
     super(props);
 
     this.renderer = null;
+    this.updateDimensions = this.updateDimensions.bind(this);
+  }
+
+  updateDimensions() {
+    if (_.isUndefined(this.vexflowEl)) {
+      return;
+    }
+
+    this.vexflowEl.innerHTML = null;
+
+    const e = ReactDOM.findDOMNode(this.vexflowEl);
+    const containerWidth = e.offsetWidth;
+    this.containerWidth = containerWidth;
+
+    this.renderer = new VF.Renderer(e, VF.Renderer.Backends.SVG);
+    const height = STAVE_HEIGHT * this.props.staves.length + 50;
+    this.renderer.resize(containerWidth, height);
+
+    this.redrawVexflow(this.props);
   }
 
   static propTypes = {
@@ -149,8 +169,6 @@ export default class VexflowComponent extends React.Component {
     keySignature: PropTypes.string,
     currentMeasure: PropTypes.number,
     currentNote: PropTypes.number,
-    startMeasure: PropTypes.number,
-    numMeasures: PropTypes.number,
     measures: PropTypes.number.isRequired,
     staveErrors: PropTypes.array
   }
@@ -158,9 +176,7 @@ export default class VexflowComponent extends React.Component {
   static RenderMode = RENDER_MODES;
 
   static defaultProps = {
-    mode: VexflowComponent.RenderMode.MELODIC,
-    startMeasure: 0,
-    numMeasures: 4,
+    mode: VexflowComponent.RenderMode.MELODIC
   }
 
   meterToString(props) {
@@ -300,16 +316,19 @@ export default class VexflowComponent extends React.Component {
     const firstStaves = [];
     const formatter = new VF.Formatter();
 
+    const page = currentPage(this.containerWidth, props.render, props.staves, props.currentMeasure);
+    const startMeasure = _.first(page);
+    const numMeasures = page.length;
     const firstStave = props.staves[0];
     const lastMeasure = Math.min(
       props.measures,
-      props.startMeasure + props.numMeasures
+      startMeasure + numMeasures
     );
     const measureWidths =
-      _.range(props.startMeasure,
+      _.range(startMeasure,
               lastMeasure).map((i) => {
                 return props.staves.reduce((m, x) => {
-                  const measure = x[this.props.render][i];
+                  const measure = x[props.render][i];
                   const measureLength = scoreLength(measure.notes);
                   return Math.max(m, measureLength);
                 }, 0);
@@ -334,7 +353,7 @@ export default class VexflowComponent extends React.Component {
 
       const scoreSlice = _.slice(
         stave[this.props.render],
-        props.startMeasure,
+        startMeasure,
         lastMeasure
       );
 
@@ -342,7 +361,7 @@ export default class VexflowComponent extends React.Component {
       let allNotes = [];
 
       scoreSlice.forEach((score, i) => {
-        const index = i + props.startMeasure;
+        const index = i + startMeasure;
 
         const { notes } = score;
         allNotes = allNotes.concat(notes);
@@ -445,18 +464,25 @@ export default class VexflowComponent extends React.Component {
     this.redrawVexflow(newProps);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
+  }
+
   componentDidMount() {
     const e = ReactDOM.findDOMNode(this.vexflowEl);
     const containerWidth = e.offsetWidth;
+    this.containerWidth = containerWidth;
 
-    this.renderer = new VF.Renderer(e, VF.Renderer.Backends.SVG);
-    const height = STAVE_HEIGHT * this.props.staves.length + 50;
-    this.renderer.resize(containerWidth, height);
+    window.addEventListener('resize', this.updateDimensions);
 
-    const context = this.renderer.getContext();
-    context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
+    // this.renderer = new VF.Renderer(e, VF.Renderer.Backends.SVG);
+    // const height = STAVE_HEIGHT * this.props.staves.length + 50;
+    // this.renderer.resize(containerWidth, height);
+    //
+    // const context = this.renderer.getContext();
+    // context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
 
-    this.redrawVexflow(this.props);
+    this.updateDimensions();
   }
 
   render() {

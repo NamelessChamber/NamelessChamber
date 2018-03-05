@@ -13,6 +13,63 @@ import Fraction from 'fraction.js';
  * }
  */
 
+ /*
+ steps:
+
+ 1. measureWidth(measure, [key, only present for first measure])
+ 2. displayableRange(width, staves, start measure)
+ */
+
+
+export function measureLength(measure) {
+  return measure.notes.reduce((acc, item) => {
+    if (item.type === 'note') {
+      return acc + 1 + ((item.dots || 0) * 0.2);
+    } else if (item.type === 'beam') {
+      return acc + scoreLength(item.notes);
+    }
+  }, 0);
+}
+
+// key is solution or answer
+export function measureLengths(key, staves) {
+  const firstStave = staves[0][key];
+  return _.range(firstStave.length)
+    .map((i) => {
+      return staves
+        .map(stave => stave[key])
+        .reduce((max, stave) => {
+        const current = measureLength(stave[i]);
+        return Math.max(max, current);
+      }, 0);
+    });
+}
+
+export function displayableRange(canvasWidth, key, staves, startMeasure) {
+  const lengths = measureLengths(key, staves);
+  const lengthsFromIx = _.slice(lengths, startMeasure);
+  const widths = scanl((m, x) => m + (Math.max(x * 45, 70)), 100 /* for clef */, lengthsFromIx);
+  // if we want max of 4
+  // const maxIndex = Math.min(startMeasure + widths.length, 4);
+  const maxIndex = startMeasure + widths.length;
+  const indices = _.range(startMeasure, maxIndex)
+  return _.takeWhile(indices, (_, i) => widths[i] <= canvasWidth);
+}
+
+export function displayableMeasures(canvasWidth, key, staves, startMeasure) {
+  const range = displayableRange(canvasWidth, key, staves, startMeasure);
+  return _.last(range) - _.first(range) + 1;
+}
+
+export function currentPage(canvasWidth, key, staves, currentMeasure, startMeasure = 0) {
+  const result = displayableRange(canvasWidth, key, staves, startMeasure);
+  if (_.indexOf(result, currentMeasure) === -1) {
+    return currentPage(canvasWidth, key, staves, currentMeasure, startMeasure + result.length);
+  } else {
+    return result;
+  }
+}
+
 function scanl(f, initial, list) {
   return list.reduce(([out, acc], x, i) => {
     const res = f(acc, x, i);
@@ -232,7 +289,8 @@ export const DEFAULTS = {
     'vio', 'i', 'II', 'iio', 'III', 'III+', 'iv',
     'v', 'VI', 'VII', 'VII+', 'N6', 'Gr+6', 'Fr+6',
     'It+6', 'V/V', 'viio/V', 'V/ii', 'V/iii', 'V/vi', 'V/IV',
-    'V/iio', 'V/III', 'V/iv', 'V/VI', 'viio/VI', 'V/VII', 'viio/VII'
+    'V/iio', 'V/III', 'V/iv', 'V/VI', 'viio/VI', 'V/VII', 'viio/VII',
+    'viio/ii', 'viio/iii', 'viio/vi', 'viio/IV'
   ],
   inversion: [
     '6', '6/4', '4/3', '4/2', '6/5', '7'

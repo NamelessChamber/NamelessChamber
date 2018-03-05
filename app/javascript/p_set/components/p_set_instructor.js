@@ -7,7 +7,7 @@ import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
-import { newPSet, validateMeter, validateOptions, compareMeter } from '../lib/models';
+import { newPSet, validateMeter, validateOptions, compareMeter, currentPage } from '../lib/models';
 import { fetchPSet, updatePSet } from '../lib/api';
 
 export default class PSetInstructorComponent extends React.Component {
@@ -252,7 +252,6 @@ export default class PSetInstructorComponent extends React.Component {
         {} : {display: 'none'};
     };
 
-    const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
     const mode = this.rhythmic ? 'rhythm' : 'melody';
     return (
       <div className="small-12 columns" ref={(el) => this.containerEl = el}>
@@ -266,7 +265,6 @@ export default class PSetInstructorComponent extends React.Component {
                               mode={renderMode}
                               keySignature={this.state.keySignature}
                               currentMeasure={this.state.currentMeasure}
-                              startMeasure={startMeasure}
                               measures={this.state.vexData.data.measures}
                               currentNote={this.state.currentNote} />
             <div style={showIf(!_.isEmpty(errors))}>

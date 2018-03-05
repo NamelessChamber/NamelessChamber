@@ -320,7 +320,6 @@ export default class PSetStudentComponent extends React.Component {
       );
     }
 
-    const startMeasure = Math.floor(this.state.currentMeasure / 4) * 4;
     const mode = this.rhythmic ? 'rhythm' : 'melody';
     const errors = this.state.errors.map((e, i) => {
       return (
@@ -359,7 +358,6 @@ export default class PSetStudentComponent extends React.Component {
               mode={renderMode}
               keySignature={this.state.answer.keySignature}
               currentMeasure={this.state.currentMeasure}
-              startMeasure={startMeasure}
               measures={this.state.vexData.data.measures}
               staveErrors={this.state.staveErrors}
               currentNote={this.state.currentNote} />

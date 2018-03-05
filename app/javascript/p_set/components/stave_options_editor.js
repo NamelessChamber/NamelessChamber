@@ -201,7 +201,7 @@ export default class StaveOptionsEditor extends React.Component {
             </span>
           </div>
           <div className="small-4 columns">
-            <b>Pick-up Beat</b>
+            &nbsp;
           </div>
         </div>
         <div className="row">
@@ -218,7 +218,7 @@ export default class StaveOptionsEditor extends React.Component {
             </select>
           </div>
           <div className="small-4 columns">
-            <input type="checkbox" /><label>Enable</label>
+            &nbsp;
           </div>
         </div>
         <div className="row">
