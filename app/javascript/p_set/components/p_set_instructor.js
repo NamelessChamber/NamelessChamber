@@ -7,7 +7,7 @@ import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
-import { newPSet, validateMeter, validateOptions, compareMeter, currentPage } from '../lib/models';
+import { newPSet, validateMeter, validateOptions, currentPage, compareMeterAt } from '../lib/models';
 import { fetchPSet, updatePSet } from '../lib/api';
 
 export default class PSetInstructorComponent extends React.Component {
@@ -41,11 +41,10 @@ export default class PSetInstructorComponent extends React.Component {
     const stave = newVexData.data.staves[this.stave];
     Object.assign(stave, {solution});
 
-    const { meter } = newVexData.data;
+    const { meter, pickUpBeat } = newVexData.data;
     const { currentMeasure } = this.state;
-    const measure = solution[currentMeasure];
     const errors = [];
-    const result = compareMeter(meter, measure);
+    const result = compareMeterAt(meter, solution, pickUpBeat, currentMeasure);
     // if (result > 0) {
     //   errors.push(`Measure ${currentMeasure + 1} in ${stave.name} has too few beats`);
     // } else
@@ -111,13 +110,14 @@ export default class PSetInstructorComponent extends React.Component {
 
   handlePositionUpdate(pos) {
     if (this.rhythmic) {
-      const { meter, staves } = this.state.vexData.data;
-      const measure =
-        staves[this.stave].solution[this.state.currentMeasure];
-      const meterCheck = compareMeter(meter, measure);
-      if (meterCheck > 0) {
-        alert('Measure has too few beats! Please go back and correct it.');
-      } else if (meterCheck < 0) {
+      const { meter, staves, pickUpBeat } = this.state.vexData.data;
+      const { currentMeasure } = this.state;
+      const solution = staves[this.stave].solution;
+      const meterCheck = compareMeterAt(meter, solution, pickUpBeat, currentMeasure);
+      // if (meterCheck > 0) {
+      //   alert('Measure has too few beats! Please go back and correct it.');
+      // } else
+      if (meterCheck < 0) {
         alert('Measure has too many beats! Please go back and correct it.');
       }
     }

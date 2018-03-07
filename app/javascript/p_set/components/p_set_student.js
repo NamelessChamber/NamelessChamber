@@ -104,11 +104,14 @@ export default class PSetStudentComponent extends React.Component {
     if (this.rhythmic) {
       const measure =
         this.state.answer.staves[this.stave][this.state.currentMeasure];
+      const firstMeasure =
+        this.state.answer.staves[this.stave][0];
       const { meter } = this.state.vexData.data;
-      const meterCheck = compareMeter(meter, measure);
-      if (meterCheck > 0) {
-        alert('Measure has too few beats! Please go back and correct it.');
-      } else if (meterCheck < 0) {
+      const meterCheck = compareMeter(meter, measure, firstMeasure);
+      // if (meterCheck > 0) {
+      //   alert('Measure has too few beats! Please go back and correct it.');
+      // } else
+      if (meterCheck < 0) {
         alert('Measure has too many beats! Please go back and correct it.');
       }
     }

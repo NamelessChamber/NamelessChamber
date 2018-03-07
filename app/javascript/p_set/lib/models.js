@@ -89,11 +89,36 @@ export function countBeats(measure) {
   }, new Fraction(0));
 }
 
+export function compareMeters(meter, stave, pickUpBeat) {
+  const regular = pickUpBeat ?
+    _.slice(stave, 1, stave.length - 1) :
+    stave;
+  const results = regular.map((measure) => compareMeter(meter, measure));
+
+  if (pickUpBeat) {
+    // truncate first and last
+    const { top, bottom } = meter;
+    const meterBeats = new Fraction(top, bottom);
+    const pickUpMeasure = _.first(stave);
+    const lastMeasure = _.last(stave);
+    const pickUpBeats = countBeats(pickUpMeasure);
+    const lastMeasureBeats = countBeats(lastMeasure);
+    const lastMeasureExpected = meterBeats.sub(pickUpBeats);
+    results.unshift(0);
+    results.push(lastMeasureExpected.compare(lastMeasureBeats));
+  }
+
+  return results;
+}
+
+export function compareMeterAt(meter, stave, pickUpBeat, i) {
+  return compareMeters(meter, stave, pickUpBeat)[i];
+}
+
 export function compareMeter(meter, measure) {
   const { top, bottom } = meter;
   const expectedBeats = new Fraction(top, bottom);
   const actualBeats = countBeats(measure);
-
   return expectedBeats.compare(actualBeats);
 }
 
