@@ -48,9 +48,7 @@ export function measureLengths(key, staves) {
 export function displayableRange(canvasWidth, key, staves, startMeasure) {
   const lengths = measureLengths(key, staves);
   const lengthsFromIx = _.slice(lengths, startMeasure);
-  const widths = scanl((m, x) => m + (Math.max(x * 45, 70)), 100 /* for clef */, lengthsFromIx);
-  // if we want max of 4
-  // const maxIndex = Math.min(startMeasure + widths.length, 4);
+  const widths = scanl((m, x) => m + (Math.max(x * 45, 70)), 115 /* for clef */, lengthsFromIx);
   const maxIndex = startMeasure + widths.length;
   const indices = _.range(startMeasure, maxIndex)
   return _.takeWhile(indices, (_, i) => widths[i] <= canvasWidth);

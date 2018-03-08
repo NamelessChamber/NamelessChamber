@@ -88,8 +88,7 @@ const getNote = (tonic, octave, solfege, minor) => {
 
 const getVFScaleName = (tonic, scale) => {
   const note = teoria.note(tonicStr(tonic));
-  let res = note.name() + note.accidental();
-  res = res.toUpperCase();
+  let res = note.name().toUpperCase() + note.accidental();
 
   if (_.includes(['minor', 'aeolian'], scale)) {
     res += 'm';
@@ -367,13 +366,13 @@ export default class VexflowComponent extends React.Component {
         allNotes = allNotes.concat(notes);
         let width = measureWidths[i] * 45;
         if (width === 0) {
-          width = 65;
+          width = 70;
         }
         let offsetIncrement = width;
 
         if (index === 0) {
           // clef
-          offsetIncrement += 100;
+          offsetIncrement += 115;
         }
 
         const staveObj = new VF.Stave(widthOffset, yOffset, offsetIncrement);
@@ -474,14 +473,6 @@ export default class VexflowComponent extends React.Component {
     this.containerWidth = containerWidth;
 
     window.addEventListener('resize', this.updateDimensions);
-
-    // this.renderer = new VF.Renderer(e, VF.Renderer.Backends.SVG);
-    // const height = STAVE_HEIGHT * this.props.staves.length + 50;
-    // this.renderer.resize(containerWidth, height);
-    //
-    // const context = this.renderer.getContext();
-    // context.setFont("Arial", 10, "").setBackgroundFillStyle("#eed");
-
     this.updateDimensions();
   }
 
