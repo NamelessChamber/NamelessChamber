@@ -105,7 +105,7 @@ export default class PSetStudentComponent extends React.Component {
       const { currentMeasure } = this.state;
       const answer = this.state.answer.staves[this.stave];
       const { meter, pickUpBeat } = this.state.vexData.data;
-      const meterCheck = compareMeterAt(meter, measure, pickUpBeat, currentMeasure);
+      const meterCheck = compareMeterAt(meter, answer, pickUpBeat, currentMeasure);
       // if (meterCheck > 0) {
       //   alert('Measure has too few beats! Please go back and correct it.');
       // } else
