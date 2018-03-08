@@ -8,7 +8,7 @@ import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
 
-import { newAnswer, compareMeter, getAnswerErrors } from '../lib/models';
+import { newAnswer, compareMeterAt, compareMeters, getAnswerErrors } from '../lib/models';
 import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from '../lib/api';
 
 export default class PSetStudentComponent extends React.Component {
@@ -53,7 +53,7 @@ export default class PSetStudentComponent extends React.Component {
   get stave() {
     return this.harmonic ?
       this.state.vexData.data.staves.length - 1 :
-      this.stave;
+      this.state.stave;
   }
 
   handleScoreUpdate(answer, changeMeasure, changeNote) {
@@ -102,12 +102,10 @@ export default class PSetStudentComponent extends React.Component {
 
   handlePositionUpdate(pos) {
     if (this.rhythmic) {
-      const measure =
-        this.state.answer.staves[this.stave][this.state.currentMeasure];
-      const firstMeasure =
-        this.state.answer.staves[this.stave][0];
-      const { meter } = this.state.vexData.data;
-      const meterCheck = compareMeter(meter, measure, firstMeasure);
+      const { currentMeasure } = this.state;
+      const answer = this.state.answer.staves[this.stave];
+      const { meter, pickUpBeat } = this.state.vexData.data;
+      const meterCheck = compareMeterAt(meter, measure, pickUpBeat, currentMeasure);
       // if (meterCheck > 0) {
       //   alert('Measure has too few beats! Please go back and correct it.');
       // } else
@@ -191,26 +189,18 @@ export default class PSetStudentComponent extends React.Component {
     if (_.every(staveErrors, (es) => _.every(es, (e) => !e))) {
       errors.push('No errors!');
     } else {
-      const { meter, staves } = this.state.vexData.data;
+      const { meter, staves, pickUpBeat } = this.state.vexData.data;
       const solutionMeters = this.state.answer.staves.map((stave) => {
-        return stave.map((measure) => {
-          if (measure.notes === 0) {
-            return null;
-          } else {
-            return compareMeter(meter, measure);
-          }
-        });
+        return compareMeters(meter, stave, pickUpBeat);
       });
       solutionMeters.forEach((stave, i) => {
         const staveName = staves[i].name;
         stave.forEach((measure, e) => {
-          if (!_.isNull(measure)) {
-            // if (measure > 0) {
-            //   errors.push(`Measure ${e + 1} in ${staveName} has too few beats`);
-            // } else
-            if (measure < 0) {
-              errors.push(`Measure ${e + 1} in ${staveName} has too many beats`);
-            }
+          // if (measure > 0) {
+          //   errors.push(`Measure ${e + 1} in ${staveName} has too few beats`);
+          // } else
+          if (measure < 0) {
+            errors.push(`Measure ${e + 1} in ${staveName} has too many beats`);
           }
         });
       });
