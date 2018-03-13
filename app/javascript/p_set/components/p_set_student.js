@@ -8,7 +8,7 @@ import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
 
-import { newAnswer, compareMeterAt, compareMeters, getAnswerErrors } from '../lib/models';
+import { newAnswer, compareMeterAt, compareMeters, getAnswerErrors, nextNonEmptyMeasure, prevNonEmptyMeasure } from '../lib/models';
 import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from '../lib/api';
 
 export default class PSetStudentComponent extends React.Component {
@@ -38,22 +38,34 @@ export default class PSetStudentComponent extends React.Component {
     this.reportErrors = this.reportErrors.bind(this);
   }
 
+  isRhythmic(props = this.props) {
+    return props.location.pathname.match(/\/rhythm\/?$/) !== null;
+  }
+
   get rhythmic() {
-    return this.props.location.pathname.match(/\/rhythm\/?$/) !== null;
+    return this.isRhythmic();
   }
 
   get melodic() {
     return this.props.location.pathname.match(/\/melody\/?$/) !== null;
   }
 
+  isHarmonic(props = this.props) {
+    return props.location.pathname.match(/\/harmony\/?$/) !== null;
+  }
+
   get harmonic() {
-    return this.props.location.pathname.match(/\/harmony\/?$/) !== null;
+    return this.isHarmonic();
+  }
+
+  getStave(props = this.props) {
+    return this.isHarmonic(props) ?
+      this.state.vexData.data.staves.length - 1 :
+      this.state.stave;
   }
 
   get stave() {
-    return this.harmonic ?
-      this.state.vexData.data.staves.length - 1 :
-      this.state.stave;
+    return this.getStave();
   }
 
   handleScoreUpdate(answer, changeMeasure, changeNote) {
@@ -88,10 +100,15 @@ export default class PSetStudentComponent extends React.Component {
       parseInt(e.target.value);
     const newStaveAnswer = this.state.vexData.data.staves[stave].answer;
     const rhythmic = _.every(newStaveAnswer, (a) => _.isEmpty(a.notes));
+    let currentMeasure = 0;
+    if (!this.rhythmic) {
+      currentMeasure =
+        nextNonEmptyMeasure(newStaveAnswer, this.state.currentMeasure);
+    }
     this.setState({
       stave,
+      currentMeasure,
       currentNote: 0,
-      currentMeasure: 0,
       staveErrors: undefined
     });
 
@@ -209,6 +226,16 @@ export default class PSetStudentComponent extends React.Component {
     this.setState({staveErrors, errors});
   }
 
+  componentWillReceiveProps(props) {
+    if (!this.isRhythmic(props)) {
+      const { staves } = this.state.answer;
+      let { currentMeasure } = this.state;
+      const answer = staves[this.getStave(props)];
+      currentMeasure = nextNonEmptyMeasure(answer, currentMeasure);
+      this.setState({currentMeasure});
+    }
+  }
+
   componentDidMount() {
     const { p_set_id } = this.props.match.params;
     const pSetPromise = fetchPSet(p_set_id).then((pSet) => {
@@ -219,6 +246,10 @@ export default class PSetStudentComponent extends React.Component {
     Promise.all([pSetPromise, answerPromise]).then(([state, answer]) => {
       if (_.isEmpty(answer)) {
         answer = newAnswer(state.vexData);
+      }
+      state.currentMeasure = 0;
+      if (!this.rhythmic) {
+        state.currentMeasure = nextNonEmptyMeasure(answer.staves[state.stave]);
       }
       this.setState(Object.assign(state, {answer}, {meter: answer.meter}));
     });

@@ -68,6 +68,15 @@ export function currentPage(canvasWidth, key, staves, currentMeasure, startMeasu
   }
 }
 
+export function nextNonEmptyMeasure(measures, i = 0) {
+  return _.findIndex(measures, (m) => m.notes.length > 0, i);
+}
+
+export function prevNonEmptyMeasure(measures, i) {
+  measures = _.slice(measures, 0, i);
+  return _.findLastIndex(measures, (m) => m.notes.length > 0);
+}
+
 function scanl(f, initial, list) {
   return list.reduce(([out, acc], x, i) => {
     const res = f(acc, x, i);

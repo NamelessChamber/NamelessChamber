@@ -7,7 +7,7 @@ import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
-import { newPSet, validateMeter, validateOptions, currentPage, compareMeterAt } from '../lib/models';
+import { newPSet, validateMeter, validateOptions, currentPage, compareMeterAt, nextNonEmptyMeasure, prevNonEmptyMeasure } from '../lib/models';
 import { fetchPSet, updatePSet } from '../lib/api';
 
 export default class PSetInstructorComponent extends React.Component {
@@ -55,22 +55,34 @@ export default class PSetInstructorComponent extends React.Component {
     this.setState({vexData: newVexData, errors});
   }
 
+  isRhythmic(props = this.props) {
+    return props.location.pathname.match(/\/rhythm\/?$/) !== null;
+  }
+
   get rhythmic() {
-    return this.props.location.pathname.match(/\/rhythm\/?$/) !== null;
+    return this.isRhythmic();
   }
 
   get melodic() {
     return this.props.location.pathname.match(/\/melody\/?$/) !== null;
   }
 
+  isHarmonic(props = this.props) {
+    return props.location.pathname.match(/\/harmony\/?$/) !== null;
+  }
+
   get harmonic() {
-    return this.props.location.pathname.match(/\/harmony\/?$/) !== null;
+    return this.isHarmonic();
+  }
+
+  getStave(props = this.props) {
+    return this.isHarmonic(props) ?
+      this.state.vexData.data.staves.length - 1 :
+      this.state.stave;
   }
 
   get stave() {
-    return this.harmonic ?
-      this.state.vexData.data.staves.length - 1 :
-      this.state.stave;
+    return this.getStave();
   }
 
   saveAndToggle() {
@@ -97,15 +109,17 @@ export default class PSetInstructorComponent extends React.Component {
       parseInt(e.target.value);
     const newStaveSolution = this.state.vexData.data.staves[stave].solution;
     const rhythmic = _.every(newStaveSolution, (s) => _.isEmpty(s.notes));
+    let currentMeasure = 0;
+    if (!this.rhythmic) {
+      currentMeasure =
+        nextNonEmptyMeasure(newStaveSolution, this.state.currentMeasure);
+    }
 
     this.setState({
       stave,
-      currentNote: 0,
-      currentMeasure: 0
+      currentMeasure,
+      currentNote: 0
     });
-    if (rhythmic) {
-      this.props.history.push('rhythm')
-    }
   }
 
   handlePositionUpdate(pos) {
@@ -144,13 +158,27 @@ export default class PSetInstructorComponent extends React.Component {
     const { p_set_id } = this.props.match.params;
     fetchPSet(p_set_id, true).then((pSet) => {
       const stave = this.harmonic ? pSet.data.staves.length - 1 : 0;
-      this.setState({vexData: pSet, stave});
+      let currentMeasure = 0;
+      if (!this.rhythmic) {
+        currentMeasure = nextNonEmptyMeasure(pSet.data.staves[stave].solution);
+      }
+      this.setState({vexData: pSet, stave, currentMeasure});
     }).catch((e) => {
       console.log(e.status);
     });
 
     if (!_.isUndefined(this.containerEl)) {
       $(this.containerEl).foundation();
+    }
+  }
+
+  componentWillReceiveProps(props) {
+    if (!this.isRhythmic(props)) {
+      const { staves } = this.state.vexData.data;
+      let { currentMeasure } = this.state;
+      const solution = staves[this.getStave(props)].solution;
+      currentMeasure = nextNonEmptyMeasure(solution, currentMeasure);
+      this.setState({currentMeasure});
     }
   }
 

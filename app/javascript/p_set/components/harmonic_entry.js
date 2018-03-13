@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import { nextNonEmptyMeasure, prevNonEmptyMeasure } from '../lib/models';
 
 export default class HarmonicEntryComponent extends React.Component {
   constructor(props) {
@@ -67,9 +68,11 @@ export default class HarmonicEntryComponent extends React.Component {
     if (increment) {
       const measureLength = notes.length - 1;
       if (currentNote + 1 > measureLength) {
-        if (currentMeasure + 1 < staveLength &&
-            this.measures[currentMeasure + 1].notes.length > 0) {
-          currentMeasure += 1;
+        if (currentMeasure + 1 < staveLength) {
+          currentMeasure = Math.max(
+            currentMeasure,
+            nextNonEmptyMeasure(this.measures, currentMeasure + 1)
+          )
           currentNote = 0;
         }
       } else {
@@ -80,9 +83,12 @@ export default class HarmonicEntryComponent extends React.Component {
         currentNote -= 1;
       } else {
         if (currentMeasure - 1 >= 0) {
-          currentMeasure -= 1;
-          const measureLength = this.measures[currentMeasure].notes.length;
-          currentNote = measureLength - 1;
+          const prev = prevNonEmptyMeasure(this.measures, currentMeasure);
+          if (prev >= 0) {
+            currentMeasure = prev;
+            const measureLength = this.measures[currentMeasure].notes.length;
+            currentNote = measureLength - 1;
+          }
         }
       }
     }
