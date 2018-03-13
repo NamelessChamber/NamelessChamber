@@ -194,7 +194,11 @@ export default class MelodicEntryComponent extends React.Component {
     const measureNotes = measure.notes;
     const note = measureNotes[currentNote];
     const noteDisplay = `Note (${currentNote + 1}/${measureNotes.length})`;
-    const solfege = this.props.options.solfege.filter(([_, v]) => v).map(([v, _]) => v);
+    const solfege =
+      this.props.options.solfege
+        .filter(([_, v]) => v)
+        .map(([v, _]) => v)
+        .reverse();
     let selectedSolfege = _.isUndefined(note) ?
       '' : note.solfege;
     let octaveStr = this.state.octave.toString();
