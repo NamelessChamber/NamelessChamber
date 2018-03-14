@@ -55,8 +55,12 @@ export default class MelodicEntryComponent extends React.Component {
     instructor: true
   }
 
+  getMeasures(props = this.props) {
+    return props.measures;
+  }
+
   get measures() {
-    return this.props.measures;
+    return this.getMeasures();
   }
 
   setCurrentNote(increment, e) {
@@ -170,8 +174,26 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
+    const stateUpdate = {};
+
     if (newProps.staveId != this.props.staveId) {
-      this.setState({octave: 0});
+      stateUpdate.octave = 0;
+    }
+
+    if (newProps.currentMeasure !== this.props.currentMeasure ||
+        newProps.currentNote !== this.props.currentNote) {
+      const newMeasures = _.cloneDeep(newProps.measures);
+      const oldNote = this.currentNote(this.measures);
+      const note = newMeasures[newProps.currentMeasure].notes[newProps.currentNote];
+      if (_.isUndefined(note.solfege)) {
+        note.solfege = oldNote.solfege;
+        note.octave = oldNote.octave;
+        newProps.updateStave(newMeasures, newProps.currentMeasure, newProps.currentNote);
+      }
+    }
+
+    if (!_.isEmpty(stateUpdate)) {
+      this.setState(stateUpdate);
     }
   }
 
