@@ -139,6 +139,7 @@ export default class VexflowComponent extends React.Component {
 
     this.renderer = null;
     this.updateDimensions = this.updateDimensions.bind(this);
+    this.updateDimensionsDebounced = _.debounce(this.updateDimensions, 250);
   }
 
   updateDimensions() {
@@ -464,7 +465,7 @@ export default class VexflowComponent extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateDimensions);
+    window.removeEventListener('resize', this.updateDimensionsDebounced);
   }
 
   componentDidMount() {
@@ -472,7 +473,7 @@ export default class VexflowComponent extends React.Component {
     const containerWidth = e.offsetWidth;
     this.containerWidth = containerWidth;
 
-    window.addEventListener('resize', this.updateDimensions);
+    window.addEventListener('resize', this.updateDimensionsDebounced);
     this.updateDimensions();
   }
 
