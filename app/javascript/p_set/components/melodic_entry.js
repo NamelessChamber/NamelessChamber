@@ -300,6 +300,9 @@ export default class MelodicEntryComponent extends React.Component {
           <div>
             <Link className="button" to="rhythm">Back to Rhythm</Link>
           </div>
+          <div style={showIf(instructor)}>
+            <Link className="button" to="options">Back to Options</Link>
+          </div>
           <div>
             <button data-open="help-text-melodic" className="button">
               Show Help

@@ -188,6 +188,13 @@ export default class HarmonicEntryComponent extends React.Component {
     const currentHarmony = this.note.harmony || '';
     const currentInversion = this.note.inversion || '';
 
+    const { instructor } = this.props;
+
+    const showIf = (cond) => {
+      return cond ?
+        {} : {display: 'none'};
+    };
+
     return (
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text-harmonic" data-reveal>
@@ -227,6 +234,12 @@ export default class HarmonicEntryComponent extends React.Component {
           <Link to="melody" className="button">
             Back to Melody
           </Link>
+        </div>
+        <div style={showIf(instructor)}>
+          <Link className="button" to="rhythm">Back to Rhythm</Link>
+        </div>
+        <div style={showIf(instructor)}>
+          <Link className="button" to="options">Back to Options</Link>
         </div>
         <div>
           <button data-open="help-text-harmonic" className="button">
