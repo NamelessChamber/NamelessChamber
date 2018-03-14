@@ -64,7 +64,7 @@ export default class PSetOptionsEditor extends React.Component {
     const newState = _.cloneDeep(this.state);
     const { checked } = e.target;
     newState.data.pickUpBeat = checked;
-    if (newState.data.measures > 1) {
+    if (newState.data.measures > 0) {
       if (checked) {
         _.each(newState.data.staves, (stave) => {
           const [measure,] = stave.solution;
