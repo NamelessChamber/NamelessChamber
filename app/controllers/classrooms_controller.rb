@@ -11,6 +11,7 @@ class ClassroomsController < ApplicationController
       .joins(:users)
       .includes(:course)
       .where(users: {id: current_user.id})
+      .where(id: params[:id])
       .first
 
     @classroom_psets = ClassroomPset
