@@ -14,7 +14,7 @@ class ClassroomsController < ApplicationController
       .first
 
     @classroom_psets = ClassroomPset
-      .where('start_date < ? AND end_date >= ?', Date.today, Date.today)
+      .where('start_date <= ? AND end_date >= ?', Date.today, Date.today)
       .where(classroom: @classroom)
       .joins(:p_set)
       .joins('LEFT JOIN p_set_answers ON p_set_answers.p_set_id = p_sets.id')
