@@ -67,7 +67,7 @@ export default class PSetAnswerComponent extends React.Component {
         return Object.assign(s, {answer: a});
       });
 
-    const staveErrors = getAnswerErrors(pSet.staves, submission.staves, false);
+    const staveErrors = getAnswerErrors(pSet.staves, submission.staves, 'harmony');
 
     const pages = Math.ceil(pSet.measures / 4);
 

@@ -58,6 +58,14 @@ export default class PSetStudentComponent extends React.Component {
     return this.isHarmonic();
   }
 
+  get inputMode() {
+    return this.rhythmic ?
+      'rhythm' :
+      this.melodic ?
+        'melody' :
+        'harmony';
+  }
+
   getStave(props = this.props) {
     return this.isHarmonic(props) ?
       this.state.vexData.data.staves.length - 1 :
@@ -201,7 +209,7 @@ export default class PSetStudentComponent extends React.Component {
     const staveErrors = getAnswerErrors(
       this.state.vexData.data.staves,
       this.state.answer.staves,
-      this.rhythmic
+      this.inputMode
     );
     if (_.every(staveErrors, (es) => _.every(es, (e) => !e))) {
       errors.push('No errors!');

@@ -210,7 +210,7 @@ export function validateOptions(data) {
   }
 }
 
-export function getAnswerErrors(solution, answer, rhythmic) {
+export function getAnswerErrors(solution, answer, mode) {
   const staves = _.zipWith(
     solution,
     answer,
@@ -231,11 +231,14 @@ export function getAnswerErrors(solution, answer, rhythmic) {
           return true;
         }
 
-        if (rhythmic) {
+        if (mode === 'rhythm') {
           return n1.duration !== n2.duration ||
           n1.tied !== n2.tied ||
           n1.dots !== n2.dots;
-        } else {
+        } else if (mode === 'melody') {
+          return n1.solfege !== n2.solfege ||
+            n2.octave !== n2.octave;
+        } else if (mode === 'harmony') {
           return !_.isEqual(n1, n2);
         }
       });
