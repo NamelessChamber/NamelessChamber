@@ -148,6 +148,12 @@ export default class MelodicEntryComponent extends React.Component {
 
   handleKeyDown(e) {
     switch(e.key) {
+      case 'ArrowUp':
+      case 'ArrowDown':
+        if (!this.props.instructor) {
+          e.preventDefault();
+        }
+        break;
       case 'ArrowRight':
         this.setCurrentNote(true, e);
         break;
