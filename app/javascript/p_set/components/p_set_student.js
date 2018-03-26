@@ -338,7 +338,7 @@ export default class PSetStudentComponent extends React.Component {
           instructor={false} />
       );
     } else {
-      renderMode = VexflowComponent.RenderMode.MELODIC;
+      renderMode = VexflowComponent.RenderMode.HARMONIC;
       entryComponent = (
         <HarmonicEntryComponent options={vexData.options}
           stave={vexData.staves[this.stave]}
