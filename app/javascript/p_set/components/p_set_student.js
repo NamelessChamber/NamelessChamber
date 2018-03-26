@@ -89,6 +89,7 @@ export default class PSetStudentComponent extends React.Component {
 
     const staveErrors = _.cloneDeep(this.state.staveErrors);
     if (_.isArray(staveErrors)) {
+      console.log(this.stave, changeMeasure, changeNote)
       staveErrors[this.stave][changeMeasure][changeNote] = false;
     }
 

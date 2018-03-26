@@ -116,7 +116,11 @@ export default class HarmonicEntryComponent extends React.Component {
       note[key] = value;
     }
 
-    this.props.updateStave(measures);
+    this.props.updateStave(
+      measures,
+      this.props.currentMeasure,
+      this.props.currentNote
+    );
   }
 
   handleKeyDown(e) {
