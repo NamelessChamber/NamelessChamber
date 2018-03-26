@@ -207,6 +207,7 @@ export default class PSetStudentComponent extends React.Component {
   reportErrors() {
     // marking errors on stave
     let errors = [];
+    console.log('checking for', this.inputMode);
     const staveErrors = getAnswerErrors(
       this.state.vexData.data.staves,
       this.state.answer.staves,
