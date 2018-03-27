@@ -213,7 +213,12 @@ export default class PSetStudentComponent extends React.Component {
       this.state.answer.staves,
       this.inputMode
     );
-    if (_.every(staveErrors, (es) => _.every(es, (e) => !e))) {
+    const flatErrors = _.chain(staveErrors)
+      .flatten()
+      .flatten()
+      .value();
+    const allCorrect = _.every(flatErrors);
+    if (allCorrect) {
       errors.push('No errors!');
     } else {
       const { meter, staves, pickUpBeat } = this.state.vexData.data;
