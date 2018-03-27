@@ -346,6 +346,7 @@ export default class VexflowComponent extends React.Component {
       if (renderMode === RENDER_MODES.HARMONIC) {
         renderMode = RENDER_MODES.MELODIC;
         editing = true;
+        e = props.staves.length - 1;
       } else if (!editing && staveComplete(stave, props.render)) {
         renderMode = RENDER_MODES.MELODIC;
       }
