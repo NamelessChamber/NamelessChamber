@@ -216,8 +216,7 @@ export default class PSetStudentComponent extends React.Component {
       .flatten()
       .flatten()
       .value();
-    const allCorrect = _.every(flatErrors);
-    console.log('errors', staveErrors, allCorrect);
+    const allCorrect = !_.every(flatErrors);
     if (allCorrect) {
       errors.push('No errors!');
     } else {
