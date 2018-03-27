@@ -89,7 +89,6 @@ export default class PSetStudentComponent extends React.Component {
 
     const staveErrors = _.cloneDeep(this.state.staveErrors);
     if (_.isArray(staveErrors)) {
-      console.log(this.stave, changeMeasure, changeNote)
       staveErrors[this.stave][changeMeasure][changeNote] = false;
     }
 
@@ -378,6 +377,8 @@ export default class PSetStudentComponent extends React.Component {
       return cond ?
         {} : {display: 'none'};
     };
+
+    console.log('rendering', this.stave);
 
     return (
       <div className="small-12 columns" ref={(el) => this.containerEl = el}>
