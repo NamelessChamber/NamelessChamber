@@ -221,11 +221,12 @@ export function getAnswerErrors(solution, answer, mode) {
   return staves.map((stave) => {
     const { answer, solution } = stave;
 
-    console.log(answer, solution);
-    return _.zipWith(answer, solution, (m1, m2, i) => {
-      console.log('here', m1, m2, i);
+    return _.zipWith(answer, solution, (m1, m2) => {
       return _.zipWith(m1.notes, m2.notes, (n1, n2) => {
         if (_.isUndefined(n1)) {
+          if (!_.isUndefined(n2)) {
+            return true;
+          }
           return false;
         }
 
