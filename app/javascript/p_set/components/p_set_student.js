@@ -206,7 +206,6 @@ export default class PSetStudentComponent extends React.Component {
   reportErrors() {
     // marking errors on stave
     let errors = [];
-    console.log('checking for', this.inputMode);
     const staveErrors = getAnswerErrors(
       this.state.vexData.data.staves,
       this.state.answer.staves,
@@ -216,7 +215,7 @@ export default class PSetStudentComponent extends React.Component {
       .flatten()
       .flatten()
       .value();
-    const allCorrect = !_.every(flatErrors);
+    const allCorrect = _.every(flatErrors, (e) => e === false);
     if (allCorrect) {
       errors.push('No errors!');
     } else {
@@ -376,8 +375,6 @@ export default class PSetStudentComponent extends React.Component {
       return cond ?
         {} : {display: 'none'};
     };
-
-    console.log('rendering', this.stave);
 
     return (
       <div className="small-12 columns" ref={(el) => this.containerEl = el}>
