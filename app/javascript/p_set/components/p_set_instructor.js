@@ -281,7 +281,6 @@ export default class PSetInstructorComponent extends React.Component {
         {} : {display: 'none'};
     };
 
-    console.log(vexData);
     let audios = _.flatMap(this.state.vexData.p_set_audios, ({name, audio}, i) => {
       return [
         (<dt key={i*2}>{name}</dt>),
