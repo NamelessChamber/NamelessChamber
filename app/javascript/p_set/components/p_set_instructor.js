@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import ReactAudioPlayer from 'react-audio-player';
 
 import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
@@ -280,6 +281,14 @@ export default class PSetInstructorComponent extends React.Component {
         {} : {display: 'none'};
     };
 
+    console.log(vexData);
+    let audios = _.flatMap(this.state.vexData.p_set_audios, ({name, audio}, i) => {
+      return [
+        (<dt key={i*2}>{name}</dt>),
+        (<dd key={i*2+1}><ReactAudioPlayer src={audio} controls /></dd>)
+      ];
+    });
+
     const mode = this.rhythmic ? 'rhythm' : 'melody';
     return (
       <div className="small-12 columns" ref={(el) => this.containerEl = el}>
@@ -317,7 +326,13 @@ export default class PSetInstructorComponent extends React.Component {
                 </button>
               </div>
             </div>
+
             {entryComponent}
+
+            <fieldset>
+              <legend>Audio Samples</legend>
+              <dl>{audios}</dl>
+            </fieldset>
           </div>
         </div>
       </div>
