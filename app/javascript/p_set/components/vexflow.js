@@ -87,12 +87,17 @@ const getNote = (tonic, octave, solfege, minor) => {
 };
 
 const getVFScaleName = (tonic, scale) => {
+  console.log('getVFScaleName.args', tonic, scale);
   const note = teoria.note(tonicStr(tonic));
   let res = note.name().toUpperCase() + note.accidental();
+  console.log('getVFScaleName.res', res);
 
   if (_.includes(['minor', 'aeolian'], scale)) {
+    console.log('getVFScaleName.minor');
     res += 'm';
   }
+
+  console.log('getVFScaleName.finalres', res);
 
   return res;
 };
