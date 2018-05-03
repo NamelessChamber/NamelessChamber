@@ -85,6 +85,19 @@ function scanl(f, initial, list) {
   }, [[], initial])[0];
 }
 
+// for use on the student side
+export function keyOptionToSignature(key) {
+  if (_.isUndefined(key) || _.isNull(key) || key === '') {
+    return '';
+  }
+
+  if (key === key.toLowerCase()) {
+    key = key.toUpperCase() + 'm';
+  }
+
+  return key;
+}
+
 export function countBeats(measure) {
   return measure.notes.reduce((total, note, i) => {
     let { duration, dots } = note;

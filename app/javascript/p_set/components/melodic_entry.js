@@ -244,10 +244,10 @@ export default class MelodicEntryComponent extends React.Component {
                            .filter(([_, v]) => v)
                            .map(([key, _], i) => {
       return (
-        <option key={i} value={key}>{formatKey(key)}</option>
+        <option key={i + 1} value={key}>{formatKey(key)}</option>
       );
     });
-    keyOptions.unshift((<option key="null" value={undefined}>-</option>));
+    keyOptions.unshift((<option key={0} value={''}>-</option>));
     const { instructor } = this.props;
     const showIf = (cond) => {
       return cond ?

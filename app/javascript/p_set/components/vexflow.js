@@ -87,17 +87,12 @@ const getNote = (tonic, octave, solfege, minor) => {
 };
 
 const getVFScaleName = (tonic, scale) => {
-  console.log('getVFScaleName.args', tonic, scale);
   const note = teoria.note(tonicStr(tonic));
   let res = note.name().toUpperCase() + note.accidental();
-  console.log('getVFScaleName.res', res);
 
   if (_.includes(['minor', 'aeolian'], scale)) {
-    console.log('getVFScaleName.minor');
     res += 'm';
   }
-
-  console.log('getVFScaleName.finalres', res);
 
   return res;
 };
@@ -405,8 +400,7 @@ export default class VexflowComponent extends React.Component {
             _.isUndefined(stave.scale) )) {
             if (_.isString(props.keySignature) && props.keySignature !== '') {
               staveObj.addKeySignature(props.keySignature);
-            } else if (_.isUndefined(props.keySignature) ||
-                       props.keySignature === '') {
+            } else if (_.isUndefined(props.keySignature)) {
               const keySignature = getVFScaleName(stave.tonic, stave.scale);
               staveObj.addKeySignature(keySignature);
             }

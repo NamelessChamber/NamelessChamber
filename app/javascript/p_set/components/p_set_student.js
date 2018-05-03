@@ -8,7 +8,7 @@ import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
 
-import { newAnswer, compareMeterAt, compareMeters, getAnswerErrors, nextNonEmptyMeasure, prevNonEmptyMeasure } from '../lib/models';
+import { newAnswer, compareMeterAt, compareMeters, getAnswerErrors, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature } from '../lib/models';
 import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from '../lib/api';
 
 export default class PSetStudentComponent extends React.Component {
@@ -183,8 +183,11 @@ export default class PSetStudentComponent extends React.Component {
 
   handleKeySignatureUpdate(keySignature) {
     const stave = this.state.vexData.data.staves[0];
-    const key = stave.tonic.pitch;
+    let key = stave.tonic.pitch;
     const answer = _.cloneDeep(this.state.answer);
+    if (stave.scale === 'minor') {
+      key = key.toLowerCase();
+    }
     answer.keySignature = keySignature;
     if (keySignature === key) {
       alert('Correct!');
@@ -393,7 +396,7 @@ export default class PSetStudentComponent extends React.Component {
               meter={this.state.answer.meter}
               render="answer"
               mode={renderMode}
-              keySignature={this.state.answer.keySignature}
+              keySignature={keyOptionToSignature(this.state.answer.keySignature)}
               currentMeasure={this.state.currentMeasure}
               measures={this.state.vexData.data.measures}
               staveErrors={this.state.staveErrors}
