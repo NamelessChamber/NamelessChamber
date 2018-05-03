@@ -5,7 +5,7 @@ import Vex from 'vexflow';
 import teoria from 'teoria';
 import { fromSemitones } from 'tonal-interval';
 import _ from 'lodash';
-import { currentPage } from '../lib/models';
+import { currentPage, getVFScaleName, tonicStr } from '../lib/models';
 
 const VF = Vex.Flow;
 
@@ -70,10 +70,6 @@ const noteRelEq = (n1, n2) => {
   return semisDiff % 12 == 0;
 };
 
-const tonicStr = (tonic) => {
-  return (`${tonic.pitch}${tonic.octave}`).toLowerCase();
-};
-
 const getNote = (tonic, octave, solfege, minor) => {
   const interval = solfegeInterval[solfege];
   let note = teoria.note(tonicStr(tonic));
@@ -84,17 +80,6 @@ const getNote = (tonic, octave, solfege, minor) => {
 
   note.coord[0] += octave;
   return note.interval(interval);
-};
-
-const getVFScaleName = (tonic, scale) => {
-  const note = teoria.note(tonicStr(tonic));
-  let res = note.name().toUpperCase() + note.accidental();
-
-  if (_.includes(['minor', 'aeolian'], scale)) {
-    res += 'm';
-  }
-
-  return res;
 };
 
 const getAccidentalToRender = (scale, note) => {
@@ -220,18 +205,13 @@ export default class VexflowComponent extends React.Component {
       clef: stave.clef
     });
 
+    // NOTE: in the future, let's account for multiple 'keys' on the note
     if (error) {
-      const annotation = new VF.Annotation('x')
-        .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
-      staveNote.addModifier(0, annotation);
-    }
-
-    if (renderMode === RENDER_MODES.MELODIC &&
+      staveNote.setKeyStyle(0, {shadowBlur: 15, shadowColor: 'red', fillStyle: 'red'});
+    } else if (renderMode === RENDER_MODES.MELODIC &&
         (_.isUndefined(solfege) || _.isUndefined(octave)) &&
         editing && !duration.endsWith('r')) {
-      const annotation = new VF.Annotation('?')
-        .setVerticalJustification(VF.Annotation.VerticalJustify.BOTTOM);
-      staveNote.addModifier(0, annotation);
+      staveNote.setKeyStyle(0, {shadowBlur: 15, shadowColor: 'blue', fillStyle: 'blue'});
     }
 
     if (_.isString(harmony) &&

@@ -5,7 +5,7 @@ import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
 
 import VexflowComponent from './vexflow';
-import { formatKey, nextNonEmptyMeasure, prevNonEmptyMeasure } from '../lib/models';
+import { formatKey, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName } from '../lib/models';
 
 const clefToOctave = (clef) => {
   if (clef === 'treble') {
@@ -239,7 +239,8 @@ export default class MelodicEntryComponent extends React.Component {
       );
     });
 
-    const keyCorrect = this.props.keySignature === this.props.stave.tonic.pitch;
+    const keySignature = keyOptionToSignature(this.props.keySignature);
+    const keyCorrect = keySignature === getVFScaleName(this.props.stave.tonic, this.props.stave.scale);
     const keyOptions = this.props.options.key
                            .filter(([_, v]) => v)
                            .map(([key, _], i) => {

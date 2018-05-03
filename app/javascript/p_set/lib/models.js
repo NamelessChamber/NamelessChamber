@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import teoria from 'teoria';
 import Fraction from 'fraction.js';
 
 /*
@@ -96,6 +97,21 @@ export function keyOptionToSignature(key) {
   }
 
   return key;
+}
+
+export function tonicStr(tonic) {
+  return (`${tonic.pitch}${tonic.octave}`).toLowerCase();
+}
+
+export function getVFScaleName(tonic, scale) {
+  const note = teoria.note(tonicStr(tonic));
+  let res = note.name().toUpperCase() + note.accidental();
+
+  if (_.includes(['minor', 'aeolian'], scale)) {
+    res += 'm';
+  }
+
+  return res;
 }
 
 export function countBeats(measure) {
