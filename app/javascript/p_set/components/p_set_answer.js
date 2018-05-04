@@ -5,7 +5,7 @@ import _ from 'lodash';
 import VexflowComponent from './vexflow';
 
 import { fetchPSetAnswerAdmin, fetchPSet } from '../lib/api';
-import { getAnswerErrors } from '../lib/models';
+import { getAnswerErrors, keyOptionToSignature } from '../lib/models';
 
 export default class PSetAnswerComponent extends React.Component {
   constructor(props) {
@@ -79,7 +79,7 @@ export default class PSetAnswerComponent extends React.Component {
             meter={submission.meter}
             render="answer"
             mode={VexflowComponent.RenderMode.MELODIC}
-            keySignature={submission.keySignature}
+            keySignature={keyOptionToSignature(submission.keySignature)}
             startMeasure={this.state.page * 4}
             measures={pSet.measures}
             staveErrors={staveErrors} />
