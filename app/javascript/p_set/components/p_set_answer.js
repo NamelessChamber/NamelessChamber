@@ -5,7 +5,7 @@ import _ from 'lodash';
 import VexflowComponent from './vexflow';
 
 import { fetchPSetAnswerAdmin, fetchPSet } from '../lib/api';
-import { getAnswerErrors, keyOptionToSignature } from '../lib/models';
+import { getAnswerErrors, keyOptionToSignature, currentPage } from '../lib/models';
 
 export default class PSetAnswerComponent extends React.Component {
   constructor(props) {
@@ -13,7 +13,7 @@ export default class PSetAnswerComponent extends React.Component {
 
     this.state = {
       submission: 0,
-      page: 0
+      measure: 0
     };
   }
 
@@ -27,15 +27,15 @@ export default class PSetAnswerComponent extends React.Component {
     });
   }
 
-  updatePage(increment) {
-    const pages = Math.ceil(this.state.pSet.data.measures / 4);
-    let { page } = this.state;
+  updateMeasure(increment) {
+    const measures = this.state.pSet.data.measures;
+    let { measure } = this.state;
     if (increment) {
-      page = Math.min(page + 1, pages - 1);
+      measure = Math.min(measure + 1, measures - 1);
     } else {
-      page = Math.max(0, page - 1);
+      measure = Math.max(0, measure - 1);
     }
-    this.setState({page});
+    this.setState({measure});
   }
 
   updateSubmission(increment) {
@@ -55,7 +55,7 @@ export default class PSetAnswerComponent extends React.Component {
       return (<div className="row columns">Loading...</div>)
     }
 
-    let { pSet, answer } = this.state;
+    let { pSet, answer, measure } = this.state;
     pSet = pSet.data;
     const submission = answer.data.submissions[this.state.submission];
     const totalSubmissions = answer.data.submissions.length;
@@ -69,7 +69,7 @@ export default class PSetAnswerComponent extends React.Component {
 
     const staveErrors = getAnswerErrors(pSet.staves, submission.staves, 'harmony');
 
-    const pages = Math.ceil(pSet.measures / 4);
+    const measures = pSet.measures;
 
     return (
       <div className="row">
@@ -80,7 +80,9 @@ export default class PSetAnswerComponent extends React.Component {
             render="answer"
             mode={VexflowComponent.RenderMode.MELODIC}
             keySignature={keyOptionToSignature(submission.keySignature)}
-            startMeasure={this.state.page * 4}
+            currentMeasure={measure}
+            currentNote={0}
+            editing={0}
             measures={pSet.measures}
             staveErrors={staveErrors} />
         </div>
@@ -101,14 +103,14 @@ export default class PSetAnswerComponent extends React.Component {
             </p>
           </fieldset>
           <fieldset>
-            <legend>Page {this.state.page + 1} / {pages}</legend>
+            <legend>Measure {this.state.measure + 1} / {measures}</legend>
             <button className="button"
-              onClick={this.updatePage.bind(this, false)}>
+              onClick={this.updateMeasure.bind(this, false)}>
               &lt;&lt;
             </button>
             &nbsp;
             <button className="button"
-              onClick={this.updatePage.bind(this, true)}>
+              onClick={this.updateMeasure.bind(this, true)}>
               &gt;&gt;
             </button>
           </fieldset>

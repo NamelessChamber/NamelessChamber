@@ -27,7 +27,7 @@ export function measureLength(measure) {
     if (item.type === 'note') {
       return acc + 1 + ((item.dots || 0) * 0.2);
     } else if (item.type === 'beam') {
-      return acc + scoreLength(item.notes);
+      return acc + measureLength(item.notes);
     }
   }, 0);
 }

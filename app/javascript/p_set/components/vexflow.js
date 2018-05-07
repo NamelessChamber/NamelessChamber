@@ -297,6 +297,7 @@ export default class VexflowComponent extends React.Component {
     const formatter = new VF.Formatter();
 
     const page = currentPage(this.containerWidth, props.render, props.staves, props.currentMeasure);
+
     const startMeasure = _.first(page);
     const numMeasures = page.length;
     const firstStave = props.staves[0];
