@@ -190,10 +190,10 @@ export default class PSetStudentComponent extends React.Component {
     }
     answer.keySignature = keySignature;
     if (keySignature === key) {
-      alert('Correct!');
+      setTimeout(() => alert('Correct!'), 0);
       this.postAnswer(answer, false);
     } else {
-      alert('Incorrect... please try again!');
+      setTimeout(() => alert('Incorrect... please try again!'), 0);
       this.setState({answer});
     }
   }
@@ -229,10 +229,9 @@ export default class PSetStudentComponent extends React.Component {
       solutionMeters.forEach((stave, i) => {
         const staveName = staves[i].name;
         stave.forEach((measure, e) => {
-          // if (measure > 0) {
-          //   errors.push(`Measure ${e + 1} in ${staveName} has too few beats`);
-          // } else
-          if (measure < 0) {
+          if (measure > 0) {
+            errors.push(`Measure ${e + 1} in ${staveName} has too few beats`);
+          } else if (measure < 0) {
             errors.push(`Measure ${e + 1} in ${staveName} has too many beats`);
           }
         });
