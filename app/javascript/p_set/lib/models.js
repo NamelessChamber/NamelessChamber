@@ -263,16 +263,23 @@ export function getAnswerErrors(solution, answer, mode) {
           return true;
         }
 
-        if (mode === 'rhythm') {
-          return n1.duration !== n2.duration ||
-          n1.tied !== n2.tied ||
-          n1.dots !== n2.dots;
-        } else if (mode === 'melody') {
-          return n1.solfege !== n2.solfege ||
+        let error = false;
+        switch (mode) {
+          case 'harmony':
+            error = !_.isEqual(n1, n2);
+            break;
+          case 'melody':
+            error = error ||
+            n1.solfege !== n2.solfege ||
             n2.octave !== n2.octave;
-        } else if (mode === 'harmony') {
-          return !_.isEqual(n1, n2);
+          case 'rhythm':
+            error = error ||
+              n1.duration !== n2.duration ||
+              n1.tied !== n2.tied ||
+              n1.dots !== n2.dots;
         }
+
+        return error;
       });
     });
   });
