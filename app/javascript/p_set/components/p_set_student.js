@@ -238,8 +238,6 @@ export default class PSetStudentComponent extends React.Component {
       });
     }
 
-    console.log('reporting', staveErrors, errors);
-
     this.setState({staveErrors, errors});
   }
 

@@ -263,9 +263,6 @@ export default class VexflowComponent extends React.Component {
     } else {
       notes = score.map((n, i) => {
         const error = props.staveErrors[staveIndex][measureIndex][i];
-        if (error) {
-          console.log('rendering error for', staveIndex, measureIndex, i);
-        }
         return this.convertNote(props, error, highlight, editing, stave, renderMode, n, i);
       });
     }
