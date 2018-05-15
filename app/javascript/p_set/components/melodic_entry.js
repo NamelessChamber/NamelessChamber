@@ -47,7 +47,6 @@ export default class MelodicEntryComponent extends React.Component {
     currentMeasure: PropTypes.number.isRequired,
     currentNote: PropTypes.number.isRequired,
     save: PropTypes.func.isRequired,
-    reportErrors: PropTypes.func,
     instructor: PropTypes.bool
   }
 
@@ -208,14 +207,6 @@ export default class MelodicEntryComponent extends React.Component {
     this.setState({keySignature});
   }
 
-  checkWork() {
-    if (staveComplete(this.props.stave)) {
-      this.props.reportErrors();
-    } else {
-      this.props.reportErrors(['Must complete melodic entry before checking work']);
-    }
-  }
-
   render() {
     const { currentMeasure, currentNote } = this.props;
     const measure = this.measures[currentMeasure];
@@ -289,15 +280,6 @@ export default class MelodicEntryComponent extends React.Component {
                     onChange={this.noteChange.bind(this)}>
               {solfegeOptions}
             </select>
-          </fieldset>
-        </div>
-        <div className="row columns" style={showIf(keyCorrect && !instructor)}>
-          <fieldset>
-            <legend>Check Work</legend>
-            <input type="submit"
-              className="button"
-              value="Check"
-              onClick={() => this.checkWork()}/>
           </fieldset>
         </div>
         <div className="row columns" style={showIf(keyCorrect || instructor)}>

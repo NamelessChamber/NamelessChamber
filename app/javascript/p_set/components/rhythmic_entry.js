@@ -29,7 +29,6 @@ export default class RhythmicEntryComponent extends React.Component {
     updatePosition: PropTypes.func.isRequired,
     updateMeter: PropTypes.func.isRequired,
     currentMeasure: PropTypes.number.isRequired,
-    reportErrors: PropTypes.func,
     save: PropTypes.func.isRequired,
     instructor: PropTypes.bool
   }

@@ -323,7 +323,6 @@ export default class PSetStudentComponent extends React.Component {
           updatePosition={this.handlePositionUpdate}
           updateMeter={this.handleMeterUpdate}
           currentMeasure={this.state.currentMeasure}
-          reportErrors={this.reportErrors}
           instructor={false}
           save={this.saveAndToggle} />
       );
@@ -340,7 +339,6 @@ export default class PSetStudentComponent extends React.Component {
           currentNote={this.state.currentNote}
           updatePosition={this.handlePositionUpdate}
           updateKeySignature={this.handleKeySignatureUpdate}
-          reportErrors={this.reportErrors}
           save={this.saveAndToggle}
           instructor={false} />
       );
