@@ -270,8 +270,8 @@ export function getAnswerErrors(solution, answer, mode) {
             break;
           case 'melody':
             error = error ||
-            n1.solfege !== n2.solfege ||
-            n2.octave !== n2.octave;
+              n1.solfege !== n2.solfege ||
+              n1.octave !== n2.octave;
           case 'rhythm':
             error = error ||
               n1.duration !== n2.duration ||
