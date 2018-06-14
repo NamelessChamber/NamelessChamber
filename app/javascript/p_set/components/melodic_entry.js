@@ -224,11 +224,15 @@ export default class MelodicEntryComponent extends React.Component {
     if (this.state.octave > 0) {
       octaveStr = '+' + octaveStr;
     }
-    const solfegeOptions = solfege.map((s) => {
+    let solfegeOptions = solfege.map((s) => {
       return (
         <option key={s} value={s}>{s}</option>
       );
     });
+    // rests can't have pitch set
+    if (note && note.duration && note.duration.match(/r$/)) {
+      solfegeOptions = [];
+    }
 
     const keySignature = keyOptionToSignature(this.props.keySignature);
     const keyCorrect = keySignature === getVFScaleName(this.props.stave.tonic, this.props.stave.scale);
