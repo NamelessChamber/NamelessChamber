@@ -8,7 +8,7 @@ import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
 
-import { newAnswer, compareMeterAt, compareMeters, getAnswerErrors, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature } from '../lib/models';
+import { newAnswer, compareMeterAt, compareMeters, getAnswerErrors, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName } from '../lib/models';
 import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from '../lib/api';
 
 export default class PSetStudentComponent extends React.Component {
@@ -116,8 +116,7 @@ export default class PSetStudentComponent extends React.Component {
     this.setState({
       stave,
       currentMeasure,
-      currentNote: 0,
-      staveErrors: undefined
+      currentNote: 0
     });
 
     if (rhythmic) {
@@ -371,6 +370,15 @@ export default class PSetStudentComponent extends React.Component {
         return Object.assign(s, {answer: a});
       });
 
+    let meter = this.state.answer.meter;
+    if (!_.isEqual(meter, vexData.meter)) {
+      meter = {};
+    }
+    let keySignature = keyOptionToSignature(this.state.answer.keySignature);
+    if (keySignature !== getVFScaleName(stave.tonic, stave.scale)) {
+      keySignature = null;
+    }
+
     const showIf = (cond) => {
       return cond ?
         {} : {display: 'none'};
@@ -390,10 +398,10 @@ export default class PSetStudentComponent extends React.Component {
           <div className="small-10 columns">
             <VexflowComponent staves={vfStaves}
               editing={this.stave}
-              meter={this.state.answer.meter}
+              meter={meter}
               render="answer"
               mode={renderMode}
-              keySignature={keyOptionToSignature(this.state.answer.keySignature)}
+              keySignature={keySignature}
               currentMeasure={this.state.currentMeasure}
               measures={this.state.vexData.data.measures}
               staveErrors={this.state.staveErrors}
