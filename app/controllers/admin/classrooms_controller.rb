@@ -23,7 +23,7 @@ class Admin::ClassroomsController < ApplicationController
 
   def create
     p = params[:classroom].permit(
-      :name, :start_date, :end_date
+      :name, :start_date, :end_date, :password
       ).merge(course: @course)
     classroom = Classroom.create(p)
     redirect_to admin_course_classroom_path(@course, classroom)

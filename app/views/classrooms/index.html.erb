@@ -1,26 +1,23 @@
 <div class="small-12 columns">
   <h1>your classes</h1>
   <h3>currently enrolled</h3>
-  <% if @classrooms.empty? %>
-    <%= link_to 'Sign up', '#', class: 'button' %> for a class now.
-  <% else %>
-    <table>
-      <thead>
-        <th>Course</th>
-        <th>Start Date</th>
-        <th>End Date</th>
-      </thead>
-      <tbody>
-        <% @classrooms.each do |classroom| %>
-          <tr>
-            <td><%= link_to classroom.course.name, classroom_path(classroom) %></td>
-            <td><%= classroom.start_date %></td>
-            <td><%= classroom.end_date %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% end %>
+  <%= link_to 'Sign up', classrooms_register_path, class: 'button' %> for a class now.
+  <table>
+    <thead>
+      <th>Course</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+    </thead>
+    <tbody>
+      <% @classrooms.each do |classroom| %>
+        <tr>
+          <td><%= link_to classroom.course.name, classroom_path(classroom) %></td>
+          <td><%= classroom.start_date %></td>
+          <td><%= classroom.end_date %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
   <% unless @old_classrooms.empty? %>
     <h3>Past</h3>
     <table>

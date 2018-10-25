@@ -25,4 +25,48 @@ class ClassroomsController < ApplicationController
       .order('end_date ASC')
       .to_a
   end
+
+  # index for finding a class to join
+  def registrar
+    @classrooms = current_user.classrooms.active.includes(:course)
+    enrolled_ids = @classrooms.map(&:id)
+    @joinable_classrooms = Classroom.active
+    if !enrolled_ids.empty?
+      @joinable_classrooms = @joinable_classrooms.where('id NOT IN (?)', enrolled_ids)
+    end
+  end
+
+  # form for joining a class
+  def register
+    @classroom = Classroom.find(params[:classroom_id])
+    if @classroom.nil?
+      not_found
+      return
+    end
+  end
+
+  # post handler for joining a class
+  def signup
+    @classroom = Classroom.find(params[:classroom_id])
+    if @classroom.nil?
+      not_found
+      return
+    end
+    registration = params[:registration]
+    if registration.nil? || registration[:password].nil?
+      @error = 'Must provide a password'
+      render 'register'
+      return
+    end
+
+    if @classroom.password != registration[:password]
+      @error = 'Invalid password'
+      render 'register'
+      return
+    end
+
+    # they've authenticated, create a classroom_user
+    @classroom.classroom_users.create(user: current_user)
+    redirect_to classroom_path(@classroom.id)
+  end
 end
