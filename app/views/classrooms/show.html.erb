@@ -6,22 +6,24 @@
     <% unless @classroom_psets.empty? %>
       <h3>Open PSets</h3>
       <table>
-        <thead>
+          <thead>
           <th>PSet</th>
-          <th>Due date</th>
+          <!--- <th>Due date</th> -->
           <th>Completed</th>
-        </thead>
-        <tbody>
-          <% @classroom_psets.each do |crp| %>
-            <tr>
-              <td><%= crp.p_set_name  %></td>
-              <td><%= crp.end_date %></td>
-              <td><%= (crp.completed.nil? || !crp.completed) ?
-                link_to('Go to PSet', p_set_rhythm_path(crp.p_set_id)) :
-                'Yes' %></td>
-            </tr>
-          <% end %>
-        </tbody>
+          </thead>
+          <tbody>
+              <% @classroom_psets.each do |crp| %>
+              <tr>
+                  <td><%= crp.p_set_name  %></td>
+                  <!--- <td><%= crp.end_date %></td> --->
+                  <td>
+                      <%= (crp.completed.nil? || !crp.completed) ?
+                      link_to('Go to PSet', p_set_rhythm_path(crp.p_set_id)) :
+                      'Yes' %>
+                  </td>
+              </tr>
+              <% end %>
+          </tbody>
       </table>
     <% end %>
   <% end %>

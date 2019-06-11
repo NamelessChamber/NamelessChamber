@@ -25,8 +25,8 @@
         <thead>
           <th>name</th>
           <th>category</th>
-          <th>start date</th>
-          <th>end date</th>
+          <!-- <th>start date</th>
+          <th>end date</th> -->
           <th>submissions</th>
         </thead>
         <tbody>
@@ -39,8 +39,8 @@
                 <%= crp.p_set.exercise_subcategory.name %>
                 <%= crp.p_set.exercise_subcategory_level %>
               </td>
-              <td><%= crp.start_date %></td>
-              <td><%= crp.end_date %></td>
+              <!-- <td><%= crp.start_date %></td>
+              <td><%= crp.end_date %></td> -->
               <td><%= link_to 'submissions', admin_classroom_pset_path(crp), class: 'button' %></td>
             </tr>
           <% end %>

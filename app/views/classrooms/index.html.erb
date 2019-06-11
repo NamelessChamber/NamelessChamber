@@ -7,15 +7,15 @@
     <table>
       <thead>
         <th>Course</th>
-        <th>Start Date</th>
-        <th>End Date</th>
+        <!-- <th>Start Date</th>
+        <th>End Date</th> --->
       </thead>
       <tbody>
         <% @classrooms.each do |classroom| %>
           <tr>
             <td><%= link_to classroom.course.name, classroom_path(classroom) %></td>
-            <td><%= classroom.start_date %></td>
-            <td><%= classroom.end_date %></td>
+            <!-- <td><%= classroom.start_date %></td>
+            <td><%= classroom.end_date %></td> --->
           </tr>
         <% end %>
       </tbody>
@@ -26,15 +26,15 @@
     <table>
       <thead>
         <th>Course</th>
-        <th>Start Date</th>
-        <th>End Date</th>
+        <!-- <th>Start Date</th>
+        <th>End Date</th> --->
       </thead>
       <tbody>
         <% @old_classrooms.each do |classroom| %>
           <tr>
             <td><%= link_to classroom.course.name, classroom_path(classroom) %></td>
-            <td><%= classroom.start_date %></td>
-            <td><%= classroom.end_date %></td>
+            <!-- <td><%= classroom.start_date %></td>
+            <td><%= classroom.end_date %></td> --->
           </tr>
         <% end %>
       </tbody>

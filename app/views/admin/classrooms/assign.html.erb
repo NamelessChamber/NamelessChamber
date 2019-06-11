@@ -35,14 +35,14 @@
         <div class="row">
           <%= f.hidden_field :classroom_id, value: @classroom.id %>
           <%= f.hidden_field :p_set_id, value: @p_set.id %>
-          <div class="small-6 columns">
+          <!-- <div class="small-6 columns">
             <%= f.label :start_date %>
             <%= date_field(:classroom_pset, :start_date) %>
           </div>
           <div class="small-6 columns">
             <%= f.label :end_date %>
             <%= date_field(:classroom_pset, :end_date) %>
-          </div>
+          </div> --->
         </div>
         <div class="row columns">
           <%= f.submit class: 'button' %>
