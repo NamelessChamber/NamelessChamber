@@ -11,8 +11,6 @@
       <% @classrooms.each do |classroom| %>
         <tr>
           <td><%= link_to classroom.name, admin_course_classroom_path(@course, classroom) %></td>
-          <!-- <td><%= classroom.start_date %></td>
-          <td><%= classroom.end_date %></td> -->
         </tr>
       <% end %>
     </tbody>

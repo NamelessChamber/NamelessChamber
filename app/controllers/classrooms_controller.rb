@@ -2,8 +2,8 @@ class ClassroomsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @classrooms = current_user.classrooms.active.includes(:course)
-    @old_classrooms = current_user.classrooms.inactive.includes(:course)
+    @classrooms = current_user.classrooms.includes(:course)
+    @old_classrooms = current_user.classrooms.includes(:course)
   end
 
   def show
