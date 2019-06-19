@@ -17,19 +17,4 @@
       </tbody>
     </table>
   <% end %>
-  <% unless @old_classrooms.empty? %>
-    <h3>Past</h3>
-    <table>
-      <thead>
-        <th>Course</th>
-      </thead>
-      <tbody>
-        <% @old_classrooms.each do |classroom| %>
-          <tr>
-            <td><%= link_to classroom.course.name, classroom_path(classroom) %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% end %>
 </div>
