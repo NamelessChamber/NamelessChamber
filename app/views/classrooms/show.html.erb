@@ -2,7 +2,7 @@
   <% if @classroom.nil? %>
     <h4>You're not enrolled in this class!</h4>
   <% else %>
-    <h1><%= @classroom.course.name %> / <%= @classroom.name %></h1>
+    <h1><%= @classroom.course.name %> / <%= @classroom.name %> / <%= @user.courses.count %> / Is this just a user?</h1>
     <% unless @classroom_psets.empty? %>
       <h3>Open PSets</h3>
       <table>
