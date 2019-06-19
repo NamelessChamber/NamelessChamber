@@ -3,7 +3,7 @@ class ClassroomsController < ApplicationController
 
   def index
     @classrooms = current_user.classrooms.includes(:course)
-    @old_classrooms = current_user.classrooms.includes(:course)
+    #@old_classrooms = current_user.classrooms.includes(:course)
   end
 
   def show
