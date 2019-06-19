@@ -14,12 +14,12 @@ class Admin::CoursesController < ApplicationController
 	p =	params[:course].permit(:name)
 	course = Course.create(p)
 	# Janky way of creating a course_user
-	# Current Issue:
-	# After creating a new course, the instructor not see it in courses/index
+	# Need a way to do it in 1-2 lines, as above
 	course_user = CourseUser.create
 	course_user.user_id = current_user.id
 	course_user.course_id = course.id
 	course_user.save
+	# Quarantined Code
 	redirect_to admin_course_path(course)
   end
 
