@@ -11,7 +11,8 @@ class Admin::CoursesController < ApplicationController
   end
 
   def destroy
-	puts "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa"
+	@course = Course.find(params[:id])
+	@course.destroy
 	redirect_to admin_courses_url
   end
 
