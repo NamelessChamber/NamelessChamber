@@ -10,6 +10,11 @@ class Admin::CoursesController < ApplicationController
   def new
   end
 
+  def destroy
+	puts "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa"
+	redirect_to admin_courses_url
+  end
+
   def create
 	p =	params[:course].permit(:name)
 	course = Course.create(p)
@@ -31,18 +36,10 @@ class Admin::CoursesController < ApplicationController
       return
     end
 
-	commit = params['commit']
+	course_params = params.require(:course).permit(:name)
+	@course.update_attributes(course_params)
 
-	if commit == 'Update Course'
-	    course_params = params.require(:course).permit(:name)
-		@course.update_attributes(course_params)
-		redirect_to edit_admin_course_path(@course)
-	elsif commit == "Delete Course"
-		# I would like it to be password protected to prevent accidental deletion
-		# TODO: Add a pop-up asking for password
-		@course.destroy
-		redirect_to action: "index"
-	end
+	redirect_to edit_admin_course_path(@course)
   end
 
   def edit
