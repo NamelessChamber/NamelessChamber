@@ -1,10 +1,11 @@
 <div class="small-12 columns">
-  <h3>edit your course</h3>
-  <%= form_for @course, url: {action: 'update'} do |f| %>
-    <%= f.label :name %>
-    <%= f.text_field :name %>
-    <%= f.submit class: 'button' %>
-  <% end %>
-  <h3>manage your classrooms</h3>
-  <%= link_to 'Go to Classrooms', admin_course_classrooms_path(@course), class: 'button' %>
+    <h3>edit your course</h3>
+    <%= form_for @course, url: {action: 'update'} do |f| %>
+        <%= f.label :name %>
+        <%= f.text_field :name %>
+        <%= f.submit class: 'button' %>
+        <%= f.submit 'Delete Course', class: 'button', style: 'background-color: #dc4c4c; color: black;' %>
+    <% end %>
+    <h3>manage your classrooms</h3>
+    <%= link_to 'Go to Classrooms', admin_course_classrooms_path(@course), class: 'button' %>
 </div>

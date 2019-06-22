@@ -31,10 +31,18 @@ class Admin::CoursesController < ApplicationController
       return
     end
 
-    course_params = params.require(:course).permit(:name)
-    @course.update_attributes(course_params)
+	commit = params['commit']
 
-    redirect_to edit_admin_course_path(@course)
+	if commit == 'Update Course'
+	    course_params = params.require(:course).permit(:name)
+		@course.update_attributes(course_params)
+		redirect_to edit_admin_course_path(@course)
+	elsif commit == "Delete Course"
+		# I would like it to be password protected to prevent accidental deletion
+		# TODO: Add a pop-up asking for password
+		@course.destroy
+		redirect_to action: "index"
+	end
   end
 
   def edit
