@@ -3,7 +3,8 @@ class Admin::ClassroomsController < ApplicationController
   before_action :assert_course_admin!
 
   def index
-    @classrooms = @course.classrooms.order('end_date DESC')
+    @classrooms = @course.classrooms.order('created_at DESC') 
+	#.order('end_date DESC')
   end
 
   def new
@@ -18,12 +19,13 @@ class Admin::ClassroomsController < ApplicationController
     @classroom_psets = ClassroomPset
       .includes(:p_set => {:exercise_subcategory => :exercise_category})
       .where(classroom_id: @classroom.id)
-      .order('end_date DESC')
+      .order('created_at DESC') 
+	  #.order('end_date DESC')
   end
 
   def create
     p = params[:classroom].permit(
-      :name, :start_date, :end_date
+      :name#, :start_date, :end_date
       ).merge(course: @course)
     classroom = Classroom.create(p)
     redirect_to admin_course_classroom_path(@course, classroom)

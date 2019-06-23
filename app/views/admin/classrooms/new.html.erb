@@ -8,18 +8,6 @@
         <%= f.label :name %>
         <%= f.text_field :name %>
       </div>
-      <div class="small-4 columns">
-        <%= f.label :start_date %>
-        <%= date_field(:classroom, :start_date) %>
-      </div>
-      <div class="small-4 columns">
-        <%= f.label :end_date %>
-        <%= date_field(:classroom, :end_date) %>
-      </div>
-      <div class="small-4 columns">
-        <%= f.label :password %>
-        <%= f.text_field :password %>
-      </div>
       <div class="small-12 columns">
         <%= f.submit 'Create', class: 'button' %>
       </div>

@@ -1,25 +1,40 @@
 <div class="card small-12 columns">
-  <div class="card-section">
-    <p>
-      <h2>your courses</h2>
-    </p>
-  </div>
-  <div class="card-section">
+    <div class="card-section">
+        <div class="row">
+
+            <div class="small-12 medium-8 large-8 columns">
+                <h2>your courses</h2>
+            </div>
+
+            <div class="small-12 medium-4 large-4 columns">
+                <ul class="menu align-right">
+                    <li class="menu-item">
+                        <%= link_to 'Create New Course', new_admin_course_path(current_user), class: ['button', 'align-right'] %>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+ <div class="card-section">
     <table class="hover">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Created</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @courses.each do |c| %>
-          <tr>
-            <td><%= link_to c.name, admin_course_path(c.id) %></td>
-            <td><%= c.created_at %></td>
-          </tr>
-        <% end %>
-      </tbody>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @courses.each do |c| %>
+            <tr>
+                <td><%= link_to c.name, admin_course_path(c.id) %></td>
+                <td><%= c.created_at.strftime("%Y-%m-%d %I:%M:%S %p") %></td>
+                <td>
+                    <%=  link_to 'Delete Course', admin_course_path(c), method: :delete, data: {confirm: "You are about to delete: " + c.name + ". Are you sure?"}, class: 'deletebutton' %>
+                </td>
+            </tr>
+            <% end %>
+        </tbody>
     </table>
-  </div>
 </div>

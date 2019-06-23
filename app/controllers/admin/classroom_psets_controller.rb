@@ -2,7 +2,8 @@ class Admin::ClassroomPsetsController < ApplicationController
   def create
     classroom_pset = ClassroomPset.create(
       params.require(:classroom_pset).permit(
-        :p_set_id, :classroom_id, :start_date, :end_date
+        :p_set_id, :classroom_id
+		#, :start_date, :end_date
       )
     )
     classroom = classroom_pset.classroom

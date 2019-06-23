@@ -10,6 +10,25 @@ class Admin::CoursesController < ApplicationController
   def new
   end
 
+  def destroy
+	@course = Course.find(params[:id])
+	@course.destroy
+	redirect_to admin_courses_url
+  end
+
+  def create
+	p =	params[:course].permit(:name)
+	course = Course.create(p)
+	# Janky way of creating a course_user
+	# Need a way to do it in 1-2 lines, as above
+	course_user = CourseUser.create
+	course_user.user_id = current_user.id
+	course_user.course_id = course.id
+	course_user.save
+	# Quarantined Code
+	redirect_to admin_course_path(course)
+  end
+
   def update
     begin
       @course = Course.find(params[:id])
@@ -18,10 +37,10 @@ class Admin::CoursesController < ApplicationController
       return
     end
 
-    course_params = params.require(:course).permit(:name)
-    @course.update_attributes(course_params)
+	course_params = params.require(:course).permit(:name)
+	@course.update_attributes(course_params)
 
-    redirect_to edit_admin_course_path(@course)
+	redirect_to edit_admin_course_path(@course)
   end
 
   def edit
