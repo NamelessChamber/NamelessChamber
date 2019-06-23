@@ -33,7 +33,7 @@ class ApplicationController < ActionController::Base
 
   def prefetch_admin_status
     unless current_user.nil?
-      @current_user_is_admin = current_user.courses.count > 0
+      @current_user_is_admin = current_user.admin
       @current_user_is_enrolled = current_user.classrooms.count > 0
     end
   end
