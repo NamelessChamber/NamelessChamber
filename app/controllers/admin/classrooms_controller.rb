@@ -38,6 +38,8 @@ class Admin::ClassroomsController < ApplicationController
   end
 
   def destroy
+	@classroom = Classroom.find(params[:id])
+	@classroom.destroy
 	redirect_to admin_course_classrooms_path(@course.id)
   end
 
