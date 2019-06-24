@@ -29,7 +29,7 @@
             <% @courses.each do |c| %>
             <tr>
                 <td><%= link_to c.name, admin_course_path(c.id) %></td>
-                <td><%= c.created_at.strftime("%Y-%m-%d %I:%M:%S %p") %></td>
+                <td><%= fulldate(c.created_at) %></td>
                 <td>
                     <%=  link_to 'Delete Course', admin_course_path(c), method: :delete, data: {confirm: "You are about to delete: " + c.name + ". \nPress OK to confirm"}, class: 'deletebutton' %>
                 </td>
