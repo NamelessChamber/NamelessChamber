@@ -34,10 +34,7 @@
     "vexflow": "^1.2.84",
     "webpack": "^2.4.1",
     "webpack-manifest-plugin": "^1.1.0",
-    "webpack-merge": "^4.1.0",
-    "engines": {
-      "node": ">=10.16.0"
-    }
+    "webpack-merge": "^4.1.0"
   },
   "devDependencies": {
     "babel-plugin-transform-class-properties": "^6.24.1",
