@@ -7,8 +7,6 @@
     </div>
   <% end %>
   <%= form_for 'registration', url: classroom_register_path(@classroom.id), action: :post do |f| %>
-    <%= f.label :password, 'Password' %>
-    <%= f.text_field :password %>
     <%= f.submit 'Register', class: 'button' %>
   <% end %>
 </div>
