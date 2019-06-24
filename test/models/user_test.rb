@@ -17,6 +17,7 @@
 #  last_sign_in_ip        :inet
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  admin                  :boolean          default("false"), not null
 #
 
 require 'test_helper'

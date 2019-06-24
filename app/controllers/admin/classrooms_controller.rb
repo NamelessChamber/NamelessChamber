@@ -37,6 +37,10 @@ class Admin::ClassroomsController < ApplicationController
     end
   end
 
+  def destroy
+	redirect_to admin_course_classrooms_path(@course.id)
+  end
+
   def assign
     @exercise_categories = ExerciseCategory
       .all
