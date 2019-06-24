@@ -1,0 +1,43 @@
+<div class="small-12 columns">
+  <h1>your classes</h1>
+  <h3>currently enrolled</h3>
+  <% if @classrooms.empty? %>
+    <p>
+      <i>no active classes</i>
+    </p>
+  <% else %>
+    <table>
+      <thead>
+        <th>Course</th>
+      </thead>
+      <tbody>
+        <% @classrooms.each do |classroom| %>
+          <tr>
+            <td><%= link_to classroom.course.name, classroom_path(classroom) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+  <h3>available classes</h3>
+  <% if @joinable_classrooms.nil? || @joinable_classrooms.empty? %>
+    <p>
+      <i>no available classes</i>
+    </p>
+  <% else %>
+    <table>
+      <thead>
+        <th>Course</th>
+        <th></th>
+      </thead>
+      <tbody>
+        <% @joinable_classrooms.each do |classroom| %>
+          <tr>
+            <td><%= classroom.course.name %></td>
+            <td><%= link_to 'Join Class', classroom_register_path(classroom.id), class: 'button'  %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

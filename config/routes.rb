@@ -38,7 +38,11 @@ Rails.application.routes.draw do
     put 'answer', to: 'p_sets#update_answer'
   end
 
-  resources :classrooms
+  get 'classrooms/register', to: 'classrooms#registrar'
+  resources :classrooms do
+    get 'register', to: 'classrooms#register'
+    post 'register', to: 'classrooms#signup'
+  end
 
   root to: 'home#splash'
 end
