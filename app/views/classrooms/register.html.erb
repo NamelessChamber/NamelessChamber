@@ -1,0 +1,14 @@
+<div class="small-12 columns">
+  <h1>register for a class</h1>
+  <h3><%= @classroom.name %></h3>
+  <% if !@error.nil? && !@error.empty? %>
+    <div class="callout alert">
+      <%= @error %>
+    </div>
+  <% end %>
+  <%= form_for 'registration', url: classroom_register_path(@classroom.id), action: :post do |f| %>
+    <%= f.label :password, 'Password' %>
+    <%= f.text_field :password %>
+    <%= f.submit 'Register', class: 'button' %>
+  <% end %>
+</div>
