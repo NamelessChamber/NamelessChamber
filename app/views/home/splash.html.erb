@@ -1,5 +1,9 @@
 <div class="small-12 columns">
-  <h1>Welcome to Tuna!</h1>
+  <% if current_user.nil? %>
+    <h1>Welcome to Tuna!</h1>
+  <% else %>
+    <h1>Welcome to Tuna, <%= current_user.firstname %>!</h1>
+  <% end %>
   <p>
     Tuna is a platform for practicing music dictation learning skills.
   </p>
