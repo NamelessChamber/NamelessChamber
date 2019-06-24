@@ -33,7 +33,7 @@
       <tbody>
         <% @joinable_classrooms.each do |classroom| %>
           <tr>
-            <td><%= classroom.course.name %></td>
+            <td><%= classroom.course.name + ": " + classroom.name %></td>
             <td><%= link_to 'Join Class', classroom_register_path(classroom.id), class: 'button'  %></td>
           </tr>
         <% end %>
