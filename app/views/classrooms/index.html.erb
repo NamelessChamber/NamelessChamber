@@ -2,7 +2,7 @@
   <h1>your classes</h1>
   <h3>currently enrolled</h3>
   <% if @classrooms.empty? %>
-    <%= link_to 'Sign up', '#', class: 'button' %> for a class now.
+    <%= link_to 'Sign up', classrooms_register_path, class: 'button' %> for a class now.
   <% else %>
     <table>
       <thead>
