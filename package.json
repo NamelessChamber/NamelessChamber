@@ -31,6 +31,7 @@
     "style-loader": "^0.16.1",
     "teoria": "^2.2.2",
     "tonal": "^0.69.6",
+    "uuidv4": "^4.0.0",
     "vexflow": "^1.2.84",
     "webpack": "^2.4.1",
     "webpack-manifest-plugin": "^1.1.0",
