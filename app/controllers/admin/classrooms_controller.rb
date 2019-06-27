@@ -2,6 +2,13 @@ class Admin::ClassroomsController < ApplicationController
   before_action :find_course
   before_action :assert_course_admin!
 
+	def remove_student
+		@user_id, @classroom_id = params[:user_id], params[:classroom_id]
+		@classroom_user = ClassroomUser.where(user_id: @user_id, classroom_id: @classroom_id)[0]
+		@classroom_user.destroy
+		redirect_to admin_course_classroom_path(@course, @classroom_id)
+	end
+
   def index
     @classrooms = @course.classrooms.order('created_at DESC') 
 	#.order('end_date DESC')
@@ -38,9 +45,9 @@ class Admin::ClassroomsController < ApplicationController
   end
 
   def destroy
-	@classroom = Classroom.find(params[:id])
-	@classroom.destroy
-	redirect_to admin_course_classrooms_path(@course.id)
+		@classroom = Classroom.find(params[:id])
+		@classroom.destroy
+		redirect_to admin_course_classrooms_path(@course.id)
   end
 
   def assign

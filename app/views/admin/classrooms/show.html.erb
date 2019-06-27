@@ -14,7 +14,7 @@
             <tr>
               <td><%= student.whole_name %></td>
               <td><%= link_to 'submissions', '#', class: 'button' %></td>
-              <td><%= link_to 'Remove Student', '#', class: 'button' %></td>
+              <td><%= link_to 'Remove Student', admin_course_classroom_remove_student_path(@course.id, @classroom.id, student.id), method: :post, class: 'button'%></td>
             </tr>
           <% end %>
         </tbody>
@@ -33,8 +33,7 @@
             <tr>
               <td><%= crp.p_set.name %></td>
               <td>
-                <%= crp.p_set.exercise_subcategory.exercise_category.name %>
-                >
+                <%= crp.p_set.exercise_subcategory.exercise_category.name %>:
                 <%= crp.p_set.exercise_subcategory.name %>
                 <%= crp.p_set.exercise_subcategory_level %>
               </td>

@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :courses do
       resources :classrooms do
         get 'assign', to: 'classrooms#assign'
+				post 'remove_student/:user_id', to: 'classrooms#remove_student', as: 'remove_student'
       end
     end
 
