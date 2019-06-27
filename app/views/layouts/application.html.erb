@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -33,6 +33,9 @@
           <ul class="menu">
             <% if user_signed_in? %>
               <% if @current_user_is_admin %>
+                <li class="menu-text">
+                  <%= link_to 'Students', admin_users_path %>
+                </li>
                 <li class="menu-text">
                   <%= link_to 'courses', admin_courses_path %>
                 </li>
