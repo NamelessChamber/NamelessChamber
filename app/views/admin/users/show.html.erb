@@ -1,0 +1,34 @@
+<div class="card small-12 columns">
+  <div class="card-section">
+    <div class="row">
+      <div class="small-12 medium-8 large-8 columns">
+        <h2>Students</h2>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card-section">
+  <table class="hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Created</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |u| %>
+      <tr>
+        <td><%= u.whole_name %></td>
+        <td><%= fulldate(u.created_at) %></td>
+        <td> 
+          <%=  link_to 'Delete Student Account', 
+               admin_user_path(u), method: :delete, 
+               data: {confirm: "You are about to delete " + u.whole_name + "'s account. \nPress OK to confirm"}, 
+               class: 'deletebutton' %> 
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
