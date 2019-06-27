@@ -31,7 +31,11 @@
                 <td><%= link_to c.name, admin_course_path(c.id) %></td>
                 <td><%= fulldate(c.created_at) %></td>
                 <td>
-                    <%=  link_to 'Delete Course', admin_course_path(c), method: :delete, data: {confirm: "You are about to delete: " + c.name + ". \nPress OK to confirm"}, class: 'deletebutton' %>
+                    <%=  link_to 'Delete Course', 
+                         admin_course_path(c), 
+                         method: :delete, 
+                         data: {confirm: "You are about to delete: " + c.name + ". \nPress OK to confirm"}, 
+                         class: 'deletebutton' %>
                 </td>
             </tr>
             <% end %>
