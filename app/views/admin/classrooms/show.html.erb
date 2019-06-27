@@ -20,7 +20,6 @@
     </div>
     <div class="small-8 columns">
       <h5 class="float-left">assignments</h5>
-      <%= link_to 'assign pset', admin_course_classroom_assign_path(@course, @classroom), class: 'button float-right' %>
       <table>
         <thead>
           <th>name</th>
@@ -42,6 +41,7 @@
           <% end %>
         </tbody>
       </table>
+      <%= link_to 'assign pset', admin_course_classroom_assign_path(@course, @classroom), class: 'button float-right' %>
     </div>
   </div>
 </div>
