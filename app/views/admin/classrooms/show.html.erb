@@ -14,7 +14,12 @@
             <tr>
               <td><%= student.whole_name %></td>
               <td><%= link_to 'submissions', '#', class: 'button' %></td>
-              <td><%= link_to 'Remove Student', admin_course_classroom_remove_student_path(@course.id, @classroom.id, student.id), method: :post, class: 'button'%></td>
+              <td>
+                <%= link_to '&#x2718;'.html_safe,
+                    admin_course_classroom_remove_student_path(@course.id, @classroom.id, student.id),
+                    method: :post,
+                    data: {confirm: "You are about to remove " + student.whole_name + " from the classroom. \nPress OK to confirm"}%>
+              </td>
             </tr>
           <% end %>
         </tbody>
