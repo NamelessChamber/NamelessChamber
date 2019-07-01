@@ -9,5 +9,5 @@
 #
 
 class ExerciseCategory < ApplicationRecord
-  has_many :exercise_subcategories
+  has_many :exercise_subcategories, dependent: :destroy
 end

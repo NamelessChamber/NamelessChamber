@@ -6,7 +6,13 @@
   <% @exercise_categories.each do |category| %>
   <div class="card">
     <div class="card-divider">
-      <h4><%= category.name %></h4>
+      <h4>
+        <%= category.name %>
+        <%= link_to '&#x2718;'.html_safe,
+        admin_exercise_category_path(category),
+        method: :delete,
+        data: {confirm: "You are about to remove the category: " + category.name + "\nAlong with all associated subcategories and psets. \nPress OK to confirm"}%>
+      </h4>
     </div>
     <div class="card-section">
       <div class="row columns">
@@ -16,7 +22,13 @@
     <% if category.exercise_subcategories.count > 0 %>
       <% category.exercise_subcategories.each do |subcategory| %>
         <div class="card-section">
-          <h5><%= subcategory.name %></h5>
+          <h5>
+            <%= subcategory.name %>
+            <%= link_to '&#x2718;'.html_safe,
+            admin_exercise_category_exercise_subcategory_path(category, subcategory),
+            method: :delete,
+            data: {confirm: "You are about to remove the subcategory: " + subcategory.name + "\nAlong with all associated psets. \nPress OK to confirm"}%>
+          </h5>
           <%= form_for PSet.new, url: admin_p_sets_path do |f| %>
             <%= f.hidden_field :exercise_subcategory_id, value: subcategory.id %>
             <%= f.submit 'add pset', class: 'button' %>
