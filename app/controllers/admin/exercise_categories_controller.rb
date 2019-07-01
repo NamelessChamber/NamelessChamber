@@ -18,4 +18,10 @@ class Admin::ExerciseCategoriesController < ApplicationController
 
     redirect_to admin_exercise_categories_path
   end
+
+	def destroy
+		@exercise_category = ExerciseCategory.find(params[:id])
+		@exercise_category.destroy
+		redirect_to admin_exercise_categories_path
+	end
 end

@@ -14,4 +14,10 @@ class Admin::ExerciseSubcategoriesController < ApplicationController
 
     redirect_to admin_exercise_categories_path
   end
+
+	def destroy
+		@exercise_subcategory = ExerciseSubcategory.find(params[:id])
+		@exercise_subcategory.destroy
+		redirect_to admin_exercise_categories_path
+	end
 end
