@@ -17,13 +17,17 @@ class ClassroomsController < ApplicationController
     @classroom_psets = ClassroomPset
       .where(classroom: @classroom)
       .joins(:p_set)
-      .joins('LEFT JOIN p_set_answers ON p_set_answers.p_set_id = p_sets.id')
-      .select('p_set_answers.completed AS completed')
-			.select('p_set_answers.user_id AS user_id')
       .select('p_sets.id AS p_set_id, p_sets.name AS p_set_name')
       .select('classroom_psets.*')
       .order('created_at ASC')
       .to_a
+
+		@student_answers = ClassroomPset
+			.where(classroom: @classroom)
+			.joins(p_set: [:p_set_answers])
+			.where("p_set_answers.completed" => true)
+			.where("p_set_answers.user_id" => current_user.id)
+			.pluck(:name)
   end
 
   # index for finding a class to join
