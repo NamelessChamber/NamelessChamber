@@ -1,0 +1,31 @@
+<div class="card small-12 columns">
+  <div class="card-section">
+    <div class="row">
+      <div class="small-12 medium-8 large-8 columns">
+        <h2><%=@student.whole_name%>'s Submissions</h2>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card-section">
+  <table class="hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Submitted</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @answers.each do |a| %>
+      <tr>
+        <td><%= a.name %></td>
+        <td><%= fulldate(a.updated_at) %></td>
+        <td>
+          <%=  link_to 'Delete Submission', '#' %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     resources :p_set_answers, only: [:show]
 
 		get 'users', to: 'users#show'
+		get 'users/:user_id', to: 'users#answers', as: 'user_p_set_answers'
 		delete 'users/:user_id', to: 'users#destroy', as: 'user'
 
     resources :courses do

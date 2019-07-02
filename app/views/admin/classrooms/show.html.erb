@@ -13,7 +13,7 @@
           <% @students.each do |student| %>
             <tr>
               <td><%= student.whole_name %></td>
-              <td><%= link_to 'submissions', '#', class: 'button' %></td>
+              <td><%= link_to 'submissions', admin_user_p_set_answers_path(student), class: 'button' %></td>
               <td>
                 <%= link_to '&#x2718;'.html_safe,
                     admin_course_classroom_remove_student_path(@course.id, @classroom.id, student.id),
