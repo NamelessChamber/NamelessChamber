@@ -19,5 +19,6 @@ class Admin::UsersController < ApplicationController
 			.joins(:p_set)
 			.select('p_sets.name AS name')
 			.select('p_set_answers.updated_at AS updated_at')
+			.select('p_set_answers.id AS id')
 	end
 end

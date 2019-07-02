@@ -22,4 +22,11 @@ class Admin::PSetAnswersController < ApplicationController
       format.html { render }
     end
   end
+
+	def destroy
+		@answer = PSetAnswer.find(params[:id])
+		@student = User.find(@answer.user_id)
+		@answer.destroy
+		redirect_to admin_user_p_set_answers_path(@student)
+	end
 end

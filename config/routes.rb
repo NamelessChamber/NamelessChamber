@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :classroom_psets, only: [:create, :destroy, :show]
 
-    resources :p_set_answers, only: [:show]
+    resources :p_set_answers, only: [:show, :destroy]
 
 		get 'users', to: 'users#show'
 		get 'users/:user_id', to: 'users#answers', as: 'user_p_set_answers'
