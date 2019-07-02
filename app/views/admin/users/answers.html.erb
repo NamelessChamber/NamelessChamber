@@ -22,7 +22,10 @@
         <td><%= a.name %></td>
         <td><%= fulldate(a.updated_at) %></td>
         <td>
-          <%=  link_to 'Delete Submission', admin_p_set_answer_path(a), method: :delete %>
+          <%=  link_to 'Delete Submission',
+          admin_p_set_answer_path(a),
+          data: {confirm: "You are about to delete " + @student.whole_name + "'s submission for " + a.name + ". \nPress OK to confirm"},
+          method: :delete%>
         </td>
       </tr>
       <% end %>
