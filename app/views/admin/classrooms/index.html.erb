@@ -11,7 +11,10 @@
         <tr>
           <td><%= link_to classroom.name, admin_course_classroom_path(@course, classroom) %></td>
           <td>
-              <%=  link_to 'Delete Classroom', admin_course_classroom_path(@course, classroom), method: :delete, data: {confirm: "You are about to delete the " + classroom.name + " section of " + @course.name + ". \nPress OK to confirm."}, class: 'deletebutton' %>
+              <%=  link_to 'Delete Classroom', 
+              admin_course_classroom_path(@course, classroom), 
+              method: :delete, 
+              data: {confirm: "You are about to delete the " + classroom.name + " section of " + @course.name + ". \nPress OK to confirm."} %>
           </td>
         </tr>
       <% end %>

@@ -23,9 +23,8 @@
         <td><%= fulldate(u.created_at) %></td>
         <td> 
           <%=  link_to 'Delete Student Account', 
-               admin_user_path(u), method: :delete, 
-               data: {confirm: "You are about to delete " + u.whole_name + "'s account. \nPress OK to confirm"}, 
-               class: 'deletebutton' %> 
+          admin_user_path(u), method: :delete, 
+          data: {confirm: "You are about to delete " + u.whole_name + "'s account. \nPress OK to confirm"} %> 
         </td>
       </tr>
       <% end %>
