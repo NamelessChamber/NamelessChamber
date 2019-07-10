@@ -45,6 +45,18 @@ export default class RhythmicEntryComponent extends React.Component {
     return this.measures[this.props.currentMeasure];
   }
 
+  changePlayerState(){
+    var player = document.getElementsByClassName("react-audio-player")[0];
+    if (player == undefined){
+      return;
+    }
+    if (player.paused){
+      player.play();
+    } else {
+      player.pause();
+    }
+  }
+
   setCurrentMeasure(increment, e) {
     e.preventDefault();
     let { currentMeasure } = this.props;
@@ -139,10 +151,13 @@ export default class RhythmicEntryComponent extends React.Component {
 
   handleKeyDown(e) {
     switch (e.key) {
+      case ' ':
+        this.changePlayerState();
+        break;
       case 'Enter':
         this.appendNote(e);
         break;
-      case ' ':
+      case 'r':
         this.appendNote(e, true);
         break;
       case 'Backspace':
@@ -230,10 +245,11 @@ export default class RhythmicEntryComponent extends React.Component {
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text-rhythmic" data-reveal>
           <ul>
+            <li><b>Space</b> plays/pauses the audio</li>
             <li><b>Right/left</b> arrows change current measure</li>
             <li><b>Up/down</b> arrows select note duration</li>
             <li><b>Enter</b> adds a note of selected duration</li>
-            <li><b>Space</b> adds a rest of selected duration</li>
+            <li><b>r</b> adds a rest of selected duration</li>
             <li><b>Backspace/Delete</b> removes the last note in a measure</li>
             <li><b>.</b> adds a dot to the last note in a measure</li>
             <li><b>Shift+d</b> removes a dot from the last note in a measure</li>

@@ -58,6 +58,18 @@ export default class HarmonicEntryComponent extends React.Component {
     return this.getNote(this.measure);
   }
 
+  changePlayerState(){
+    var player = document.getElementsByClassName("react-audio-player")[0];
+    if (player == undefined){
+      return;
+    }
+    if (player.paused){
+      player.play();
+    } else {
+      player.pause();
+    }
+  }
+
   setCurrentNote(increment, e) {
     e.preventDefault();
     let { currentNote, currentMeasure } = this.props;
@@ -125,6 +137,9 @@ export default class HarmonicEntryComponent extends React.Component {
 
   handleKeyDown(e) {
     switch (e.key) {
+      case ' ':
+        this.changePlayerState();
+        break;
       case 'ArrowRight':
         this.setCurrentNote(true, e);
         break;
@@ -203,6 +218,7 @@ export default class HarmonicEntryComponent extends React.Component {
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text-harmonic" data-reveal>
           <ul>
+            <li><b>Space</b> plays/pauses the audio</li>
             <li><b>Right/left</b> arrows change current measure</li>
             <li><b>Enter</b> adds the selected harmony to the selected note</li>
             <li><b>Backspace/Delete</b> removes the harmony from the selected note</li>

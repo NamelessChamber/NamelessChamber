@@ -62,6 +62,18 @@ export default class MelodicEntryComponent extends React.Component {
     return this.getMeasures();
   }
 
+  changePlayerState(){
+    var player = document.getElementsByClassName("react-audio-player")[0];
+    if (player == undefined){
+      return;
+    }
+    if (player.paused){
+      player.play();
+    } else {
+      player.pause();
+    }
+  }
+
   setCurrentNote(increment, e) {
     e.preventDefault();
     let { currentNote, currentMeasure } = this.props;
@@ -147,6 +159,9 @@ export default class MelodicEntryComponent extends React.Component {
 
   handleKeyDown(e) {
     switch(e.key) {
+      case ' ':
+        this.changePlayerState();
+        break;
       case 'ArrowUp':
       case 'ArrowDown':
         if (!this.props.instructor) {
@@ -254,6 +269,7 @@ export default class MelodicEntryComponent extends React.Component {
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text-melodic" data-reveal>
           <ul>
+            <li><b>Space</b> plays/pauses the audio</li>
             <li><b>Right/left</b> arrows change current note</li>
             <li><b>Up/down</b> arrows select solfege</li>
             <li><b>Shift-+/-</b> raise or lower an octave</li>
