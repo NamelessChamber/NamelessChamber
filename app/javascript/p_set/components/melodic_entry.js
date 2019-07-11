@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
+import { changeAudioPlayerState } from './helper';
 
 import VexflowComponent from './vexflow';
 import { formatKey, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName } from '../lib/models';
@@ -60,18 +61,6 @@ export default class MelodicEntryComponent extends React.Component {
 
   get measures() {
     return this.getMeasures();
-  }
-
-  changePlayerState(){
-    var player = document.getElementsByClassName("react-audio-player")[0];
-    if (player == undefined){
-      return;
-    }
-    if (player.paused){
-      player.play();
-    } else {
-      player.pause();
-    }
   }
 
   setCurrentNote(increment, e) {
@@ -160,7 +149,7 @@ export default class MelodicEntryComponent extends React.Component {
   handleKeyDown(e) {
     switch(e.key) {
       case ' ':
-        this.changePlayerState();
+        changeAudioPlayerState();
         break;
       case 'ArrowUp':
       case 'ArrowDown':

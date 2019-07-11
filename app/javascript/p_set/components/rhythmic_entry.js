@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
 import { durationString } from '../lib/models';
+import { changeAudioPlayerState } from './helper';
 
 require('../styles/rhythmic_entry.css');
 
@@ -43,18 +44,6 @@ export default class RhythmicEntryComponent extends React.Component {
 
   get measure() {
     return this.measures[this.props.currentMeasure];
-  }
-
-  changePlayerState(){
-    var player = document.getElementsByClassName("react-audio-player")[0];
-    if (player == undefined){
-      return;
-    }
-    if (player.paused){
-      player.play();
-    } else {
-      player.pause();
-    }
   }
 
   setCurrentMeasure(increment, e) {
@@ -152,7 +141,7 @@ export default class RhythmicEntryComponent extends React.Component {
   handleKeyDown(e) {
     switch (e.key) {
       case ' ':
-        this.changePlayerState();
+        changeAudioPlayerState();
         break;
       case 'Enter':
         this.appendNote(e);

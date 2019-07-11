@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import { nextNonEmptyMeasure, prevNonEmptyMeasure } from '../lib/models';
+import { changeAudioPlayerState } from './helper';
 
 export default class HarmonicEntryComponent extends React.Component {
   constructor(props) {
@@ -56,18 +57,6 @@ export default class HarmonicEntryComponent extends React.Component {
 
   get note() {
     return this.getNote(this.measure);
-  }
-
-  changePlayerState(){
-    var player = document.getElementsByClassName("react-audio-player")[0];
-    if (player == undefined){
-      return;
-    }
-    if (player.paused){
-      player.play();
-    } else {
-      player.pause();
-    }
   }
 
   setCurrentNote(increment, e) {
@@ -138,7 +127,7 @@ export default class HarmonicEntryComponent extends React.Component {
   handleKeyDown(e) {
     switch (e.key) {
       case ' ':
-        this.changePlayerState();
+        changeAudioPlayerState();
         break;
       case 'ArrowRight':
         this.setCurrentNote(true, e);
