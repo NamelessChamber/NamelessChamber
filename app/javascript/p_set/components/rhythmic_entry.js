@@ -138,8 +138,44 @@ export default class RhythmicEntryComponent extends React.Component {
     this.props.updateStave(measures, currentMeasure, currentNote);
   }
 
+  handleNumber(e){
+    var select = document.getElementsByClassName("beat-select")[0];
+    var numberPresent = false;
+    for (var i = 0; i < select.options.length; i++){
+      if (select.options[i].value == e.key){
+        numberPresent = true;
+        break;
+      }
+    }
+    if (!numberPresent){ return; }
+
+    let duration = e.key;
+
+    const newNote = {
+      type: 'note',
+      duration: duration,
+      dots: 0,
+      tied: false
+    };
+
+    const { currentMeasure } = this.props;
+    const measures = _.cloneDeep(this.measures);
+    const measure = measures[currentMeasure];
+    measure.notes.push(newNote);
+
+    this.props.updateStave(measures, currentMeasure, measure.length - 1);
+    this.setState({dotted: false});
+  }
+
   handleKeyDown(e) {
     switch (e.key) {
+      case '1':
+      case '2':
+      case '4':
+      case '6':
+      case '8':
+        this.handleNumber(e);
+        break;
       case ' ':
         changeAudioPlayerState();
         break;
