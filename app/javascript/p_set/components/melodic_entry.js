@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
+import { changeAudioPlayerState } from './helper';
 
 import VexflowComponent from './vexflow';
 import { formatKey, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName } from '../lib/models';
@@ -147,6 +148,9 @@ export default class MelodicEntryComponent extends React.Component {
 
   handleKeyDown(e) {
     switch(e.key) {
+      case ' ':
+        changeAudioPlayerState();
+        break;
       case 'ArrowUp':
       case 'ArrowDown':
         if (!this.props.instructor) {
@@ -254,6 +258,7 @@ export default class MelodicEntryComponent extends React.Component {
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text-melodic" data-reveal>
           <ul>
+            <li><b>Space</b> plays/pauses the audio</li>
             <li><b>Right/left</b> arrows change current note</li>
             <li><b>Up/down</b> arrows select solfege</li>
             <li><b>Shift-+/-</b> raise or lower an octave</li>
