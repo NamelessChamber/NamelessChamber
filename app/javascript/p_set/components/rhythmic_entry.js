@@ -273,6 +273,11 @@ export default class RhythmicEntryComponent extends React.Component {
             <li><b>Space</b> plays/pauses the audio</li>
             <li><b>Right/left</b> arrows change current measure</li>
             <li><b>Up/down</b> arrows select note duration</li>
+            <li><b>1</b> adds a whole note, if it is an option in the beat selector</li>
+            <li><b>2</b> adds a half note, if it is an option in the beat selector</li>
+            <li><b>4</b> adds a quarter note, if it is an option in the beat selector</li>
+            <li><b>8</b> adds an eigth note, if it is an option in the beat selector</li>
+            <li><b>6</b> adds a sixteenth note, if it is an option in the beat selector</li>
             <li><b>Enter</b> adds a note of selected duration</li>
             <li><b>r</b> adds a rest of selected duration</li>
             <li><b>Backspace/Delete</b> removes the last note in a measure</li>
