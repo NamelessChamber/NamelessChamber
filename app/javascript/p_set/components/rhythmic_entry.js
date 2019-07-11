@@ -270,20 +270,18 @@ export default class RhythmicEntryComponent extends React.Component {
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text-rhythmic" data-reveal>
           <ul>
+            <li><b>1, 2, 4, 8, 6</b> adds a whole, half, quarter, eigth, or sixteenth note, respectively, if it is an option in the beat selector</li>
             <li><b>Space</b> plays/pauses the audio</li>
             <li><b>Right/left</b> arrows change current measure</li>
             <li><b>Up/down</b> arrows select note duration</li>
-            <li><b>1</b> adds a whole note, if it is an option in the beat selector</li>
-            <li><b>2</b> adds a half note, if it is an option in the beat selector</li>
-            <li><b>4</b> adds a quarter note, if it is an option in the beat selector</li>
-            <li><b>8</b> adds an eigth note, if it is an option in the beat selector</li>
-            <li><b>6</b> adds a sixteenth note, if it is an option in the beat selector</li>
             <li><b>Enter</b> adds a note of selected duration</li>
-            <li><b>r</b> adds a rest of selected duration</li>
             <li><b>Backspace/Delete</b> removes the last note in a measure</li>
-            <li><b>.</b> adds a dot to the last note in a measure</li>
             <li><b>Shift+d</b> removes a dot from the last note in a measure</li>
             <li><b>t</b> Toggles note ties. A tied note will show a tie to the next note entered.</li>
+            <li><b>r</b> adds a rest of selected duration</li>
+            <li><b>.</b> adds a dot to the last note in a measure</li>
+            <li><b>&gt;</b> Moves down a stave, or cycles around</li>
+            <li><b>&lt;</b> Moves up a stave, or cycles around</li>
           </ul>
         </div>
         <div className="row columns" style={showIf(!meterCorrect && !instructor)}>
