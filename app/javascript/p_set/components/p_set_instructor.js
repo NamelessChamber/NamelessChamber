@@ -105,7 +105,6 @@ export default class PSetInstructorComponent extends React.Component {
   }
 
   changeStave(e, keyDown) {
-    console.log(this.harmonic);
     e.preventDefault();
     
     let stave = this.harmonic ? 
