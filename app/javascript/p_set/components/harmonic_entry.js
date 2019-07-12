@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import { nextNonEmptyMeasure, prevNonEmptyMeasure } from '../lib/models';
-import { changeAudioPlayerState } from './helper';
+import { nextNonEmptyMeasure, prevNonEmptyMeasure, changeAudioPlayerState } from '../lib/utils';
 
 export default class HarmonicEntryComponent extends React.Component {
   constructor(props) {

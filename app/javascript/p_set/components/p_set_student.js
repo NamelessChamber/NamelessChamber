@@ -8,7 +8,7 @@ import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
 
-import { newAnswer, compareMeterAt, compareMeters, getAnswerErrors, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName } from '../lib/models';
+import { newAnswer, compareMeterAt, compareMeters, getAnswerErrors, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName } from '../lib/utils';
 import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from '../lib/api';
 
 export default class PSetStudentComponent extends React.Component {

@@ -398,3 +398,32 @@ export function newPSet() {
     measures: 0
   };
 }
+
+// Supports multiple audio players
+// Pauses all audio players if at least one is playing
+// Plays all audio players if all are paused
+export function changeAudioPlayerState(){
+  var players = document.getElementsByClassName("react-audio-player");
+  if (!players.length){ return; }
+  var paused = true;
+
+  Array.prototype.forEach.call(players, function(player){
+    paused = paused && player.paused;
+  });
+
+  if (paused){ 
+    Array.prototype.forEach.call(players, function(player) {player.play();});
+  } else{
+    Array.prototype.forEach.call(players, function(player) {player.paused();});
+  }
+}
+
+// Returns the index for the next option in the select according to the key given
+// Assumes that the first select object in the document is the stave selector
+export function nextStave(key){
+  var select = document.getElementsByTagName("select")[0];
+  var length = select.options.length;
+  var index = select.selectedIndex;
+  index += (key == '>')? 1 : -1;
+  return (index + length) % length;
+}

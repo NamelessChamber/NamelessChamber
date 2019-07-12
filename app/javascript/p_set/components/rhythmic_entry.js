@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
-import { durationString } from '../lib/models';
-import { changeAudioPlayerState } from './helper';
+import { durationString, changeAudioPlayerState } from '../lib/utils';
+import { DH_UNABLE_TO_CHECK_GENERATOR } from 'constants';
 
 require('../styles/rhythmic_entry.css');
 
@@ -27,6 +27,7 @@ export default class RhythmicEntryComponent extends React.Component {
     referenceMeter: PropTypes.object.isRequired,
     meter: PropTypes.object,
     updateStave: PropTypes.func.isRequired,
+    changeStave: PropTypes.func.isRequired,
     updatePosition: PropTypes.func.isRequired,
     updateMeter: PropTypes.func.isRequired,
     currentMeasure: PropTypes.number.isRequired,
@@ -138,8 +139,48 @@ export default class RhythmicEntryComponent extends React.Component {
     this.props.updateStave(measures, currentMeasure, currentNote);
   }
 
+  handleNumber(e){
+    var select = document.getElementsByClassName("beat-select")[0];
+    var numberPresent = false;
+    for (var i = 0; i < select.options.length; i++){
+      if (select.options[i].value == e.key){
+        numberPresent = true;
+        break;
+      }
+    }
+    if (!numberPresent){ return; }
+
+    let duration = e.key;
+
+    const newNote = {
+      type: 'note',
+      duration: duration,
+      dots: 0,
+      tied: false
+    };
+
+    const { currentMeasure } = this.props;
+    const measures = _.cloneDeep(this.measures);
+    const measure = measures[currentMeasure];
+    measure.notes.push(newNote);
+
+    this.props.updateStave(measures, currentMeasure, measure.length - 1);
+    this.setState({dotted: false});
+  }
+
   handleKeyDown(e) {
     switch (e.key) {
+      case '1':
+      case '2':
+      case '4':
+      case '6':
+      case '8':
+        this.handleNumber(e);
+        break;
+      case '<':
+      case '>':
+        this.props.changeStave(e, true);
+        break;
       case ' ':
         changeAudioPlayerState();
         break;
@@ -234,15 +275,17 @@ export default class RhythmicEntryComponent extends React.Component {
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text-rhythmic" data-reveal>
           <ul>
+            <li><b>1, 2, 4, 8, 6</b> adds a whole, half, quarter, eigth, or sixteenth note, respectively, if it is an option in the beat selector</li>
             <li><b>Space</b> plays/pauses the audio</li>
             <li><b>Right/left</b> arrows change current measure</li>
             <li><b>Up/down</b> arrows select note duration</li>
             <li><b>Enter</b> adds a note of selected duration</li>
-            <li><b>r</b> adds a rest of selected duration</li>
             <li><b>Backspace/Delete</b> removes the last note in a measure</li>
-            <li><b>.</b> adds a dot to the last note in a measure</li>
             <li><b>Shift+d</b> removes a dot from the last note in a measure</li>
             <li><b>t</b> Toggles note ties. A tied note will show a tie to the next note entered.</li>
+            <li><b>r</b> adds a rest of selected duration</li>
+            <li><b>.</b> adds a dot to the last note in a measure</li>
+            <li><b>&lt;/&gt;</b> Moves up/down a stave, or cycles around</li>
           </ul>
         </div>
         <div className="row columns" style={showIf(!meterCorrect && !instructor)}>
