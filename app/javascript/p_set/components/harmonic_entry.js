@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import { nextNonEmptyMeasure, prevNonEmptyMeasure, changeAudioPlayerState } from '../lib/utils';
+import { nextNonEmptyMeasure, prevNonEmptyMeasure, changeAudioPlayerState, playA } from '../lib/utils';
 
 export default class HarmonicEntryComponent extends React.Component {
   constructor(props) {
@@ -134,6 +134,9 @@ export default class HarmonicEntryComponent extends React.Component {
       case 'ArrowLeft':
         this.setCurrentNote(false, e);
         break;
+      case 'A':
+        playA();
+        break;
     }
   }
 
@@ -206,10 +209,11 @@ export default class HarmonicEntryComponent extends React.Component {
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text-harmonic" data-reveal>
           <ul>
-            <li><b>Space</b> plays/pauses the audio</li>
-            <li><b>Right/left</b> arrows change current measure</li>
-            <li><b>Enter</b> adds the selected harmony to the selected note</li>
-            <li><b>Backspace/Delete</b> removes the harmony from the selected note</li>
+            <li><b>Space - </b> plays/pauses the audio</li>
+            <li><b>Right/Left - </b> arrows change current measure</li>
+            <li><b>Enter - </b> adds the selected harmony to the selected note</li>
+            <li><b>Backspace/Delete - </b> removes the harmony from the selected note</li>
+            <li><b>A</b> Plays the A above middle C for 5 seconds. Can also pause.</li>
           </ul>
         </div>
         <fieldset>

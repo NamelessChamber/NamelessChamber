@@ -5,7 +5,7 @@ import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
 
 import VexflowComponent from './vexflow';
-import { formatKey, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName, changeAudioPlayerState } from '../lib/utils';
+import { formatKey, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName, changeAudioPlayerState, playA } from '../lib/utils';
 
 const clefToOctave = (clef) => {
   if (clef === 'treble') {
@@ -171,7 +171,10 @@ export default class MelodicEntryComponent extends React.Component {
         this.setOctave(true, e);
         break;
       case '-':
-      this.setOctave(false, e);
+        this.setOctave(false, e);
+        break;
+      case 'A':
+        playA();
         break;
     }
   }
@@ -262,11 +265,12 @@ export default class MelodicEntryComponent extends React.Component {
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text-melodic" data-reveal>
           <ul>
-            <li><b>Space</b> plays/pauses the audio</li>
-            <li><b>Right/left</b> arrows change current note</li>
-            <li><b>Up/down</b> arrows select solfege</li>
-            <li><b>Shift-+/-</b> raise or lower an octave</li>
-            <li><b>&lt;/&gt;</b> Moves up/down a stave, or cycles around</li>
+            <li><b>Space - </b> plays/pauses the audio</li>
+            <li><b>Right/Left - </b> arrows change current note</li>
+            <li><b>Up/Down - </b> arrows select solfege</li>
+            <li><b>+/- - </b> raise or lower an octave</li>
+            <li><b>Shift+a - </b> Plays the A above middle C for 5 seconds. Can also pause.</li>
+            <li><b>&lt;/&gt; - </b> Moves up/down a stave, or cycles around</li>
           </ul>
         </div>
         <div className="row columns" style={showIf(!keyCorrect && !instructor)}>
