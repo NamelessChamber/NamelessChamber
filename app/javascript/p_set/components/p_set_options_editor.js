@@ -6,7 +6,7 @@ import ReactAudioPlayer from 'react-audio-player';
 
 import BoolOptionsEditor from './bool_options_editor';
 import StaveOptionsEditor from './stave_options_editor';
-import { newPSet, formatKey, validateOptions, durationString } from '../lib/models';
+import { newPSet, formatKey, validateOptions, durationString } from '../lib/utils';
 import { fetchPSet, updatePSet, deletePSetAudio } from '../lib/api';
 
 import '../styles/p_set_options_editor.css';

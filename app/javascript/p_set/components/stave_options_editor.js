@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { newStave } from '../lib/models';
+import { newStave } from '../lib/utils';
 
 import '../styles/stave_options_editor.css';
 

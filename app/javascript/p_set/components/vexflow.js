@@ -5,7 +5,7 @@ import Vex from 'vexflow';
 import teoria from 'teoria';
 import { fromSemitones } from 'tonal-interval';
 import _ from 'lodash';
-import { currentPage, getVFScaleName, tonicStr } from '../lib/models';
+import { currentPage, getVFScaleName, tonicStr } from '../lib/utils';
 
 const VF = Vex.Flow;
 

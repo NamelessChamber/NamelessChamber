@@ -1,4 +1,4 @@
-import { newPSet } from './models';
+import { newPSet } from './utils';
 
 function railsFetch(url, options) {
   const token = $('meta[name="csrf-token"]').attr('content');
