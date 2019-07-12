@@ -1,3 +1,4 @@
+import A from '../../../assets/audios/A.mp3'
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -10,6 +11,7 @@ import HarmonicEntryComponent from './harmonic_entry';
 
 import { newAnswer, compareMeterAt, compareMeters, getAnswerErrors, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName, nextStave } from '../lib/utils';
 import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from '../lib/api';
+import { type } from 'os';
 
 export default class PSetStudentComponent extends React.Component {
   constructor(props) {
@@ -313,6 +315,7 @@ export default class PSetStudentComponent extends React.Component {
         (<dd key={i*2+1}><ReactAudioPlayer src={audio} controls /></dd>)
       ];
     });
+    
     if (this.rhythmic) {
       entryComponent = (
         <RhythmicEntryComponent options={vexData.options}
@@ -453,6 +456,7 @@ export default class PSetStudentComponent extends React.Component {
             <fieldset>
               <legend>Audio Samples</legend>
               <dl>{audios}</dl>
+              <audio src={A} type="audio/mpeg"></audio>
             </fieldset>
           </div>
         </div>

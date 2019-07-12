@@ -406,7 +406,6 @@ export function changeAudioPlayerState(){
   var players = document.getElementsByClassName("react-audio-player");
   if (!players.length){ return; }
   var paused = true;
-
   Array.prototype.forEach.call(players, function(player){
     paused = paused && player.paused;
   });
@@ -414,7 +413,7 @@ export function changeAudioPlayerState(){
   if (paused){ 
     Array.prototype.forEach.call(players, function(player) {player.play();});
   } else{
-    Array.prototype.forEach.call(players, function(player) {player.paused();});
+    Array.prototype.forEach.call(players, function(player) {player.pause();});
   }
 }
 
@@ -426,4 +425,15 @@ export function nextStave(key){
   var index = select.selectedIndex;
   index += (key == '>')? 1 : -1;
   return (index + length) % length;
+}
+
+// Starts & stops the 5 second audio of A above middle C
+// Assumes the last audio element is the target
+// Does not play if current user is admin
+export function playA(){
+  if (document.URL.indexOf("admin")>=0){return;}
+  var audios = document.getElementsByTagName("audio");
+  var audio = audios[audios.length-1]
+  if (audio.paused) {audio.play();}
+  else {audio.pause();}
 }

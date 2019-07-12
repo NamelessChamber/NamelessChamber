@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
-import { durationString, changeAudioPlayerState } from '../lib/utils';
+import { durationString, changeAudioPlayerState, playA } from '../lib/utils';
 import { DH_UNABLE_TO_CHECK_GENERATOR } from 'constants';
 
 require('../styles/rhythmic_entry.css');
@@ -209,6 +209,9 @@ export default class RhythmicEntryComponent extends React.Component {
       case 'ArrowLeft':
         this.setCurrentMeasure(false, e);
         break;
+      case 'A':
+        playA();
+        break;
     }
   }
 
@@ -275,17 +278,20 @@ export default class RhythmicEntryComponent extends React.Component {
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text-rhythmic" data-reveal>
           <ul>
-            <li><b>1, 2, 4, 8, 6</b> adds a whole, half, quarter, eigth, or sixteenth note, respectively, if it is an option in the beat selector</li>
-            <li><b>Space</b> plays/pauses the audio</li>
-            <li><b>Right/left</b> arrows change current measure</li>
-            <li><b>Up/down</b> arrows select note duration</li>
-            <li><b>Enter</b> adds a note of selected duration</li>
-            <li><b>Backspace/Delete</b> removes the last note in a measure</li>
-            <li><b>Shift+d</b> removes a dot from the last note in a measure</li>
-            <li><b>t</b> Toggles note ties. A tied note will show a tie to the next note entered.</li>
-            <li><b>r</b> adds a rest of selected duration</li>
-            <li><b>.</b> adds a dot to the last note in a measure</li>
-            <li><b>&lt;/&gt;</b> Moves up/down a stave, or cycles around</li>
+            <li><b>Space - </b> plays/pauses the audio</li>
+            <li><b>Right/Left - </b> arrows change current measure</li>
+            <li><b>Up/Down - </b> arrows select note duration</li>
+            <li><b>Enter - </b> adds a note of selected duration</li>
+            <li><b>Backspace/Delete - </b> removes the last note in a measure</li>
+            <li><b>Shift+d - </b> removes a dot from the last note in a measure</li>
+            <li><b>Shift+a - </b> Plays the A above middle C for 5 seconds. Can also pause.</li>
+            <li><b>t - </b> Toggles note ties. A tied note will show a tie to the next note entered.</li>
+            <li><b>r - </b> adds a rest of selected duration</li>
+            <li><b>. - </b> adds a dot to the last note in a measure</li>
+            <li><b>&lt;/&gt; - </b> Moves up/down a stave, or cycles around</li>
+            <br/>
+            The following numbers insert the corresponding notes, if they are present in the beat selector
+            <li><b>1: Whole</b>, <b>2: Half</b>, <b>4: Quarter</b>, <b>8: Eighth</b>, <b>6: Sixteenth</b></li>
           </ul>
         </div>
         <div className="row columns" style={showIf(!meterCorrect && !instructor)}>
