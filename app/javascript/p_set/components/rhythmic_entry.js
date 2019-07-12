@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
-import { durationString } from '../lib/models';
-import { changeAudioPlayerState } from './helper';
+import { durationString, changeAudioPlayerState } from '../lib/utils';
+import { DH_UNABLE_TO_CHECK_GENERATOR } from 'constants';
 
 require('../styles/rhythmic_entry.css');
 
@@ -27,6 +27,7 @@ export default class RhythmicEntryComponent extends React.Component {
     referenceMeter: PropTypes.object.isRequired,
     meter: PropTypes.object,
     updateStave: PropTypes.func.isRequired,
+    changeStave: PropTypes.func.isRequired,
     updatePosition: PropTypes.func.isRequired,
     updateMeter: PropTypes.func.isRequired,
     currentMeasure: PropTypes.number.isRequired,
@@ -176,6 +177,10 @@ export default class RhythmicEntryComponent extends React.Component {
       case '8':
         this.handleNumber(e);
         break;
+      case '<':
+      case '>':
+        this.props.changeStave(e, true);
+        break;
       case ' ':
         changeAudioPlayerState();
         break;
@@ -280,8 +285,7 @@ export default class RhythmicEntryComponent extends React.Component {
             <li><b>t</b> Toggles note ties. A tied note will show a tie to the next note entered.</li>
             <li><b>r</b> adds a rest of selected duration</li>
             <li><b>.</b> adds a dot to the last note in a measure</li>
-            <li><b>&gt;</b> Moves down a stave, or cycles around</li>
-            <li><b>&lt;</b> Moves up a stave, or cycles around</li>
+            <li><b>&lt;/&gt;</b> Moves up/down a stave, or cycles around</li>
           </ul>
         </div>
         <div className="row columns" style={showIf(!meterCorrect && !instructor)}>

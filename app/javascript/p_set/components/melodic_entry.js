@@ -42,6 +42,7 @@ export default class MelodicEntryComponent extends React.Component {
     staveId: PropTypes.number.isRequired,
     keySignature: PropTypes.string,
     updateStave: PropTypes.func.isRequired,
+    changeStave: PropTypes.func.isRequired,
     updatePosition: PropTypes.func.isRequired,
     updateKeySignature: PropTypes.func.isRequired,
     currentMeasure: PropTypes.number.isRequired,
@@ -147,6 +148,10 @@ export default class MelodicEntryComponent extends React.Component {
 
   handleKeyDown(e) {
     switch(e.key) {
+      case '<':
+      case '>':
+        this.props.changeStave(e, true);
+        break;
       case ' ':
         changeAudioPlayerState();
         break;
@@ -261,6 +266,7 @@ export default class MelodicEntryComponent extends React.Component {
             <li><b>Right/left</b> arrows change current note</li>
             <li><b>Up/down</b> arrows select solfege</li>
             <li><b>Shift-+/-</b> raise or lower an octave</li>
+            <li><b>&lt;/&gt;</b> Moves up/down a stave, or cycles around</li>
           </ul>
         </div>
         <div className="row columns" style={showIf(!keyCorrect && !instructor)}>

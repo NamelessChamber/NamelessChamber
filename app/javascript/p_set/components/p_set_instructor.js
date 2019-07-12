@@ -8,7 +8,7 @@ import VexflowComponent from './vexflow';
 import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
-import { newPSet, validateMeter, validateOptions, currentPage, compareMeterAt, nextNonEmptyMeasure, prevNonEmptyMeasure } from '../lib/models';
+import { newPSet, validateMeter, validateOptions, currentPage, compareMeterAt, nextNonEmptyMeasure, prevNonEmptyMeasure, nextStave } from '../lib/utils';
 import { fetchPSet, updatePSet } from '../lib/api';
 
 export default class PSetInstructorComponent extends React.Component {
@@ -26,6 +26,7 @@ export default class PSetInstructorComponent extends React.Component {
       errors: []
     };
 
+    this.changeStave = this.changeStave.bind(this);
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
     this.handlePositionUpdate = this.handlePositionUpdate.bind(this);
     this.handleMeterUpdate = this.handleMeterUpdate.bind(this);
@@ -103,10 +104,13 @@ export default class PSetInstructorComponent extends React.Component {
     });
   }
 
-  changeStave(e) {
+  changeStave(e, keyDown) {
+    console.log(this.harmonic);
     e.preventDefault();
-    let stave = this.harmonic ?
+    
+    let stave = this.harmonic ? 
       this.state.vexData.data.staves.length - 1 :
+      keyDown? nextStave(e.key):
       parseInt(e.target.value);
     const newStaveSolution = this.state.vexData.data.staves[stave].solution;
     const rhythmic = _.every(newStaveSolution, (s) => _.isEmpty(s.notes));
@@ -234,6 +238,7 @@ export default class PSetInstructorComponent extends React.Component {
           staveId={this.stave}
           meter={this.state.meter}
           updateStave={this.handleScoreUpdate}
+          changeStave={this.changeStave}
           updatePosition={this.handlePositionUpdate}
           updateMeter={this.handleMeterUpdate}
           currentMeasure={this.state.currentMeasure}
@@ -249,6 +254,7 @@ export default class PSetInstructorComponent extends React.Component {
           measures={stave.solution}
           staveId={this.stave}
           updateStave={this.handleScoreUpdate}
+          changeStave={this.changeStave}
           currentMeasure={this.state.currentMeasure}
           currentNote={this.state.currentNote}
           updatePosition={this.handlePositionUpdate}
