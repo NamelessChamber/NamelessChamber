@@ -8,7 +8,7 @@ import RhythmicEntryComponent from './rhythmic_entry';
 import MelodicEntryComponent from './melodic_entry';
 import HarmonicEntryComponent from './harmonic_entry';
 
-import { newAnswer, compareMeterAt, compareMeters, getAnswerErrors, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName } from '../lib/utils';
+import { newAnswer, compareMeterAt, compareMeters, getAnswerErrors, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName, nextStave } from '../lib/utils';
 import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from '../lib/api';
 
 export default class PSetStudentComponent extends React.Component {
@@ -28,6 +28,7 @@ export default class PSetStudentComponent extends React.Component {
       submitting: false
     };
 
+    this.changeStave = this.changeStave.bind(this);
     this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
     this.handlePositionUpdate = this.handlePositionUpdate.bind(this);
     this.handleMeterUpdate = this.handleMeterUpdate.bind(this);
@@ -102,10 +103,11 @@ export default class PSetStudentComponent extends React.Component {
     });
   }
 
-  changeStave(e) {
+  changeStave(e, keyDown) {
     e.preventDefault();
-    const stave = this.harmonic ?
+    const stave = this.harmonic ? 
       this.state.vexData.data.staves.length - 1 :
+      keyDown? nextStave(e.key):
       parseInt(e.target.value);
     const newStaveAnswer = this.state.vexData.data.staves[stave].answer;
     const rhythmic = _.every(newStaveAnswer, (a) => _.isEmpty(a.notes));
@@ -320,6 +322,7 @@ export default class PSetStudentComponent extends React.Component {
           staveId={this.stave}
           meter={this.state.answer.meter}
           updateStave={this.handleScoreUpdate}
+          changeStave={this.changeStave}
           updatePosition={this.handlePositionUpdate}
           updateMeter={this.handleMeterUpdate}
           currentMeasure={this.state.currentMeasure}
@@ -335,6 +338,7 @@ export default class PSetStudentComponent extends React.Component {
           measures={answer}
           staveId={this.stave}
           updateStave={this.handleScoreUpdate}
+          changeStave={this.changeStave}
           currentMeasure={this.state.currentMeasure}
           currentNote={this.state.currentNote}
           updatePosition={this.handlePositionUpdate}
