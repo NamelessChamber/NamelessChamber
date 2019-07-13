@@ -137,6 +137,10 @@ export default class PSetInstructorComponent extends React.Component {
       // } else
       if (meterCheck < 0) {
         alert('Measure has too many beats! Please go back and correct it.');
+        return;
+      } else if (meterCheck > 0) {
+        alert('Measure has too few beats! Please go back and correct it.');
+        return;
       }
     }
     this.setState(pos);
