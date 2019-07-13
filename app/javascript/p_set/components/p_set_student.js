@@ -402,6 +402,11 @@ export default class PSetStudentComponent extends React.Component {
           <ul>{errors}</ul>
         </div>
         <h3>{this.state.vexData.name}: {this.rhythmic ? 'Rhythmic' : this.melodic ? 'Melodic' : 'Harmonic'} Entry</h3>
+        <fieldset>
+          <legend>Audio Samples</legend>
+          <dl>{audios}</dl>
+          <audio src={A} type="audio/mpeg"></audio>
+        </fieldset>
         <div className="row">
           <div className="small-10 columns">
             <VexflowComponent staves={vfStaves}
@@ -452,12 +457,6 @@ export default class PSetStudentComponent extends React.Component {
             </div>
 
             {entryComponent}
-
-            <fieldset>
-              <legend>Audio Samples</legend>
-              <dl>{audios}</dl>
-              <audio src={A} type="audio/mpeg"></audio>
-            </fieldset>
           </div>
         </div>
       </div>
