@@ -62,7 +62,7 @@ export default class RhythmicEntryComponent extends React.Component {
 
     this.props.updatePosition({
       currentMeasure
-    });
+    }, increment);
   }
 
   appendNote(e, rest) {
