@@ -126,7 +126,7 @@ export default class PSetInstructorComponent extends React.Component {
     });
   }
 
-  handlePositionUpdate(pos) {
+  handlePositionUpdate(pos, increment) {
     if (this.rhythmic) {
       const { meter, staves, pickUpBeat } = this.state.vexData.data;
       const { currentMeasure } = this.state;
@@ -138,7 +138,7 @@ export default class PSetInstructorComponent extends React.Component {
       if (meterCheck < 0) {
         alert('Measure has too many beats! Please go back and correct it.');
         return;
-      } else if (meterCheck > 0) {
+      } else if (meterCheck > 0 && increment) {
         alert('Measure has too few beats! Please go back and correct it.');
         return;
       }
