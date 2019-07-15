@@ -300,7 +300,15 @@ export default class PSetInstructorComponent extends React.Component {
     const mode = this.rhythmic ? 'rhythm' : 'melody';
     return (
       <div className="small-12 columns" ref={(el) => this.containerEl = el}>
-        <h3>{this.state.vexData.name}: {this.rhythmic ? 'Rhythmic' : this.melodic ? 'Melodic' : 'Harmonic'} Entry</h3>
+        <div className="row">
+          <div className="small-10 columns"><h3>{this.state.vexData.name}: {this.rhythmic ? 'Rhythmic' : this.melodic ? 'Melodic' : 'Harmonic'} Entry</h3></div>
+          <div className="small-2 columns">
+            <fieldset>
+              <legend>Audio Samples</legend>
+              <dl>{audios}</dl>
+            </fieldset>
+          </div>
+        </div>
         <div className="row">
           <div className="small-10 columns">
             <VexflowComponent staves={vexData.staves}
@@ -336,11 +344,6 @@ export default class PSetInstructorComponent extends React.Component {
             </div>
 
             {entryComponent}
-
-            <fieldset>
-              <legend>Audio Samples</legend>
-              <dl>{audios}</dl>
-            </fieldset>
           </div>
         </div>
       </div>
