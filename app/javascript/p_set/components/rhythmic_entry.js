@@ -101,7 +101,8 @@ export default class RhythmicEntryComponent extends React.Component {
   }
 
   getCurrentNote(measures) {
-    const measure = measures[this.props.currentMeasure].notes;
+    var currentMeasure = this.props.currentMeasure == -1? 0: this.props.currentMeasure;
+    const measure = measures[currentMeasure].notes;
     if (measure.length) {
       return measure[measure.length - 1];
     }
