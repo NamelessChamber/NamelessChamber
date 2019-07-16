@@ -220,7 +220,7 @@ export default class MelodicEntryComponent extends React.Component {
 
   render() {
     const { currentMeasure, currentNote } = this.props;
-    const measure = this.measures[currentMeasure];
+    const measure = this.measures[currentMeasure == -1? 0: currentMeasure];
     const measureNotes = measure.notes;
     const note = measureNotes[currentNote];
     const noteDisplay = `Note (${currentNote + 1}/${measureNotes.length})`;

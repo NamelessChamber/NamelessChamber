@@ -194,9 +194,9 @@ export default class HarmonicEntryComponent extends React.Component {
     inversionOptions.unshift((
       <option key={0} value="">-</option>
     ));
-
-    const currentHarmony = this.note.harmony || '';
-    const currentInversion = this.note.inversion || '';
+    
+    const currentHarmony = this.note? this.note.harmony: '';
+    const currentInversion = this.note? this.note.inversion: '';
 
     const { instructor } = this.props;
 
