@@ -354,9 +354,9 @@ export const DEFAULTS = {
     '1', '2', '4', '8', '16', '32'
   ],
   solfege: [
-    'do', 're', 'mi', 'fa', 'so', 'la', 'ti',
-    'di', 'ri', 'fi', 'si', 'li', 'ra',
-    'me', 'se', 'le', 'te'
+    'do', 'di', 'ra', 're', 'ri', 'me', 'mi',
+    'fa', 'fi', 'se', 'sol', 'si', 'le', 'la', 
+    'li', 'te', 'ti'
   ],
   harmony: [
     'I', 'ii', 'iiØ', 'iii', 'IV', 'V', 'vi', 'viio', 'viiØ',
@@ -383,7 +383,6 @@ export function newPSet() {
   function initBoolOpts(opts) {
     return opts.map(x => [x, false]);
   }
-
   return {
     options: {
       rhythm: initBoolOpts(DEFAULTS.rhythm),
