@@ -1,4 +1,4 @@
-import A from '../../../assets/audios/A.mp3'
+import A from '../../../assets/audios/A.wav'
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
