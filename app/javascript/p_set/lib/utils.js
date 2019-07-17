@@ -433,6 +433,5 @@ export function playA(){
   if (document.URL.indexOf("admin")>=0){return;}
   var audios = document.getElementsByTagName("audio");
   var audio = audios[audios.length-1]
-  if (audio.paused) {audio.play();}
-  else {audio.pause();}
+  audio.paused? audio.play(): audio.pause();
 }
