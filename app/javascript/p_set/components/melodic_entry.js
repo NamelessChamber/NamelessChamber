@@ -5,7 +5,7 @@ import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
 
 import VexflowComponent from './vexflow';
-import { formatKey, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName, changeAudioPlayerState, playA } from '../lib/utils';
+import { formatKey, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName, changeAudioPlayerState, playA, clickSave } from '../lib/utils';
 
 const clefToOctave = (clef) => {
   if (clef === 'treble') {
@@ -302,10 +302,14 @@ export default class MelodicEntryComponent extends React.Component {
         </div>
         <div className="row columns" style={showIf(keyCorrect || instructor)}>
           <div>
-            <Link className="button" to="harmony">Proceed to Harmony</Link>
+            <Link className="button" to="harmony" onClick={()=>clickSave()}>
+              Proceed to Harmony
+            </Link>
           </div>
           <div>
-            <Link className="button" to="rhythm">Back to Rhythm</Link>
+            <Link className="button" to="rhythm" onClick={()=>clickSave()}>
+              Back to Rhythm
+            </Link>
           </div>
           <div style={showIf(instructor)}>
             <Link className="button" to="options">Back to Options</Link>

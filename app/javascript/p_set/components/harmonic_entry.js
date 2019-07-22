@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
-import { nextNonEmptyMeasure, prevNonEmptyMeasure, changeAudioPlayerState, playA } from '../lib/utils';
+import { nextNonEmptyMeasure, prevNonEmptyMeasure, changeAudioPlayerState, playA, clickSave } from '../lib/utils';
 
 export default class HarmonicEntryComponent extends React.Component {
   constructor(props) {
@@ -243,12 +243,14 @@ export default class HarmonicEntryComponent extends React.Component {
           </select>
         </fieldset>
         <div>
-          <Link to="melody" className="button">
+          <Link to="melody" className="button" onClick={()=>clickSave()}>
             Back to Melody
           </Link>
         </div>
         <div style={showIf(instructor)}>
-          <Link className="button" to="rhythm">Back to Rhythm</Link>
+          <Link className="button" to="rhythm">
+            Back to Rhythm
+          </Link>
         </div>
         <div style={showIf(instructor)}>
           <Link className="button" to="options">Back to Options</Link>

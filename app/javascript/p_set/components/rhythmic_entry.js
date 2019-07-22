@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import ReactAudioPlayer from 'react-audio-player';
-import { durationString, changeAudioPlayerState, playA } from '../lib/utils';
+import { durationString, changeAudioPlayerState, playA, clickSave } from '../lib/utils';
 import { DH_UNABLE_TO_CHECK_GENERATOR } from 'constants';
 
 require('../styles/rhythmic_entry.css');
@@ -328,7 +328,7 @@ export default class RhythmicEntryComponent extends React.Component {
             </select>
           </fieldset>
           <div>
-            <Link to="melody" className="button">
+            <Link to="melody" className="button" onClick={()=>clickSave()}>
               Proceed to Melody
             </Link>
           </div>
