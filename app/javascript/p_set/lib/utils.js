@@ -435,3 +435,10 @@ export function playA(){
   var audio = audios[audios.length-1]
   audio.paused? audio.play(): audio.pause();
 }
+
+// In an effort to share less state between components
+// this function just clicks the save button
+// which is assumed to be the zeroth button on the page
+export function clickSave(){
+  document.getElementsByClassName("button")[0].click();
+}
