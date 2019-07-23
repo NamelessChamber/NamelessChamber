@@ -289,7 +289,6 @@ export default class MelodicEntryComponent extends React.Component {
                     onKeyDown={this.handleKeyDown.bind(this)}
                     style={{width: '75px', height: '230px'}}
                     value={[selectedSolfege]}
-                    onChange={this.noteChange.bind(this)}
                     onMouseDown={this.handleKeyDown.bind(this)}>
               {solfegeOptions}
             </select>
