@@ -97,7 +97,6 @@ export default class MelodicEntryComponent extends React.Component {
         }
       }
     }
-
     this.props.updatePosition({
       currentNote,
       currentMeasure
@@ -105,8 +104,9 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   setOctave(increment, e) {
+    e.preventDefault();
     let { octave } = this.state;
-
+    if (this.solfegeUndefined()) { return; }
     if (increment) {
       octave += 1;
     } else {
@@ -146,7 +146,24 @@ export default class MelodicEntryComponent extends React.Component {
     this.props.updateStave(measures, currentMeasure, currentNote);
   }
 
+  solfegeUndefined() {
+    return _.isUndefined(this.currentNote(this.measures).solfege);
+  }
+
+  findSolfegeIndex(value) {
+    const options = this.solfegeInput.options;
+    for (var i = 0; i < options.length; i++) {
+      if (options[i].value == value) {
+        options.selectedIndex = i;
+        break;
+      }
+    }
+  }
+
   handleKeyDown(e) {
+    if (e.type == "mousedown") {
+      this.findSolfegeIndex(e.target.value);
+    }
     switch(e.key) {
       case '<':
       case '>':
@@ -156,10 +173,10 @@ export default class MelodicEntryComponent extends React.Component {
         changeAudioPlayerState();
         break;
       case 'ArrowUp':
+        this.setOctave(true, e);
+        break;
       case 'ArrowDown':
-        if (!this.props.instructor) {
-          e.preventDefault();
-        }
+        this.setOctave(false, e);
         break;
       case 'ArrowRight':
         this.setCurrentNote(true, e);
@@ -167,14 +184,11 @@ export default class MelodicEntryComponent extends React.Component {
       case 'ArrowLeft':
         this.setCurrentNote(false, e);
         break;
-      case '+':
-        this.setOctave(true, e);
-        break;
-      case '-':
-        this.setOctave(false, e);
-        break;
       case 'A':
         playA();
+        break;
+      case 'Enter':
+        if (! e.target.value == "") { this.noteChange(e); }
         break;
     }
   }
@@ -184,33 +198,13 @@ export default class MelodicEntryComponent extends React.Component {
     $(this.containerEl).foundation();
   }
 
-  componentDidUpdate() {
-    this.solfegeInput.focus();
-    $(this.containerEl).foundation();
+  getSnapshotBeforeUpdate(){
+    return this.solfegeInput.selectedIndex;
   }
 
-  componentWillReceiveProps(newProps) {
-    const stateUpdate = {};
-
-    if (newProps.staveId != this.props.staveId) {
-      stateUpdate.octave = 0;
-    }
-
-    if (newProps.currentMeasure !== this.props.currentMeasure ||
-        newProps.currentNote !== this.props.currentNote) {
-      const newMeasures = _.cloneDeep(newProps.measures);
-      const oldNote = this.currentNote(this.measures);
-      const note = newMeasures[newProps.currentMeasure].notes[newProps.currentNote];
-      if (_.isUndefined(note.solfege)) {
-        note.solfege = oldNote.solfege;
-        note.octave = oldNote.octave;
-        newProps.updateStave(newMeasures, newProps.currentMeasure, newProps.currentNote);
-      }
-    }
-
-    if (!_.isEmpty(stateUpdate)) {
-      this.setState(stateUpdate);
-    }
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    this.solfegeInput.selectedIndex = snapshot;
+    $(this.containerEl).foundation();
   }
 
   updateKey(e) {
@@ -265,10 +259,10 @@ export default class MelodicEntryComponent extends React.Component {
       <div className="row columns" ref={(el) => this.containerEl = el}>
         <div className="reveal" id="help-text-melodic" data-reveal>
           <ul>
+            <li><b>Enter - </b> enters the current highlighted solfege</li>
             <li><b>Space - </b> plays/pauses the audio</li>
             <li><b>Right/Left - </b> arrows change current note</li>
-            <li><b>Up/Down - </b> arrows select solfege</li>
-            <li><b>+/- - </b> raise or lower an octave</li>
+            <li><b>Up/Down - </b> raise or lower an octave</li>
             <li><b>Shift+a - </b> Plays the A above middle C for 5 seconds. Can also pause.</li>
             <li><b>&lt;/&gt; - </b> Moves up/down a stave, or cycles around</li>
           </ul>
@@ -295,7 +289,8 @@ export default class MelodicEntryComponent extends React.Component {
                     onKeyDown={this.handleKeyDown.bind(this)}
                     style={{width: '75px', height: '230px'}}
                     value={[selectedSolfege]}
-                    onChange={this.noteChange.bind(this)}>
+                    onChange={this.noteChange.bind(this)}
+                    onMouseDown={this.handleKeyDown.bind(this)}>
               {solfegeOptions}
             </select>
           </fieldset>
