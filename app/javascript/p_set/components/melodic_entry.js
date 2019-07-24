@@ -7,6 +7,17 @@ import ReactAudioPlayer from 'react-audio-player';
 import VexflowComponent from './vexflow';
 import { formatKey, nextNonEmptyMeasure, prevNonEmptyMeasure, keyOptionToSignature, getVFScaleName, changeAudioPlayerState, playA, clickSave } from '../lib/utils';
 
+const diatonics = 
+{
+  'do': 'd',
+  're': 'r',
+  'mi': 'm',
+  'fa': 'f',
+  'so': 's',
+  'la': 'l',
+  'ti': 't'
+}
+
 const clefToOctave = (clef) => {
   if (clef === 'treble') {
     return 4;
@@ -131,8 +142,8 @@ export default class MelodicEntryComponent extends React.Component {
     return notes[this.props.currentNote];
   }
 
-  noteChange(e) {
-    const solfege = e.target.value;
+  noteChange(e, target) {
+    const solfege = target? target: e.target.value;
     const measures = _.cloneDeep(this.measures);
     const note = this.currentNote(measures);
     let { octave } = this.state;
@@ -160,11 +171,36 @@ export default class MelodicEntryComponent extends React.Component {
     }
   }
 
+  handleDiatonic(e){
+    // Assumes the solfege selector is the 2nd select element on the page
+    const options = document.getElementsByTagName('select')[2].options;
+    let diatonicPresent = false;
+    for (var i = 0; i < options.length; i++) {
+      if (diatonics[options[i].value] == e.key) {
+        diatonicPresent = true;
+        options.selectedIndex = i;
+        break;
+      }
+    }
+    if (!diatonicPresent) { return; }
+    this.noteChange(e, options[i].value);
+  }
+
   handleKeyDown(e) {
     if (e.type == "mousedown") {
       this.findSolfegeIndex(e.target.value);
+      return;
     }
     switch(e.key) {
+      case 'd':
+      case 'r':
+      case 'm':
+      case 'f':
+      case 's':
+      case 'l':
+      case 't':
+        this.handleDiatonic(e)
+        break;
       case '<':
       case '>':
         this.props.changeStave(e, true);
@@ -210,7 +246,7 @@ export default class MelodicEntryComponent extends React.Component {
   updateKey(e) {
     const keySignature = e.target.value;
     this.setState({keySignature});
-  }
+  } 
 
   render() {
     const { currentMeasure, currentNote } = this.props;

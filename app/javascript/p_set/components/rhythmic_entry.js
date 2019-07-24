@@ -141,11 +141,12 @@ export default class RhythmicEntryComponent extends React.Component {
   }
 
   handleNumber(e){
-    var select = document.getElementsByClassName("beat-select")[0];
-    var numberPresent = false;
-    for (var i = 0; i < select.options.length; i++){
-      if (select.options[i].value == e.key){
+    const options = document.getElementsByClassName("beat-select")[0].options;
+    let numberPresent = false;
+    for (var i = 0; i < options.length; i++){
+      if (options[i].value == e.key){
         numberPresent = true;
+        options.selectedIndex = i;
         break;
       }
     }
