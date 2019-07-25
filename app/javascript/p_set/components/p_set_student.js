@@ -92,8 +92,10 @@ export default class PSetStudentComponent extends React.Component {
 
     const staveErrors = _.cloneDeep(this.state.staveErrors);
     if (_.isArray(staveErrors) &&
-        !_.isUndefined(staveErrors[this.stave][changeMeasure][changeNote])) {
-      staveErrors[this.stave][changeMeasure][changeNote] = false;
+        !_.isUndefined(staveErrors[this.stave][changeMeasure])) {
+      staveErrors[this.stave][changeMeasure].forEach(
+        (_, i) => {staveErrors[this.stave][changeMeasure][i] = false;}
+      );
     }
 
     this.setState({answer: newAnswer, staveErrors});
@@ -249,6 +251,8 @@ export default class PSetStudentComponent extends React.Component {
     this.setState({staveErrors, errors});
   }
 
+  
+
   componentWillReceiveProps(props) {
     if (!this.isRhythmic(props)) {
       const { staves } = this.state.answer;
@@ -282,7 +286,8 @@ export default class PSetStudentComponent extends React.Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
+
     if (!_.isUndefined(this.errorModalEl) && this.showError) {
       const $error = $(this.errorModalEl);
       $error.foundation();
