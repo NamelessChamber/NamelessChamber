@@ -13,7 +13,7 @@ const diatonics =
   're': 'r',
   'mi': 'm',
   'fa': 'f',
-  'so': 's',
+  'sol': 's',
   'la': 'l',
   'ti': 't'
 }
