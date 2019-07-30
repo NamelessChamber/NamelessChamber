@@ -32,7 +32,7 @@ const intervalSolfege = {
   'AA4': 'fai',
   'dd5': 'saw',
   'd5': 'se',
-  'P5': 'so',
+  'P5': 'sol',
   'A5': 'si',
   'AA5': 'sai',
   'd6': 'law',
@@ -191,9 +191,13 @@ export default class VexflowComponent extends React.Component {
     const { solfege, octave, duration } = note;
     let keys = this.defaultLineForStave(stave.clef);
     let accidental = null;
+    // console.log("solfege: ", solfege);
+    // console.log("tonic: ", stave.tonic);
+    // console.log("octave: ", octave);
     if (renderMode === RENDER_MODES.MELODIC &&
         !_.isUndefined(solfege) && !_.isUndefined(octave)) {
       const tNote = getNote(stave.tonic, octave, solfege, stave.scale === 'minor');
+      // console.log("tNote: ", tNote);
       const scale = teoria.scale(tonicStr(stave.tonic), stave.scale);
       keys = [`${tNote.name()}/${tNote.octave()}`];
       accidental = getAccidentalToRender(scale, tNote);
