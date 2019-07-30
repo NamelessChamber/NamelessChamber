@@ -161,16 +161,6 @@ export default class MelodicEntryComponent extends React.Component {
     return _.isUndefined(this.currentNote(this.measures).solfege);
   }
 
-  findSolfegeIndex(value) {
-    const options = this.solfegeInput.options;
-    for (var i = 0; i < options.length; i++) {
-      if (options[i].value == value) {
-        options.selectedIndex = i;
-        break;
-      }
-    }
-  }
-
   handleDiatonic(e){
     // Assumes the solfege selector is the 2nd select element on the page
     const options = document.getElementsByTagName('select')[2].options;
@@ -187,10 +177,6 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   handleKeyDown(e) {
-    if (e.type == "mousedown") {
-      this.findSolfegeIndex(e.target.value);
-      return;
-    }
     switch(e.key) {
       case 'd':
       case 'r':
@@ -224,7 +210,7 @@ export default class MelodicEntryComponent extends React.Component {
         playA();
         break;
       case 'Enter':
-        if (! e.target.value == "") { this.noteChange(e); }
+        this.noteChange(e);
         break;
     }
   }
@@ -323,9 +309,7 @@ export default class MelodicEntryComponent extends React.Component {
                     ref={(input) => this.solfegeInput = input}
                     onBlur={(e) => e.target.focus()}
                     onKeyDown={this.handleKeyDown.bind(this)}
-                    style={{width: '75px', height: '230px'}}
-                    value={[selectedSolfege]}
-                    onMouseDown={this.handleKeyDown.bind(this)}>
+                    style={{width: '75px', height: '230px'}}>
               {solfegeOptions}
             </select>
           </fieldset>
