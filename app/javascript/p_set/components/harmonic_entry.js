@@ -99,6 +99,12 @@ export default class HarmonicEntryComponent extends React.Component {
     });
   }
 
+  getFocusedElement() {
+    return this.focused['harmony']? 'harmony':
+           this.focused['inversion']? 'inversion':
+           null;
+  }
+
   updateKey(key, e) {
     const { value } = e.target;
     const stave = _.cloneDeep(this.props.stave)
@@ -137,6 +143,9 @@ export default class HarmonicEntryComponent extends React.Component {
       case 'A':
         playA();
         break;
+      case 'Enter':
+        const key = this.getFocusedElement();
+        this.updateKey(key,e)
     }
   }
 
@@ -223,9 +232,7 @@ export default class HarmonicEntryComponent extends React.Component {
             onKeyDown={this.handleKeyDown.bind(this)}
             onBlur={this.handleBlur.bind(this, 'harmony')}
             style={{width: '85px', height: '230px'}}
-            value={[currentHarmony]}
-            onFocus={this.handleFocus.bind(this, 'harmony')}
-            onChange={this.updateKey.bind(this, 'harmony')}>
+            onFocus={this.handleFocus.bind(this, 'harmony')}>
             {harmonyOptions}
           </select>
         </fieldset>
@@ -236,9 +243,7 @@ export default class HarmonicEntryComponent extends React.Component {
             onKeyDown={this.handleKeyDown.bind(this)}
             onBlur={this.handleBlur.bind(this, 'inversion')}
             style={{width: '85px', height: '230px'}}
-            value={[currentInversion]}
-            onFocus={this.handleFocus.bind(this, 'inversion')}
-            onChange={this.updateKey.bind(this, 'inversion')}>
+            onFocus={this.handleFocus.bind(this, 'inversion')}>
             {inversionOptions}
           </select>
         </fieldset>
