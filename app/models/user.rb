@@ -37,7 +37,7 @@ class User < ApplicationRecord
     "#{firstname} #{lastname}"
   end
 
-  def student_id
+  def studentID
     "#{student_id}"
   end
 end
