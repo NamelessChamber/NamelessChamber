@@ -18,6 +18,7 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  admin                  :boolean          default("false"), not null
+#  student_id             :string           default(""), not null
 #
 
 class User < ApplicationRecord
@@ -34,5 +35,9 @@ class User < ApplicationRecord
 
   def whole_name
     "#{firstname} #{lastname}"
+  end
+
+  def student_id
+    "#{student_id}"
   end
 end
