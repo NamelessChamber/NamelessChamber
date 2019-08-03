@@ -13,6 +13,7 @@
       <tr>
         <th>Name</th>
         <th>Created</th>
+        <th>Student ID</th>
         <th></th>
       </tr>
     </thead>
@@ -21,11 +22,15 @@
       <tr>
         <td><%= u.whole_name %></td>
         <td><%= fulldate(u.created_at) %></td>
+        <td><%= u.student_id %></td>
         <td> 
           <%=  link_to 'Delete Student Account', 
           admin_user_path(u), method: :delete, 
           data: {confirm: "You are about to delete " + u.whole_name + "'s account. \nPress OK to confirm"} %> 
         </td>
+      </tr>
+      <tr>
+        <td>Student Count: @users.length</td>
       </tr>
       <% end %>
     </tbody>
