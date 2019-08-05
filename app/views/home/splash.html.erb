@@ -1,11 +1,11 @@
 <div class="small-12 columns">
   <% if current_user.nil? %>
-    <h1>Welcome to Tuna!</h1>
+    <h1>Welcome to Nameless Chamber!</h1>
   <% else %>
-    <h1>Welcome to Tuna, <%= current_user.firstname %>!</h1>
+    <h1>Welcome to Nameless Chamber, <%= current_user.firstname %>!</h1>
   <% end %>
   <p>
-    Tuna is a platform for practicing music dictation learning skills.
+    Nameless Chamber is a platform for practicing music dictation learning skills.
   </p>
   <p>
     <% if current_user.nil? %>
