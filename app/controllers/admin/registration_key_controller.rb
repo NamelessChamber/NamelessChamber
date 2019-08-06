@@ -1,11 +1,14 @@
-class RegistrationKeyController < ActionController::Base
-    include RegistrationKeyHelper
+class Admin::RegistrationKeyController < ActionController::Base
+    include Admin::RegistrationKeyHelper
     def create
         puts "HOWDY PARTNER!"
         if RegistrationKey.all.length > 0
             RegistrationKey.destroy_all
         end
-        key = (0...50).map { ('a'..'z').to_a[rand(26)] }.join
+        alpha = ('A'..'Z').to_a.concat(('a'..'z').to_a)
+        alpha_numeric = ('0'..'9').to_a.concat(alpha)
+        key = (0...8).map { alpha_numeric[rand(62)] }.join
         RegistrationKey.create(key:key)
+        redirect_to root_path
     end
 end

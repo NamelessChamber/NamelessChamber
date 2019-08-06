@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   namespace :admin do
+    get 'registration_key', to: 'registration_key#create'
+
     resources :classroom_psets, only: [:create, :destroy, :show]
 
     resources :p_set_answers, only: [:show, :destroy]

@@ -18,7 +18,7 @@
     <% if @key %>
       <p> Current Registration Key: <%= @key %> </p>
     <% else %>
-      <p> Register Key </p>
+      <%= link_to 'Generate Key', admin_registration_key_path, class: 'button' %>
     <% end %>
   <% end %>
 </div>

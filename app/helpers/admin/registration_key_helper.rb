@@ -1,4 +1,4 @@
-module RegistrationKeyHelper
+module Admin::RegistrationKeyHelper
     def check
         keys = RegistrationKey.where(key: params[:registration_key])
         if keys.exists?
