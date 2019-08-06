@@ -14,4 +14,11 @@
       <%= link_to 'Check out your classes', classrooms_path %> to get started.
     <% end %>
   </p>
+  <% if current_user.admin? %>
+    <% if @key %>
+      <p> Current Registration Key: <%= @key %> </p>
+    <% else %>
+      <p> Register Key </p>
+    <% end %>
+  <% end %>
 </div>
