@@ -4,6 +4,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     get 'registration_key', to: 'registration_key#create'
+    get 'registration_key_checker', to: 'registration_key#show'
+    post 'registration_key_check', to: 'registration_key#check'
 
     resources :classroom_psets, only: [:create, :destroy, :show]
 

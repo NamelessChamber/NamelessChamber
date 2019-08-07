@@ -1,7 +1,6 @@
 class Admin::RegistrationKeyController < ActionController::Base
     include Admin::RegistrationKeyHelper
     def create
-        puts "HOWDY PARTNER!"
         if RegistrationKey.all.length > 0
             RegistrationKey.destroy_all
         end
@@ -10,5 +9,18 @@ class Admin::RegistrationKeyController < ActionController::Base
         key = (0...8).map { alpha_numeric[rand(62)] }.join
         RegistrationKey.create(key:key)
         redirect_to root_path
+    end
+    
+    def show
+    end
+
+    def check
+        fields = params[:fields]
+        key = fields[:key]
+        if check_key(key)
+            redirect_to new_user_registration_path
+        else
+            redirect_to admin_registration_key_checker_path
+        end
     end
 end

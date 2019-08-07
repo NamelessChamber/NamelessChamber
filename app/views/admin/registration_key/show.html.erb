@@ -1,0 +1,11 @@
+<%= form_for 'fields', url: admin_registration_key_check_path do |f| %>
+    <div class="small-6 columns">
+        <%= f.label :key %>
+        <%= f.text_field :key %>
+    </div>
+    <div class="small-2 columns" style="float:left;">
+        <div class="actions">
+            <%= f.submit "Sign up" %>
+        </div>
+    </div>
+<% end %>
