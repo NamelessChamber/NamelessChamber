@@ -1,5 +1,5 @@
-class Admin::RegistrationKeyController < ActionController::Base
-    include Admin::RegistrationKeyHelper
+class RegistrationKeyController < ActionController::Base
+    include RegistrationKeyHelper
     def create
         if RegistrationKey.all.length > 0
             RegistrationKey.destroy_all
@@ -20,7 +20,7 @@ class Admin::RegistrationKeyController < ActionController::Base
         if check_key(key)
             redirect_to new_user_registration_path
         else
-            redirect_to admin_registration_key_checker_path
+            redirect_to registration_key_show_path
         end
     end
 end
