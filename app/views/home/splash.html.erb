@@ -9,9 +9,16 @@
   </p>
   <p>
     <% if current_user.nil? %>
-      <%= link_to 'Sign up', new_user_registration_path %> to get started.
+      <%= link_to 'Sign up', admin_registration_key_checker_path %> to get started.
     <% else %>
       <%= link_to 'Check out your classes', classrooms_path %> to get started.
+      <% if current_user.admin? %>
+        <% if @key %>
+          <p> Current Registration Key: <%= @key %> </p>
+        <% else %>
+          <%= link_to 'Generate Key', admin_registration_key_path, class: 'button' %>
+        <% end %>
+      <% end %>
     <% end %>
   </p>
 </div>
