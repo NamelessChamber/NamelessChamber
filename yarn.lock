@@ -6961,7 +6961,7 @@ verror@1.3.6:
   dependencies:
     extsprintf "1.0.2"
 
-vexflow@^1.2.84:
+vexflow@^1.2.89:
   version "1.2.89"
   resolved "https://registry.yarnpkg.com/vexflow/-/vexflow-1.2.89.tgz#0dbdefff464267cade6660b1f1269534a6a918c4"
   integrity sha512-2Yf82i8vNgPym36eU+0QZx7VlH8feA5ysgHi3HnQOx98P6/La3axkz6Pedt8FUGX6vZlkIkp0f0XRuxqZZisfQ==
