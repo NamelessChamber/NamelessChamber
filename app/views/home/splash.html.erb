@@ -16,7 +16,7 @@
         <% if @key %>
           <p> Current Registration Key: <%= @key %> </p>
         <% else %>
-          <%= link_to 'Generate Key', registration_key_path, class: 'button' %>
+          <p> <%= link_to 'Generate Key', registration_key_path, class: 'button' %> </p>
         <% end %>
       <% end %>
     <% end %>
