@@ -296,18 +296,24 @@ export function newAnswer(pSet) {
   }
 }
 
+// Place hold for triplet notes for now
+// There is no unicode for these
 export function durationString(duration) {
   const NOTE_MAP = {
     '1': '\u{1D15D}',
     '2': '\u{1D15E}',
     '4': '\u{1D15F}',
+    '3/4': '\u{1D15F} \u{1D15F} \u{1D15F}',
     '8': '\u{1D160}',
+    '3/8': '\u{1D160} \u{1D160} \u{1D160}',
     '16': '\u{1D161}',
     '32': '\u{1D162}',
     '1r': '\u{1D13B}',
     '2r': '\u{1D13C}',
     '4r': '\u{1D13D}',
+    '3/4r': '\u{1D13D} \u{1D13D} \u{1D13D}',
     '8r': '\u{1D13E}',
+    '3/8r': '\u{1D13E} \u{1D13E} \u{1D13E}',
     '16r': '\u{1D13F}',
     '32r': '\u{1D140}'
   };

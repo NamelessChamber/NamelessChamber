@@ -3,9 +3,6 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   namespace :admin do
-    get 'registration_key', to: 'registration_key#create'
-    get 'registration_key_checker', to: 'registration_key#show'
-    post 'registration_key_check', to: 'registration_key#check'
 
     resources :classroom_psets, only: [:create, :destroy, :show]
 
@@ -37,6 +34,10 @@ Rails.application.routes.draw do
       delete 'audios/:p_set_audio_id', to: 'p_sets#destroy_audio', as: 'audio'
     end
   end
+
+  get 'registration_key', to: 'registration_key#create'
+  get 'registration_key_show', to: 'registration_key#show'
+  post 'registration_key_check', to: 'registration_key#check'
 
   resources :p_sets do
     get 'rhythm', to: 'home#index'
