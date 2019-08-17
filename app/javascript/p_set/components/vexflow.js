@@ -188,26 +188,37 @@ export default class VexflowComponent extends React.Component {
     const { type, harmony, inversion } = note;
     const { mode } = props;
 
-    const { solfege, octave, duration } = note;
+    const { solfege, octave } = note;
+    let { duration } = note;
+ 
     let keys = this.defaultLineForStave(stave.clef);
     let accidental = null;
-    // console.log("solfege: ", solfege);
-    // console.log("tonic: ", stave.tonic);
-    // console.log("octave: ", octave);
     if (renderMode === RENDER_MODES.MELODIC &&
         !_.isUndefined(solfege) && !_.isUndefined(octave)) {
       const tNote = getNote(stave.tonic, octave, solfege, stave.scale === 'minor');
-      // console.log("tNote: ", tNote);
       const scale = teoria.scale(tonicStr(stave.tonic), stave.scale);
       keys = [`${tNote.name()}/${tNote.octave()}`];
       accidental = getAccidentalToRender(scale, tNote);
     }
 
-    const staveNote = new VF.StaveNote({
-      duration: duration,
-      keys: keys,
-      clef: stave.clef
-    });
+    let staveNote;
+    if (_.includes(duration, '3')) {
+      duration = duration[2];
+      let tempNote = new VF.StaveNote({
+        duration: duration,
+        keys: keys,
+        clef: stave.clef
+      });
+      staveNote = new VF.Tuplet([tempNote], 
+        {num_notes: 3,
+         notes_occupied: 2});
+    } else { 
+      staveNote = new VF.StaveNote({
+        duration: duration,
+        keys: keys,
+        clef: stave.clef
+      });
+    }
 
     // NOTE: in the future, let's account for multiple 'keys' on the note
     if (error) {
@@ -270,8 +281,9 @@ export default class VexflowComponent extends React.Component {
         return this.convertNote(props, error, highlight, editing, stave, renderMode, n, i);
       });
     }
+    console.log("1");
     const beams = VF.Beam.generateBeams(notes);
-
+    console.log("2");
     voice.addTickables(notes);
     const formatter = new VF.Formatter()
       .joinVoices([voice])
