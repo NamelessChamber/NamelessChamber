@@ -15,6 +15,7 @@ export default class HarmonicEntryComponent extends React.Component {
   }
 
   static propTypes = {
+    errors: PropTypes.object.isRequired,
     options: PropTypes.object.isRequired,
     stave: PropTypes.object.isRequired,
     updateStave: PropTypes.func.isRequired,
@@ -149,6 +150,11 @@ export default class HarmonicEntryComponent extends React.Component {
     }
   }
 
+  changeView() {
+    this.props.errors.length = 0;
+    clickSave();
+  }
+
   handleFocus(key, e) {
     const other = key === 'harmony' ? 'inversion' : 'harmony';
     this.focused[key] = true;
@@ -248,7 +254,7 @@ export default class HarmonicEntryComponent extends React.Component {
           </select>
         </fieldset>
         <div>
-          <Link to="melody" className="button" onClick={()=>clickSave()}>
+          <Link to="melody" className="button" onClick={()=>this.changeView()}>
             Back to Melody
           </Link>
         </div>

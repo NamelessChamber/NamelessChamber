@@ -47,6 +47,7 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   static propTypes = {
+    errors: PropTypes.object.isRequired,
     options: PropTypes.object.isRequired,
     stave: PropTypes.object.isRequired,
     measures: PropTypes.array.isRequired,
@@ -215,6 +216,11 @@ export default class MelodicEntryComponent extends React.Component {
     }
   }
 
+  changeView() {
+    this.props.errors.length = 0;
+    clickSave();
+  }
+
   componentDidMount() {
     this.solfegeInput.focus();
     $(this.containerEl).foundation();
@@ -316,12 +322,12 @@ export default class MelodicEntryComponent extends React.Component {
         </div>
         <div className="row columns" style={showIf(keyCorrect || instructor)}>
           <div>
-            <Link className="button" to="harmony" onClick={()=>clickSave()}>
+            <Link className="button" to="harmony" onClick={()=>this.changeView()}>
               Proceed to Harmony
             </Link>
           </div>
           <div>
-            <Link className="button" to="rhythm" onClick={()=>clickSave()}>
+            <Link className="button" to="rhythm" onClick={()=>this.changeView()}>
               Back to Rhythm
             </Link>
           </div>

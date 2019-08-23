@@ -21,6 +21,7 @@ export default class RhythmicEntryComponent extends React.Component {
   }
 
   static propTypes = {
+    errors: PropTypes.object.isRequired,
     options: PropTypes.object.isRequired,
     stave: PropTypes.object.isRequired,
     measures: PropTypes.array.isRequired,
@@ -239,6 +240,11 @@ export default class RhythmicEntryComponent extends React.Component {
     });
   }
 
+  changeView(){
+    this.props.errors.length = 0;
+    clickSave();
+  }
+
   componentDidMount() {
     this.noteInput.focus();
     $(this.containerEl).foundation();
@@ -329,7 +335,7 @@ export default class RhythmicEntryComponent extends React.Component {
             </select>
           </fieldset>
           <div>
-            <Link to="melody" className="button" onClick={()=>clickSave()}>
+            <Link to="melody" className="button" onClick={()=>this.changeView()}>
               Proceed to Melody
             </Link>
           </div>
