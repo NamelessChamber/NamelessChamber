@@ -188,8 +188,7 @@ export default class VexflowComponent extends React.Component {
     const { type, harmony, inversion } = note;
     const { mode } = props;
 
-    const { solfege, octave } = note;
-    let { duration } = note;
+    const { solfege, octave, duration} = note;
  
     let keys = this.defaultLineForStave(stave.clef);
     let accidental = null;
@@ -201,24 +200,13 @@ export default class VexflowComponent extends React.Component {
       accidental = getAccidentalToRender(scale, tNote);
     }
 
-    let staveNote;
-    if (_.includes(duration, '3')) {
-      duration = duration[2];
-      let tempNote = new VF.StaveNote({
-        duration: duration,
-        keys: keys,
-        clef: stave.clef
-      });
-      staveNote = new VF.Tuplet([tempNote], 
-        {num_notes: 3,
-         notes_occupied: 2});
-    } else { 
-      staveNote = new VF.StaveNote({
-        duration: duration,
-        keys: keys,
-        clef: stave.clef
-      });
-    }
+    // Stave notes dont support tuplets
+    // Instructor should not include triplets in psets yet
+    let staveNote = new VF.StaveNote({
+      duration: duration,
+      keys: keys,
+      clef: stave.clef
+    });
 
     // NOTE: in the future, let's account for multiple 'keys' on the note
     if (error) {
