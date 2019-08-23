@@ -15,7 +15,7 @@ export default class HarmonicEntryComponent extends React.Component {
   }
 
   static propTypes = {
-    errors: PropTypes.object.isRequired,
+    errors: PropTypes.array.isRequired,
     options: PropTypes.object.isRequired,
     stave: PropTypes.object.isRequired,
     updateStave: PropTypes.func.isRequired,

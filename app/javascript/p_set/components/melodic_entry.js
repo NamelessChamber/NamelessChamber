@@ -47,7 +47,7 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   static propTypes = {
-    errors: PropTypes.object.isRequired,
+    errors: PropTypes.array.isRequired,
     options: PropTypes.object.isRequired,
     stave: PropTypes.object.isRequired,
     measures: PropTypes.array.isRequired,
