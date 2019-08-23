@@ -383,7 +383,7 @@ export default class VexflowComponent extends React.Component {
             _.isUndefined(stave.scale) )) {
             if (_.isString(props.keySignature) && props.keySignature !== '') {
               staveObj.addKeySignature(props.keySignature);
-            } else if (_.isUndefined(props.keySignature)) {
+            } else if (_.isEmpty(props.keySignature)) {
               const keySignature = getVFScaleName(stave.tonic, stave.scale);
               staveObj.addKeySignature(keySignature);
             }
