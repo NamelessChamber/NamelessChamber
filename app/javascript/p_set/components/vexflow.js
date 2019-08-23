@@ -281,9 +281,7 @@ export default class VexflowComponent extends React.Component {
         return this.convertNote(props, error, highlight, editing, stave, renderMode, n, i);
       });
     }
-    console.log("1");
     const beams = VF.Beam.generateBeams(notes);
-    console.log("2");
     voice.addTickables(notes);
     const formatter = new VF.Formatter()
       .joinVoices([voice])
