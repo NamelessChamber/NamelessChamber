@@ -203,7 +203,7 @@ export default class RhythmicEntryComponent extends React.Component {
       case 'D':
         this.changeDot(false);
         break;
-      case 't':
+      case '=':
         this.toggleTie();
         break;
       case 'ArrowRight':
@@ -293,7 +293,7 @@ export default class RhythmicEntryComponent extends React.Component {
             <li><b>Backspace/Delete - </b> removes the last note in a measure</li>
             <li><b>Shift+d - </b> removes a dot from the last note in a measure</li>
             <li><b>Shift+a - </b> Plays the A above middle C for 5 seconds. Can also pause.</li>
-            <li><b>t - </b> Toggles note ties. A tied note will show a tie to the next note entered.</li>
+            <li><b>= - </b> Toggles note ties. A tied note will show a tie to the next note entered.</li>
             <li><b>r - </b> adds a rest of selected duration</li>
             <li><b>. - </b> adds a dot to the last note in a measure</li>
             <li><b>&lt;/&gt; - </b> Moves up/down a stave, or cycles around</li>

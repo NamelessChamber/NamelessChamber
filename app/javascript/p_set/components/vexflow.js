@@ -375,15 +375,15 @@ export default class VexflowComponent extends React.Component {
             staveObj.setSection('▼', 0);
           }
         }
-
+        
         const meter = this.meterToString(props);
         if (index === 0 && _.isString(meter)) {
           staveObj.addClef(stave.clef).addTimeSignature(meter);
           if (!( _.isUndefined(stave.tonic) ||
-            _.isUndefined(stave.scale) )) {
+                 _.isUndefined(stave.scale) )) {
             if (_.isString(props.keySignature) && props.keySignature !== '') {
               staveObj.addKeySignature(props.keySignature);
-            } else if (_.isEmpty(props.keySignature)) {
+            } else if (!_.isNull(props.keySignature)) {
               const keySignature = getVFScaleName(stave.tonic, stave.scale);
               staveObj.addKeySignature(keySignature);
             }
