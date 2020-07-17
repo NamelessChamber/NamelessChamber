@@ -15,7 +15,7 @@
     "glob": "^7.1.1",
     "history": "^4.6.3",
     "js-yaml": "^3.8.3",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.19",
     "mini-create-react-context": "^0.3.2",
     "node-sass": "^4.9.0",
     "path-complete-extname": "^0.1.0",
