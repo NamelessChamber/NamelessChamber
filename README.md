@@ -53,22 +53,4 @@ https://docs.google.com/document/d/15KqQYoWOaMYdRl0zqi5a3HmNomLHzf1FXGwP8r-Vf6s/
 
 
 
-Things you may want to cover:
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
