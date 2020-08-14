@@ -20,6 +20,7 @@ Space-bar keystroke for audio no longer works after page is refreshed for correc
 Too many users made site lag. Move to client-side? Node.js?
 
 New Functionality
+
 Keystrokes
 Key map needs to be improved and streamlined
 Keystrokes for chromatic pitches
@@ -36,12 +37,14 @@ Make audio block larger
 Get rid of the visual connection where when the cursor moves through pitches on the score it also moves through the solfege in the selection box
 
 Instructor Options
+
 Option for fixed-do rendering
 Allow instructor to limit the amount of submits a student can do for each page before they have to do a final submit
 Instructor can pre-populate certain parameters, i.e. give students the rhythm and have them just fill out solfege, or
 have all the pitches that are "do" show up and students have to fill out the rest.
 
 Miscellaneous
+
 Student gets an email confirmation that final submit has been received
 
 
