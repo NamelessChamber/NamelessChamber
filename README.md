@@ -1,6 +1,6 @@
 # README
-<"Nameless Chamber" - a music dictation web application.>
-    Copyright (C) <2020>  <Garo Saraydarian>
+"Nameless Chamber" - a music dictation web application.
+"Copyright 2020 Garo Saraydarian"
 
 This file is part of "Nameless Chamber"
     
@@ -18,6 +18,9 @@ along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
 
 Contact Information: garo@mit.edu 
 Source Code: https://github.com/NamelessChamber/NamelessChamber
+
+
+
 
 
 
