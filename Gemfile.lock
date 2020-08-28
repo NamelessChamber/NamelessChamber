@@ -89,7 +89,7 @@ GEM
     erubis (2.7.0)
     excon (0.71.0)
     execjs (2.7.0)
-    ffi (1.9.18)
+    ffi (1.9.24)
     fog-aws (1.4.1)
       fog-core (~> 1.38)
       fog-json (~> 1.0)
@@ -173,7 +173,7 @@ GEM
     rake (13.0.0)
     rb-fsevent (0.9.8)
     rb-inotify (0.9.8)
-      ffi (>= 0.5.0)
+      ffi (>= 1.9.24)
     react-rails (2.1.0)
       babel-transpiler (>= 0.7.0)
       connection_pool
