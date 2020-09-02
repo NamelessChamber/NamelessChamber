@@ -1,6 +1,6 @@
 # README
 "Nameless Chamber" - a music dictation web application.
-"Copyright 2020 Garo Saraydarian"
+"Copyright 2020 Massachusetts Institute of Technology"
 
 This file is part of "Nameless Chamber"
     
