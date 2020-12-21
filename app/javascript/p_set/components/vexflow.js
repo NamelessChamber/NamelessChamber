@@ -3,7 +3,6 @@ import ReactDOM from "react-dom"
 import PropTypes from "prop-types"
 import Vex from "vexflow"
 import teoria from "teoria"
-import { fromSemitones } from "tonal-interval"
 import _ from "lodash"
 import { currentPage, getVFScaleName, tonicStr } from "../lib/utils"
 
