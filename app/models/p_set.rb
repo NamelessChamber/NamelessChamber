@@ -2,7 +2,7 @@
 #"Copyright 2020 Massachusetts Institute of Technology"
 
 #This file is part of "Nameless Chamber"
-    
+
 #"Nameless Chamber" is free software: you can redistribute it and/or modify
 #it under the terms of the GNU Affero General Public License as published by #the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
@@ -15,7 +15,7 @@
 #You should have received a copy of the GNU Affero General Public License
 #along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
 
-#Contact Information: garo@mit.edu 
+#Contact Information: garo@mit.edu
 #Source Code: https://github.com/NamelessChamber/NamelessChamber
 
 
@@ -41,6 +41,4 @@ class PSet < ApplicationRecord
   has_many :p_set_answers # TODO: Should we delete answers?
   has_many :p_set_to_audio, dependent: :destroy
   has_many :p_set_audios, :through => :p_set_to_audio
-
-  serialize :data, JSON
 end
