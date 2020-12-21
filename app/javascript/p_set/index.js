@@ -18,8 +18,9 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
+import React from "react"
 import ReactDOM from "react-dom"
-import createBrowserHistory from "history/createBrowserHistory"
+import { createBrowserHistory } from "history"
 
 import PSetOptionsEditor from "./components/p_set_options_editor"
 import PSetStudentComponent from "./components/p_set_student"
