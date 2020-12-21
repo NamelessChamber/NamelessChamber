@@ -1,10 +1,10 @@
-# "Nameless Chamber" - a music dictation web application.
-# "Copyright 2020 Massachusetts Institute of Technology"
+#"Nameless Chamber" - a music dictation web application.
+#"Copyright 2020 Massachusetts Institute of Technology"
 
-# This file is part of "Nameless Chamber"
-    
+#This file is part of "Nameless Chamber"
+
 #"Nameless Chamber" is free software: you can redistribute it and/or modify
-#it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or
+#it under the terms of the GNU Affero General Public License as published by #the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
 
 #"Nameless Chamber" is distributed in the hope that it will be useful,
@@ -15,12 +15,12 @@
 #You should have received a copy of the GNU Affero General Public License
 #along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
 
-#Contact Information: garo@mit.edu 
+#Contact Information: garo@mit.edu
 #Source Code: https://github.com/NamelessChamber/NamelessChamber
-
 
 # This file is used by Rack-based servers to start the application.
 
-require_relative 'config/environment'
+require_relative "config/environment"
 
 run Rails.application
+Rails.application.load_server
