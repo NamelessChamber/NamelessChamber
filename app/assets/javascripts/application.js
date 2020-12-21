@@ -2,7 +2,7 @@
 //"Copyright 2020 Garo Saraydarian"
 
 //This file is part of "Nameless Chamber"
-    
+
 //"Nameless Chamber" is free software: you can redistribute it and/or modify
 //it under the terms of the GNU Affero General Public License as published by #the Free Software Foundation, either version 3 of the License, or
 //(at your option) any later version.
@@ -15,7 +15,7 @@
 //You should have received a copy of the GNU Affero General Public License
 //along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
 
-//Contact Information: garo@mit.edu 
+//Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
 // This is a manifest file that'll be compiled into application.js, which will include all the files
@@ -35,7 +35,8 @@
 //= require foundation
 //= require react
 //= require react_ujs
-//= require components
 //= require_tree .
 
-$(function(){ $(document).foundation(); });
+$(function () {
+  $(document).foundation()
+})
