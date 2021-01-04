@@ -72,6 +72,12 @@ export default class PSetStudentComponent extends React.Component {
     this.reportErrors = this.reportErrors.bind(this)
   }
 
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+  }
+
   isRhythmic(props = this.props) {
     return props.location.pathname.match(/\/rhythm\/?$/) !== null
   }

@@ -49,6 +49,7 @@ export default class PSetOptionsEditor extends React.Component {
 
   static propTypes = {
     match: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
   }
 
   componentDidMount() {

@@ -41,6 +41,10 @@ export default class PSetAnswerComponent extends React.Component {
     }
   }
 
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+  }
+
   componentDidMount() {
     const { p_set_answer_id } = this.props.match.params
     fetchPSetAnswerAdmin(p_set_answer_id).then((answer) => {

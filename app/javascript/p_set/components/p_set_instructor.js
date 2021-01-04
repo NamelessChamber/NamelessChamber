@@ -68,6 +68,11 @@ export default class PSetInstructorComponent extends React.Component {
     this.showError = false
   }
 
+  static propTypes = {
+    location: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
+  }
+
   handleScoreUpdate(solution) {
     const newVexData = _.cloneDeep(this.state.vexData)
     const stave = newVexData.data.staves[this.stave]
