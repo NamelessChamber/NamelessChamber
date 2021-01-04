@@ -1,41 +1,42 @@
-#"Nameless Chamber" - a music dictation web application.
-#"Copyright 2020 Massachusetts Institute of Technology"
+# frozen_string_literal: true
 
-#This file is part of "Nameless Chamber"
+# "Nameless Chamber" - a music dictation web application.
+# "Copyright 2020 Massachusetts Institute of Technology"
 
-#"Nameless Chamber" is free software: you can redistribute it and/or modify
-#it under the terms of the GNU Affero General Public License as published by #the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# This file is part of "Nameless Chamber"
 
-#"Nameless Chamber" is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU Affero General Public License for more details.
+# "Nameless Chamber" is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by #the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#You should have received a copy of the GNU Affero General Public License
-#along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
+# "Nameless Chamber" is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
 
-#Contact Information: garo@mit.edu
-#Source Code: https://github.com/NamelessChamber/NamelessChamber
+# You should have received a copy of the GNU Affero General Public License
+# along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
+
+# Contact Information: garo@mit.edu
+# Source Code: https://github.com/NamelessChamber/NamelessChamber
 
 Rails.application.routes.draw do
   devise_for :users
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   namespace :admin do
+    resources :classroom_psets, only: %i[create destroy show]
 
-    resources :classroom_psets, only: [:create, :destroy, :show]
+    resources :p_set_answers, only: %i[show destroy]
 
-    resources :p_set_answers, only: [:show, :destroy]
-
-		get 'users', to: 'users#show'
-		get 'users/:user_id', to: 'users#answers', as: 'user_p_set_answers'
-		delete 'users/:user_id', to: 'users#destroy', as: 'user'
+    get 'users', to: 'users#show'
+    get 'users/:user_id', to: 'users#answers', as: 'user_p_set_answers'
+    delete 'users/:user_id', to: 'users#destroy', as: 'user'
 
     resources :courses do
       resources :classrooms do
         get 'assign', to: 'classrooms#assign'
-				post 'remove_student/:user_id', to: 'classrooms#remove_student', as: 'remove_student'
+        post 'remove_student/:user_id', to: 'classrooms#remove_student', as: 'remove_student'
       end
     end
 
