@@ -1,49 +1,49 @@
-import React from "react"
-import ReactDOM from "react-dom"
-import PropTypes from "prop-types"
-import Vex from "vexflow"
-import teoria from "teoria"
-import _ from "lodash"
-import { currentPage, getVFScaleName, tonicStr } from "../lib/utils"
+import React from 'react'
+import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
+import Vex from 'vexflow'
+import teoria from 'teoria'
+import _ from 'lodash'
+import { currentPage, getVFScaleName, tonicStr } from '../lib/utils'
 
 const VF = Vex.Flow
 
 // lifted from teoria... sadly not exposed
 const intervalSolfege = {
-  dd1: "daw",
-  d1: "de",
-  P1: "do",
-  A1: "di",
-  AA1: "dai",
-  d2: "raw",
-  m2: "ra",
-  M2: "re",
-  A2: "ri",
-  AA2: "rai",
-  d3: "maw",
-  m3: "me",
-  M3: "mi",
-  A3: "mai",
-  dd4: "faw",
-  d4: "fe",
-  P4: "fa",
-  A4: "fi",
-  AA4: "fai",
-  dd5: "saw",
-  d5: "se",
-  P5: "sol",
-  A5: "si",
-  AA5: "sai",
-  d6: "law",
-  m6: "le",
-  M6: "la",
-  A6: "li",
-  AA6: "lai",
-  d7: "taw",
-  m7: "te",
-  m7: "te",
-  M7: "ti",
-  A7: "tai",
+  dd1: 'daw',
+  d1: 'de',
+  P1: 'do',
+  A1: 'di',
+  AA1: 'dai',
+  d2: 'raw',
+  m2: 'ra',
+  M2: 're',
+  A2: 'ri',
+  AA2: 'rai',
+  d3: 'maw',
+  m3: 'me',
+  M3: 'mi',
+  A3: 'mai',
+  dd4: 'faw',
+  d4: 'fe',
+  P4: 'fa',
+  A4: 'fi',
+  AA4: 'fai',
+  dd5: 'saw',
+  d5: 'se',
+  P5: 'sol',
+  A5: 'si',
+  AA5: 'sai',
+  d6: 'law',
+  m6: 'le',
+  M6: 'la',
+  A6: 'li',
+  AA6: 'lai',
+  d7: 'taw',
+  m7: 'te',
+  m7: 'te',
+  M7: 'ti',
+  A7: 'tai',
   // 'dd8': 'daw',
   // 'd8': 'de',
   // 'P8': 'do',
@@ -53,7 +53,7 @@ const intervalSolfege = {
 
 // The minor key starts three semitones below its relative major
 function minorToMajor(tonic) {
-  return tonic.interval("m3")
+  return tonic.interval('m3')
 }
 
 const solfegeInterval = _.invert(intervalSolfege)
@@ -89,8 +89,8 @@ const getAccidentalToRender = (scale, note) => {
 
   if (notInScale) {
     const accidental = note.accidental()
-    if (accidental === "") {
-      return "n"
+    if (accidental === '') {
+      return 'n'
     } else {
       return accidental
     }
@@ -103,7 +103,7 @@ const staveComplete = (stave, render) => {
   return _.every(stave[render], (measure) => {
     return _.every(measure.notes, (note) => {
       return (
-        _.endsWith(note.duration, "r") ||
+        _.endsWith(note.duration, 'r') ||
         (!_.isUndefined(note.solfege) && !_.isUndefined(note.octave))
       )
     })
@@ -171,16 +171,16 @@ export default class VexflowComponent extends React.Component {
   }
 
   defaultLineForStave(clef) {
-    if (clef === "treble") {
-      return ["b/4"]
-    } else if (clef === "bass") {
-      return ["d/3"]
-    } else if (clef === "alto") {
-      return ["c/4"]
-    } else if (clef === "tenor") {
-      return ["a/3"]
+    if (clef === 'treble') {
+      return ['b/4']
+    } else if (clef === 'bass') {
+      return ['d/3']
+    } else if (clef === 'alto') {
+      return ['c/4']
+    } else if (clef === 'tenor') {
+      return ['a/3']
     } else {
-      return ["c/4"]
+      return ['c/4']
     }
   }
 
@@ -201,7 +201,7 @@ export default class VexflowComponent extends React.Component {
         stave.tonic,
         octave,
         solfege,
-        stave.scale === "minor"
+        stave.scale === 'minor'
       )
       const scale = teoria.scale(tonicStr(stave.tonic), stave.scale)
       keys = [`${tNote.name()}/${tNote.octave()}`]
@@ -220,19 +220,19 @@ export default class VexflowComponent extends React.Component {
     if (error) {
       staveNote.setKeyStyle(0, {
         shadowBlur: 15,
-        shadowColor: "red",
-        fillStyle: "red",
+        shadowColor: 'red',
+        fillStyle: 'red',
       })
     } else if (
       renderMode === RENDER_MODES.MELODIC &&
       (_.isUndefined(solfege) || _.isUndefined(octave)) &&
       editing &&
-      !duration.endsWith("r")
+      !duration.endsWith('r')
     ) {
       staveNote.setKeyStyle(0, {
         shadowBlur: 15,
-        shadowColor: "blue",
-        fillStyle: "blue",
+        shadowColor: 'blue',
+        fillStyle: 'blue',
       })
     }
 
@@ -253,7 +253,7 @@ export default class VexflowComponent extends React.Component {
       renderMode === RENDER_MODES.MELODIC
     ) {
       if (i === props.currentNote) {
-        const annotation = new VF.Annotation("▲").setVerticalJustification(
+        const annotation = new VF.Annotation('▲').setVerticalJustification(
           VF.Annotation.VerticalJustify.BOTTOM
         )
         staveNote.addModifier(0, annotation)
@@ -334,9 +334,9 @@ export default class VexflowComponent extends React.Component {
 
     function scoreLength(score) {
       return score.reduce((acc, item) => {
-        if (item.type === "note") {
+        if (item.type === 'note') {
           return acc + 1 + (item.dots || 0) * 0.2
-        } else if (item.type === "beam") {
+        } else if (item.type === 'beam') {
           return acc + scoreLength(item.notes)
         }
       }, 0)
@@ -422,7 +422,7 @@ export default class VexflowComponent extends React.Component {
         if (index === props.currentMeasure && editing) {
           highlight = true
           if (props.mode === RENDER_MODES.RHYTHMIC) {
-            staveObj.setSection("▼", 0)
+            staveObj.setSection('▼', 0)
           }
         }
 
@@ -430,7 +430,7 @@ export default class VexflowComponent extends React.Component {
         if (index === 0 && _.isString(meter)) {
           staveObj.addClef(stave.clef).addTimeSignature(meter)
           if (!(_.isUndefined(stave.tonic) || _.isUndefined(stave.scale))) {
-            if (_.isString(props.keySignature) && props.keySignature !== "") {
+            if (_.isString(props.keySignature) && props.keySignature !== '') {
               staveObj.addKeySignature(props.keySignature)
             } else if (!_.isNull(props.keySignature)) {
               const keySignature = getVFScaleName(stave.tonic, stave.scale)
@@ -509,7 +509,7 @@ export default class VexflowComponent extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensionsDebounced)
+    window.removeEventListener('resize', this.updateDimensionsDebounced)
   }
 
   componentDidMount() {
@@ -517,13 +517,13 @@ export default class VexflowComponent extends React.Component {
     const containerWidth = e.offsetWidth
     this.containerWidth = containerWidth
 
-    window.addEventListener("resize", this.updateDimensionsDebounced)
+    window.addEventListener('resize', this.updateDimensionsDebounced)
     this.updateDimensions()
   }
 
   render() {
     const style = {
-      width: "100%",
+      width: '100%',
     }
 
     return <div ref={(el) => (this.vexflowEl = el)} style={style}></div>

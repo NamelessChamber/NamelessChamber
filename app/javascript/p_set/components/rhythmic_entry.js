@@ -18,20 +18,20 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import React from "react"
-import PropTypes from "prop-types"
-import { Link } from "react-router-dom"
-import _ from "lodash"
-import ReactAudioPlayer from "react-audio-player"
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import _ from 'lodash'
+import ReactAudioPlayer from 'react-audio-player'
 import {
   durationString,
   changeAudioPlayerState,
   playA,
   clickSave,
-} from "../lib/utils"
-import { DH_UNABLE_TO_CHECK_GENERATOR } from "constants"
+} from '../lib/utils'
+import { DH_UNABLE_TO_CHECK_GENERATOR } from 'constants'
 
-require("../styles/rhythmic_entry.css")
+require('../styles/rhythmic_entry.css')
 
 export default class RhythmicEntryComponent extends React.Component {
   constructor(props) {
@@ -98,11 +98,11 @@ export default class RhythmicEntryComponent extends React.Component {
     e.preventDefault()
     let duration = e.target.value
     if (rest) {
-      duration += "r"
+      duration += 'r'
     }
 
     const newNote = {
-      type: "note",
+      type: 'note',
       duration: duration,
       dots: 0,
       tied: false,
@@ -171,7 +171,7 @@ export default class RhythmicEntryComponent extends React.Component {
   }
 
   handleNumber(e) {
-    const options = document.getElementsByClassName("beat-select")[0].options
+    const options = document.getElementsByClassName('beat-select')[0].options
     let numberPresent = false
     for (var i = 0; i < options.length; i++) {
       if (options[i].value == e.key) {
@@ -187,7 +187,7 @@ export default class RhythmicEntryComponent extends React.Component {
     let duration = e.key
 
     const newNote = {
-      type: "note",
+      type: 'note',
       duration: duration,
       dots: 0,
       tied: false,
@@ -204,46 +204,46 @@ export default class RhythmicEntryComponent extends React.Component {
 
   handleKeyDown(e) {
     switch (e.key) {
-      case "1":
-      case "2":
-      case "4":
-      case "6":
-      case "8":
+      case '1':
+      case '2':
+      case '4':
+      case '6':
+      case '8':
         this.handleNumber(e)
         break
-      case "<":
-      case ">":
+      case '<':
+      case '>':
         this.props.changeStave(e, true)
         break
-      case " ":
+      case ' ':
         changeAudioPlayerState()
         break
-      case "Enter":
+      case 'Enter':
         this.appendNote(e)
         break
-      case "r":
+      case 'r':
         this.appendNote(e, true)
         break
-      case "Backspace":
-      case "Delete":
+      case 'Backspace':
+      case 'Delete':
         this.removeNote(e)
         break
-      case ".":
+      case '.':
         this.changeDot(true)
         break
-      case "D":
+      case 'D':
         this.changeDot(false)
         break
-      case "=":
+      case '=':
         this.toggleTie()
         break
-      case "ArrowRight":
+      case 'ArrowRight':
         this.setCurrentMeasure(true, e)
         break
-      case "ArrowLeft":
+      case 'ArrowLeft':
         this.setCurrentMeasure(false, e)
         break
-      case "A":
+      case 'A':
         playA()
         break
     }
@@ -300,7 +300,7 @@ export default class RhythmicEntryComponent extends React.Component {
     const meterCorrect = _.isEqual(this.props.meter, this.props.referenceMeter)
     const { instructor } = this.props
     const showIf = (cond) => {
-      return cond ? {} : { display: "none" }
+      return cond ? {} : { display: 'none' }
     }
     const audios = this.props.stave.audios.rhythm.map(({ name, url }, i) => {
       return (
@@ -357,7 +357,7 @@ export default class RhythmicEntryComponent extends React.Component {
             The following numbers insert the corresponding notes, if they are
             present in the beat selector
             <li>
-              <b>1: Whole</b>, <b>2: Half</b>, <b>4: Quarter</b>,{" "}
+              <b>1: Whole</b>, <b>2: Half</b>, <b>4: Quarter</b>,{' '}
               <b>8: Eighth</b>, <b>6: Sixteenth</b>
             </li>
           </ul>
@@ -371,14 +371,14 @@ export default class RhythmicEntryComponent extends React.Component {
             <input
               type="number"
               className="meter-entry"
-              onChange={this.updateMeter.bind(this, "top")}
+              onChange={this.updateMeter.bind(this, 'top')}
               value={this.state.meter.top}
             />
             /
             <input
               type="number"
               className="meter-entry"
-              onChange={this.updateMeter.bind(this, "bottom")}
+              onChange={this.updateMeter.bind(this, 'bottom')}
               value={this.state.meter.bottom}
             />
             <button
@@ -391,14 +391,14 @@ export default class RhythmicEntryComponent extends React.Component {
         </div>
         <div className="row columns" style={showIf(meterCorrect || instructor)}>
           <fieldset>
-            <legend>Notes {tied ? "(Tied)" : ""}</legend>
+            <legend>Notes {tied ? '(Tied)' : ''}</legend>
             <select
               multiple
               className="beat-select"
               ref={(input) => (this.noteInput = input)}
               onBlur={(e) => e.target.focus()}
               onKeyDown={this.handleKeyDown.bind(this)}
-              style={{ width: "85px", height: "230px" }}
+              style={{ width: '85px', height: '230px' }}
               value={[this.state.currentNote]}
               onChange={this.noteChange.bind(this)}
             >

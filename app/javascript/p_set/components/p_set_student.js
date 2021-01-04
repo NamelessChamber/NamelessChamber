@@ -18,16 +18,16 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import A from "../../../assets/audios/A.wav"
-import React from "react"
-import PropTypes from "prop-types"
-import _ from "lodash"
-import ReactAudioPlayer from "react-audio-player"
+import A from '../../../assets/audios/A.wav'
+import React from 'react'
+import PropTypes from 'prop-types'
+import _ from 'lodash'
+import ReactAudioPlayer from 'react-audio-player'
 
-import VexflowComponent from "./vexflow"
-import RhythmicEntryComponent from "./rhythmic_entry"
-import MelodicEntryComponent from "./melodic_entry"
-import HarmonicEntryComponent from "./harmonic_entry"
+import VexflowComponent from './vexflow'
+import RhythmicEntryComponent from './rhythmic_entry'
+import MelodicEntryComponent from './melodic_entry'
+import HarmonicEntryComponent from './harmonic_entry'
 
 import {
   newAnswer,
@@ -39,9 +39,9 @@ import {
   keyOptionToSignature,
   getVFScaleName,
   nextStave,
-} from "../lib/utils"
-import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from "../lib/api"
-import { type } from "os"
+} from '../lib/utils'
+import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from '../lib/api'
+import { type } from 'os'
 
 export default class PSetStudentComponent extends React.Component {
   constructor(props) {
@@ -93,7 +93,7 @@ export default class PSetStudentComponent extends React.Component {
   }
 
   get inputMode() {
-    return this.rhythmic ? "rhythm" : this.melodic ? "melody" : "harmony"
+    return this.rhythmic ? 'rhythm' : this.melodic ? 'melody' : 'harmony'
   }
 
   getStave(props = this.props) {
@@ -112,7 +112,7 @@ export default class PSetStudentComponent extends React.Component {
 
     if (this.errorModalEl) {
       try {
-        $(this.errorModalEl).foundation("close")
+        $(this.errorModalEl).foundation('close')
       } catch (e) {}
     }
 
@@ -158,7 +158,7 @@ export default class PSetStudentComponent extends React.Component {
     })
 
     if (rhythmic) {
-      this.props.history.push("rhythm")
+      this.props.history.push('rhythm')
     }
   }
 
@@ -177,10 +177,10 @@ export default class PSetStudentComponent extends React.Component {
       //   alert('Measure has too few beats! Please go back and correct it.');
       // } else
       if (meterCheck < 0) {
-        alert("Measure has too many beats! Please go back and correct it.")
+        alert('Measure has too many beats! Please go back and correct it.')
         return
       } else if (meterCheck > 0 && increment) {
-        alert("Measure has too few beats! Please go back and correct it.")
+        alert('Measure has too few beats! Please go back and correct it.')
         return
       }
     }
@@ -189,15 +189,15 @@ export default class PSetStudentComponent extends React.Component {
 
   postAnswer(answer, submission, completed) {
     if (completed) {
-      if (!confirm("Submission is final. Are you sure you want to proceed?")) {
+      if (!confirm('Submission is final. Are you sure you want to proceed?')) {
         return
       }
     }
-    let postingKey = "posting"
+    let postingKey = 'posting'
     if (completed) {
-      postingKey = "completing"
+      postingKey = 'completing'
     } else if (submission) {
-      postingKey = "submitting"
+      postingKey = 'submitting'
     }
     this.setState({ [postingKey]: true })
     const { p_set_id } = this.props.match.params
@@ -208,11 +208,11 @@ export default class PSetStudentComponent extends React.Component {
           this.reportErrors()
         }
         if (completed) {
-          window.location = "/classrooms"
+          window.location = '/classrooms'
         }
       })
       .catch((e) => {
-        console.log("error", e)
+        console.log('error', e)
         this.setState({ [postingKey]: false })
       })
   }
@@ -221,10 +221,10 @@ export default class PSetStudentComponent extends React.Component {
     const answer = _.cloneDeep(this.state.answer)
     answer.meter = meter
     if (_.isEqual(meter, this.state.vexData.data.meter)) {
-      alert("Correct!")
+      alert('Correct!')
       this.postAnswer(answer, false)
     } else {
-      alert("Incorrect... please try again!")
+      alert('Incorrect... please try again!')
       this.setState({ answer })
     }
   }
@@ -233,15 +233,15 @@ export default class PSetStudentComponent extends React.Component {
     const stave = this.state.vexData.data.staves[0]
     let key = stave.tonic.pitch
     const answer = _.cloneDeep(this.state.answer)
-    if (stave.scale === "minor") {
+    if (stave.scale === 'minor') {
       key = key.toLowerCase()
     }
     answer.keySignature = keySignature
     if (keySignature === key) {
-      setTimeout(() => alert("Correct!"), 0)
+      setTimeout(() => alert('Correct!'), 0)
       this.postAnswer(answer, false)
     } else {
-      setTimeout(() => alert("Incorrect... please try again!"), 0)
+      setTimeout(() => alert('Incorrect... please try again!'), 0)
       this.setState({ answer })
     }
   }
@@ -252,7 +252,7 @@ export default class PSetStudentComponent extends React.Component {
 
   saveAndRender() {
     alert(
-      "Mind our dust! Thanks for completing the exercise. Please leave any feedback in the survey!"
+      'Mind our dust! Thanks for completing the exercise. Please leave any feedback in the survey!'
     )
   }
 
@@ -267,7 +267,7 @@ export default class PSetStudentComponent extends React.Component {
     const flatErrors = _.chain(staveErrors).flatten().flatten().value()
     const allCorrect = _.every(flatErrors, (e) => e === false)
     if (allCorrect) {
-      errors.push("No errors!")
+      errors.push('No errors!')
     } else {
       const { meter, staves, pickUpBeat } = this.state.vexData.data
       const solutionMeters = this.state.answer.staves.map((stave) => {
@@ -326,7 +326,7 @@ export default class PSetStudentComponent extends React.Component {
       const $error = $(this.errorModalEl)
       $error.foundation()
       this.showError = false
-      $error.foundation("open")
+      $error.foundation('open')
     }
 
     if (!_.isUndefined(this.containerEl)) {
@@ -423,7 +423,7 @@ export default class PSetStudentComponent extends React.Component {
       )
     }
 
-    const mode = this.rhythmic ? "rhythm" : "melody"
+    const mode = this.rhythmic ? 'rhythm' : 'melody'
     const errors = this.state.errors.map((e, i) => {
       return <li key={i}>{e}</li>
     })
@@ -446,7 +446,7 @@ export default class PSetStudentComponent extends React.Component {
     }
 
     const showIf = (cond) => {
-      return cond ? {} : { display: "none" }
+      return cond ? {} : { display: 'none' }
     }
 
     return (
@@ -463,12 +463,12 @@ export default class PSetStudentComponent extends React.Component {
         <div className="row">
           <div className="small-10 columns">
             <h3>
-              {this.state.vexData.name}:{" "}
+              {this.state.vexData.name}:{' '}
               {this.rhythmic
-                ? "Rhythmic"
+                ? 'Rhythmic'
                 : this.melodic
-                ? "Melodic"
-                : "Harmonic"}{" "}
+                ? 'Melodic'
+                : 'Harmonic'}{' '}
               Entry
             </h3>
           </div>
@@ -516,7 +516,7 @@ export default class PSetStudentComponent extends React.Component {
                     this.postAnswer(this.state.answer, false, false)
                   }
                 >
-                  {this.state.posting ? "Saving..." : "Save"}
+                  {this.state.posting ? 'Saving...' : 'Save'}
                 </button>
               </p>
               <p>
@@ -526,7 +526,7 @@ export default class PSetStudentComponent extends React.Component {
                     this.postAnswer(this.state.answer, true, false)
                   }
                 >
-                  {this.state.submitting ? "Submitting..." : "Check Answer"}
+                  {this.state.submitting ? 'Submitting...' : 'Check Answer'}
                 </button>
               </p>
               <p>
@@ -534,7 +534,7 @@ export default class PSetStudentComponent extends React.Component {
                   className="button"
                   onClick={() => this.postAnswer(this.state.answer, true, true)}
                 >
-                  {this.state.completing ? "Submitting..." : "Complete PSet"}
+                  {this.state.completing ? 'Submitting...' : 'Complete PSet'}
                 </button>
               </p>
             </div>

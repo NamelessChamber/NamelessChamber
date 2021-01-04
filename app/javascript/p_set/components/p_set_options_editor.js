@@ -18,23 +18,23 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import React from "react"
-import PropTypes from "prop-types"
-import { Link } from "react-router-dom"
-import _ from "lodash"
-import ReactAudioPlayer from "react-audio-player"
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import _ from 'lodash'
+import ReactAudioPlayer from 'react-audio-player'
 
-import BoolOptionsEditor from "./bool_options_editor"
-import StaveOptionsEditor from "./stave_options_editor"
+import BoolOptionsEditor from './bool_options_editor'
+import StaveOptionsEditor from './stave_options_editor'
 import {
   newPSet,
   formatKey,
   validateOptions,
   durationString,
-} from "../lib/utils"
-import { fetchPSet, updatePSet, deletePSetAudio } from "../lib/api"
+} from '../lib/utils'
+import { fetchPSet, updatePSet, deletePSetAudio } from '../lib/api'
 
-import "../styles/p_set_options_editor.css"
+import '../styles/p_set_options_editor.css'
 
 export default class PSetOptionsEditor extends React.Component {
   constructor(props) {
@@ -97,12 +97,12 @@ export default class PSetOptionsEditor extends React.Component {
       if (checked) {
         _.each(newState.data.staves, (stave) => {
           const [measure] = stave.solution
-          measure.endBar = "double"
+          measure.endBar = 'double'
         })
       } else {
         _.each(newState.data.staves, (stave) => {
           const [measure] = stave.solution
-          measure.endBar = "single"
+          measure.endBar = 'single'
         })
       }
     }
@@ -132,10 +132,10 @@ export default class PSetOptionsEditor extends React.Component {
     const newState = _.cloneDeep(this.state)
     let { value } = e.target
     value = Math.max(parseInt(value), 1)
-    _.set(newState, "data.measures", value)
-    _.update(newState, "data.staves", (staves) => {
+    _.set(newState, 'data.measures', value)
+    _.update(newState, 'data.staves', (staves) => {
       return _.map(staves, (stave) => {
-        _.update(stave, "solution", (solution) => {
+        _.update(stave, 'solution', (solution) => {
           if (solution.length > value) {
             return _.slice(solution, 0, value)
           } else {
@@ -145,19 +145,19 @@ export default class PSetOptionsEditor extends React.Component {
             return _.chain(solution)
               .concat(newMeasures)
               .map((m, i) => {
-                const endBar = i === value - 1 ? "end" : "single"
+                const endBar = i === value - 1 ? 'end' : 'single'
                 return _.assign(m, { endBar })
               })
               .value()
           }
         })
-        return _.update(stave, "answer", (answer) => {
+        return _.update(stave, 'answer', (answer) => {
           const newMeasures = _.map(_.range(value), () => {
             return { notes: [] }
           })
 
           return _.map(newMeasures, (m, i) => {
-            const endBar = i === value - 1 ? "end" : "single"
+            const endBar = i === value - 1 ? 'end' : 'single'
             return _.assign(m, { endBar })
           })
         })
@@ -170,9 +170,9 @@ export default class PSetOptionsEditor extends React.Component {
     e.preventDefault()
     const errors = validateOptions(this.state.data)
     if (_.isUndefined(errors)) {
-      this.props.history.push("rhythm")
+      this.props.history.push('rhythm')
     } else {
-      alert(errors.join("\n"))
+      alert(errors.join('\n'))
     }
   }
 
@@ -181,7 +181,7 @@ export default class PSetOptionsEditor extends React.Component {
       return <div></div>
     }
 
-    const boolSets = ["Solfege", "Harmony", "Inversion"]
+    const boolSets = ['Solfege', 'Harmony', 'Inversion']
     let boolEditors = boolSets.map((name, i) => {
       const prop = name.toLowerCase()
       const options = this.state.data.options[prop]
@@ -280,15 +280,15 @@ export default class PSetOptionsEditor extends React.Component {
           <BoolOptionsEditor
             options={this.state.data.options.rhythm}
             name="Rhythm"
-            onChange={this.onOptionsChange.bind(this, "rhythm")}
+            onChange={this.onOptionsChange.bind(this, 'rhythm')}
             formatLabel={durationString}
-            labelStyle={{ fontFamily: "Bravura" }}
+            labelStyle={{ fontFamily: 'Bravura' }}
           />
 
           <BoolOptionsEditor
             options={this.state.data.options.key}
             name="Key"
-            onChange={this.onOptionsChange.bind(this, "key")}
+            onChange={this.onOptionsChange.bind(this, 'key')}
             formatLabel={formatKey}
           />
 

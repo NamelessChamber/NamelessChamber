@@ -18,9 +18,9 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import _ from "lodash"
-import teoria from "teoria"
-import Fraction from "fraction.js"
+import _ from 'lodash'
+import teoria from 'teoria'
+import Fraction from 'fraction.js'
 
 /*
  * {
@@ -43,9 +43,9 @@ import Fraction from "fraction.js"
 
 export function measureLength(measure) {
   return measure.notes.reduce((acc, item) => {
-    if (item.type === "note") {
+    if (item.type === 'note') {
       return acc + 1 + (item.dots || 0) * 0.2
-    } else if (item.type === "beam") {
+    } else if (item.type === 'beam') {
       return acc + measureLength(item.notes)
     }
   }, 0)
@@ -125,12 +125,12 @@ function scanl(f, initial, list) {
 
 // for use on the student side
 export function keyOptionToSignature(key) {
-  if (_.isUndefined(key) || _.isNull(key) || key === "") {
-    return ""
+  if (_.isUndefined(key) || _.isNull(key) || key === '') {
+    return ''
   }
 
   if (key === key.toLowerCase()) {
-    key = key.toUpperCase() + "m"
+    key = key.toUpperCase() + 'm'
   }
 
   return key
@@ -144,8 +144,8 @@ export function getVFScaleName(tonic, scale) {
   const note = teoria.note(tonicStr(tonic))
   let res = note.name().toUpperCase() + note.accidental()
 
-  if (_.includes(["minor", "aeolian"], scale)) {
-    res += "m"
+  if (_.includes(['minor', 'aeolian'], scale)) {
+    res += 'm'
   }
 
   return res
@@ -154,7 +154,7 @@ export function getVFScaleName(tonic, scale) {
 export function countBeats(measure) {
   return measure.notes.reduce((total, note, i) => {
     let { duration, dots } = note
-    duration = duration.replace("r", "")
+    duration = duration.replace('r', '')
     duration = new Fraction(1, parseInt(duration))
     dots = scanl((m) => m.div(2), duration, _.range(dots))
     duration = dots.reduce((m, x) => m.add(x), duration)
@@ -194,7 +194,7 @@ export function compareMeter(meter, measure) {
 }
 
 export function formatKey(key) {
-  return key.replace(/([A-Z,a-z])b$/, "$1♭")
+  return key.replace(/([A-Z,a-z])b$/, '$1♭')
 }
 
 export function validatePickupBeat(meter, beat) {
@@ -240,9 +240,9 @@ export function pickupRests(meter, pickupBeat) {
   }
 
   return rests
-    .map((x) => x.toFraction() + "r")
+    .map((x) => x.toFraction() + 'r')
     .map((x) => {
-      return { type: "note", duration: x, dots: 0, tied: false }
+      return { type: 'note', duration: x, dots: 0, tied: false }
     })
 }
 
@@ -250,7 +250,7 @@ export function validateOptions(data) {
   let errors = []
 
   if (data.staves.length === 0) {
-    errors.push("No staves added")
+    errors.push('No staves added')
   } else {
     errors = errors.concat(
       _.flatMap(data.staves, (s) => {
@@ -261,9 +261,9 @@ export function validateOptions(data) {
           return []
         }
         const opts = [
-          ["tonic.pitch", "tonic pitch"],
-          ["tonic.octave", "tonic octave"],
-          ["scale", "scale"],
+          ['tonic.pitch', 'tonic pitch'],
+          ['tonic.octave', 'tonic octave'],
+          ['scale', 'scale'],
         ]
         return _.flatMap(opts, addErrors)
       })
@@ -271,7 +271,7 @@ export function validateOptions(data) {
   }
 
   if (data.meter.top === 0 || data.meter.bottom === 0) {
-    errors.push("Invalid meter, neither part can be 0")
+    errors.push('Invalid meter, neither part can be 0')
   }
 
   if (errors.length > 0) {
@@ -302,13 +302,13 @@ export function getAnswerErrors(solution, answer, mode) {
 
         let error = false
         switch (mode) {
-          case "harmony":
+          case 'harmony':
             error = !_.isEqual(n1, n2)
             break
-          case "melody":
+          case 'melody':
             error =
               error || n1.solfege !== n2.solfege || n1.octave !== n2.octave
-          case "rhythm":
+          case 'rhythm':
             error =
               error ||
               n1.duration !== n2.duration ||
@@ -326,9 +326,9 @@ export function newAnswer(pSet) {
   pSet = _.cloneDeep(pSet)
   return {
     meter: { top: 0, bottom: 0 },
-    keySignature: "",
+    keySignature: '',
     staves: pSet.data.staves.map((stave) =>
-      stave.solution.map((measure) => _.set(measure, "notes", []))
+      stave.solution.map((measure) => _.set(measure, 'notes', []))
     ),
   }
 }
@@ -337,30 +337,30 @@ export function newAnswer(pSet) {
 // There is no unicode for these
 export function durationString(duration) {
   const NOTE_MAP = {
-    1: "\u{1D15D}",
-    2: "\u{1D15E}",
-    4: "\u{1D15F}",
-    "3/4": "\u{1D15F} \u{1D15F} \u{1D15F}",
-    8: "\u{1D160}",
-    "3/8": "\u{1D160} \u{1D160} \u{1D160}",
-    16: "\u{1D161}",
-    32: "\u{1D162}",
-    "1r": "\u{1D13B}",
-    "2r": "\u{1D13C}",
-    "4r": "\u{1D13D}",
-    "3/4r": "\u{1D13D} \u{1D13D} \u{1D13D}",
-    "8r": "\u{1D13E}",
-    "3/8r": "\u{1D13E} \u{1D13E} \u{1D13E}",
-    "16r": "\u{1D13F}",
-    "32r": "\u{1D140}",
+    1: '\u{1D15D}',
+    2: '\u{1D15E}',
+    4: '\u{1D15F}',
+    '3/4': '\u{1D15F} \u{1D15F} \u{1D15F}',
+    8: '\u{1D160}',
+    '3/8': '\u{1D160} \u{1D160} \u{1D160}',
+    16: '\u{1D161}',
+    32: '\u{1D162}',
+    '1r': '\u{1D13B}',
+    '2r': '\u{1D13C}',
+    '4r': '\u{1D13D}',
+    '3/4r': '\u{1D13D} \u{1D13D} \u{1D13D}',
+    '8r': '\u{1D13E}',
+    '3/8r': '\u{1D13E} \u{1D13E} \u{1D13E}',
+    '16r': '\u{1D13F}',
+    '32r': '\u{1D140}',
   }
 
   return NOTE_MAP[duration]
 }
 
 export function newStave(clef, name, measures, tonicPitch, scale) {
-  tonicPitch = tonicPitch || "C"
-  scale = scale || "major"
+  tonicPitch = tonicPitch || 'C'
+  scale = scale || 'major'
   return {
     clef,
     name,
@@ -368,13 +368,13 @@ export function newStave(clef, name, measures, tonicPitch, scale) {
     scale,
     solution: _.range(measures).map((i) => {
       return {
-        endBar: i === measures - 1 ? "end" : "single",
+        endBar: i === measures - 1 ? 'end' : 'single',
         notes: [],
       }
     }),
     answer: _.range(measures).map((i) => {
       return {
-        endBar: i === measures - 1 ? "end" : "single",
+        endBar: i === measures - 1 ? 'end' : 'single',
         notes: [],
       }
     }),
@@ -387,103 +387,103 @@ export function newStave(clef, name, measures, tonicPitch, scale) {
 }
 
 export const DEFAULTS = {
-  rhythm: ["1", "2", "4", "8", "16", "32"],
+  rhythm: ['1', '2', '4', '8', '16', '32'],
   solfege: [
-    "do",
-    "di",
-    "ra",
-    "re",
-    "ri",
-    "me",
-    "mi",
-    "fa",
-    "fi",
-    "se",
-    "sol",
-    "si",
-    "le",
-    "la",
-    "li",
-    "te",
-    "ti",
+    'do',
+    'di',
+    'ra',
+    're',
+    'ri',
+    'me',
+    'mi',
+    'fa',
+    'fi',
+    'se',
+    'sol',
+    'si',
+    'le',
+    'la',
+    'li',
+    'te',
+    'ti',
   ],
   harmony: [
-    "I",
-    "ii",
-    "iiØ",
-    "iii",
-    "IV",
-    "V",
-    "vi",
-    "viio",
-    "viiØ",
-    "vio",
-    "i",
-    "II",
-    "iio",
-    "III",
-    "III+",
-    "iv",
-    "v",
-    "VI",
-    "VII",
-    "VII+",
-    "N6",
-    "Gr+6",
-    "Fr+6",
-    "It+6",
-    "V/V",
-    "viio/V",
-    "V/ii",
-    "V/iii",
-    "V/vi",
-    "V/IV",
-    "V/iio",
-    "V/III",
-    "V/iv",
-    "V/VI",
-    "viio/VI",
-    "V/VII",
-    "viio/VII",
-    "viio/ii",
-    "viio/iii",
-    "viio/vi",
-    "viio/IV",
+    'I',
+    'ii',
+    'iiØ',
+    'iii',
+    'IV',
+    'V',
+    'vi',
+    'viio',
+    'viiØ',
+    'vio',
+    'i',
+    'II',
+    'iio',
+    'III',
+    'III+',
+    'iv',
+    'v',
+    'VI',
+    'VII',
+    'VII+',
+    'N6',
+    'Gr+6',
+    'Fr+6',
+    'It+6',
+    'V/V',
+    'viio/V',
+    'V/ii',
+    'V/iii',
+    'V/vi',
+    'V/IV',
+    'V/iio',
+    'V/III',
+    'V/iv',
+    'V/VI',
+    'viio/VI',
+    'V/VII',
+    'viio/VII',
+    'viio/ii',
+    'viio/iii',
+    'viio/vi',
+    'viio/IV',
   ],
-  inversion: ["6", "6/4", "4/3", "4/2", "6/5", "7"],
+  inversion: ['6', '6/4', '4/3', '4/2', '6/5', '7'],
   key: [
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "A",
-    "B",
-    "Cb",
-    "Db",
-    "Eb",
-    "Gb",
-    "Ab",
-    "Bb",
-    "C#",
-    "F#",
-    "G#",
-    "c",
-    "d",
-    "e",
-    "f",
-    "g",
-    "a",
-    "b",
-    "cb",
-    "db",
-    "eb",
-    "gb",
-    "ab",
-    "bb",
-    "c#",
-    "f#",
-    "g#",
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'A',
+    'B',
+    'Cb',
+    'Db',
+    'Eb',
+    'Gb',
+    'Ab',
+    'Bb',
+    'C#',
+    'F#',
+    'G#',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+    'a',
+    'b',
+    'cb',
+    'db',
+    'eb',
+    'gb',
+    'ab',
+    'bb',
+    'c#',
+    'f#',
+    'g#',
   ],
 }
 
@@ -510,7 +510,7 @@ export function newPSet() {
 // Pauses all audio players if at least one is playing
 // Plays all audio players if all are paused
 export function changeAudioPlayerState() {
-  var players = document.getElementsByClassName("react-audio-player")
+  var players = document.getElementsByClassName('react-audio-player')
   if (!players.length) {
     return
   }
@@ -533,10 +533,10 @@ export function changeAudioPlayerState() {
 // Returns the index for the next option in the select according to the key given
 // Assumes that the first select object in the document is the stave selector
 export function nextStave(key) {
-  var select = document.getElementsByTagName("select")[0]
+  var select = document.getElementsByTagName('select')[0]
   var length = select.options.length
   var index = select.selectedIndex
-  index += key == ">" ? 1 : -1
+  index += key == '>' ? 1 : -1
   return (index + length) % length
 }
 
@@ -544,10 +544,10 @@ export function nextStave(key) {
 // Assumes the last audio element is the target
 // Does not play if current user is admin
 export function playA() {
-  if (document.URL.indexOf("admin") >= 0) {
+  if (document.URL.indexOf('admin') >= 0) {
     return
   }
-  var audios = document.getElementsByTagName("audio")
+  var audios = document.getElementsByTagName('audio')
   var audio = audios[audios.length - 1]
   audio.paused ? audio.play() : audio.pause()
 }
@@ -556,5 +556,5 @@ export function playA() {
 // this function just clicks the save button
 // which is assumed to be the zeroth button on the page
 export function clickSave() {
-  document.getElementsByClassName("button")[0].click()
+  document.getElementsByClassName('button')[0].click()
 }

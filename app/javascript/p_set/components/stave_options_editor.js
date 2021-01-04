@@ -18,18 +18,18 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import React from "react"
-import PropTypes from "prop-types"
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { newStave } from "../lib/utils"
+import { newStave } from '../lib/utils'
 
-import "../styles/stave_options_editor.css"
+import '../styles/stave_options_editor.css'
 
 const STAVES = {
-  treble: "Treble",
-  bass: "Bass",
-  alto: "Alto",
-  tenor: "Tenor",
+  treble: 'Treble',
+  bass: 'Bass',
+  alto: 'Alto',
+  tenor: 'Tenor',
 }
 
 export default class StaveOptionsEditor extends React.Component {
@@ -57,7 +57,7 @@ export default class StaveOptionsEditor extends React.Component {
   updateStaves(action, e) {
     let staves = _.cloneDeep(this.props.staves)
 
-    if (action === "add") {
+    if (action === 'add') {
       const { currentStave } = this.state
       let tonicPitch = undefined
       let scale = undefined
@@ -74,12 +74,12 @@ export default class StaveOptionsEditor extends React.Component {
           scale
         )
       )
-    } else if (action === "remove") {
+    } else if (action === 'remove') {
       _.pullAt(staves, this.state.currentPSetStave)
       this.setState({
         currentPSetStave: Math.max(0, this.state.currentPSetStave - 1),
       })
-    } else if (action === "up") {
+    } else if (action === 'up') {
       if (this.state.currentPSetStave > 0) {
         const prev = this.state.currentPSetStave - 1
         const old = staves[prev]
@@ -87,7 +87,7 @@ export default class StaveOptionsEditor extends React.Component {
         staves[prev + 1] = old
         this.setState({ currentPSetStave: prev })
       }
-    } else if (action === "down") {
+    } else if (action === 'down') {
       const len = staves.length
       if (this.state.currentPSetStave < len - 1) {
         const next = this.state.currentPSetStave + 1
@@ -96,14 +96,14 @@ export default class StaveOptionsEditor extends React.Component {
         staves[next - 1] = old
         this.setState({ currentPSetStave: next })
       }
-    } else if (action === "tonic") {
+    } else if (action === 'tonic') {
       const stave = staves[this.state.currentPSetStave]
-      if (e.target.name === "pitch") {
+      if (e.target.name === 'pitch') {
         staves.forEach((s) => Object.assign(s.tonic, { pitch: e.target.value }))
       } else {
         stave.tonic[e.target.name] = parseInt(e.target.value)
       }
-    } else if (action === "scale") {
+    } else if (action === 'scale') {
       staves.forEach((stave) => {
         stave.scale = e.target.value
       })
@@ -134,10 +134,10 @@ export default class StaveOptionsEditor extends React.Component {
     ))
 
     const emptyOption = <option value={undefined}>-</option>
-    let tonicOptions = ["C", "D", "E", "F", "G", "A", "B"]
+    let tonicOptions = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
     tonicOptions = _.chain(tonicOptions)
       .flatMap((x) => [x, `${x}#`, `${x}b`])
-      .filter((x) => !_.includes(["E#", "D#", "Fb", "A#", "B#"], x))
+      .filter((x) => !_.includes(['E#', 'D#', 'Fb', 'A#', 'B#'], x))
       .map((x) => (
         <option key={x} value={x}>
           {x}
@@ -159,7 +159,7 @@ export default class StaveOptionsEditor extends React.Component {
       tonic = stave.tonic
       scale = stave.scale
     }
-    const staveDetailsStyle = _.isUndefined(stave) ? { display: "none" } : {}
+    const staveDetailsStyle = _.isUndefined(stave) ? { display: 'none' } : {}
 
     return (
       <fieldset className="column column-block">
@@ -167,11 +167,11 @@ export default class StaveOptionsEditor extends React.Component {
         <select
           multiple
           value={[this.state.currentStave]}
-          onChange={this.updateCurrentStave.bind(this, "currentStave")}
+          onChange={this.updateCurrentStave.bind(this, 'currentStave')}
         >
           {options}
         </select>
-        <button className="button" onClick={() => this.updateStaves("add")}>
+        <button className="button" onClick={() => this.updateStaves('add')}>
           Add Stave
         </button>
         <div className="row" style={staveDetailsStyle}>
@@ -190,7 +190,7 @@ export default class StaveOptionsEditor extends React.Component {
             <select
               multiple
               value={[this.state.currentPSetStave]}
-              onChange={this.updateCurrentStave.bind(this, "currentPSetStave")}
+              onChange={this.updateCurrentStave.bind(this, 'currentPSetStave')}
             >
               {staveOptions}
             </select>
@@ -199,7 +199,7 @@ export default class StaveOptionsEditor extends React.Component {
             <select
               name="pitch"
               value={tonic.pitch}
-              onChange={this.updateStaves.bind(this, "tonic")}
+              onChange={this.updateStaves.bind(this, 'tonic')}
             >
               {emptyOption}
               {tonicOptions}
@@ -208,7 +208,7 @@ export default class StaveOptionsEditor extends React.Component {
           <div className="small-4 columns">
             <select
               value={scale}
-              onChange={this.updateStaves.bind(this, "scale")}
+              onChange={this.updateStaves.bind(this, 'scale')}
             >
               <option value={undefined}>-</option>
               <option value="major">Major</option>
@@ -239,7 +239,7 @@ export default class StaveOptionsEditor extends React.Component {
             <select
               name="octave"
               value={tonic.octave}
-              onChange={this.updateStaves.bind(this, "tonic")}
+              onChange={this.updateStaves.bind(this, 'tonic')}
             >
               {emptyOption}
               {octaveOptions}
@@ -251,8 +251,8 @@ export default class StaveOptionsEditor extends React.Component {
           <div className="small-4 columns">
             <button
               className="button"
-              style={{ width: "100%" }}
-              onClick={() => this.updateStaves("remove")}
+              style={{ width: '100%' }}
+              onClick={() => this.updateStaves('remove')}
             >
               Remove
             </button>
@@ -260,8 +260,8 @@ export default class StaveOptionsEditor extends React.Component {
           <div className="small-4 columns">
             <button
               className="button"
-              style={{ width: "100%" }}
-              onClick={() => this.updateStaves("up")}
+              style={{ width: '100%' }}
+              onClick={() => this.updateStaves('up')}
             >
               Up
             </button>
@@ -269,8 +269,8 @@ export default class StaveOptionsEditor extends React.Component {
           <div className="small-4 columns">
             <button
               className="button"
-              style={{ width: "100%" }}
-              onClick={() => this.updateStaves("down")}
+              style={{ width: '100%' }}
+              onClick={() => this.updateStaves('down')}
             >
               Down
             </button>

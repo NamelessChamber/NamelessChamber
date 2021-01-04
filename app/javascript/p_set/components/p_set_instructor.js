@@ -18,16 +18,16 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import React from "react"
-import PropTypes from "prop-types"
-import { Link } from "react-router-dom"
-import _ from "lodash"
-import ReactAudioPlayer from "react-audio-player"
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import _ from 'lodash'
+import ReactAudioPlayer from 'react-audio-player'
 
-import VexflowComponent from "./vexflow"
-import RhythmicEntryComponent from "./rhythmic_entry"
-import MelodicEntryComponent from "./melodic_entry"
-import HarmonicEntryComponent from "./harmonic_entry"
+import VexflowComponent from './vexflow'
+import RhythmicEntryComponent from './rhythmic_entry'
+import MelodicEntryComponent from './melodic_entry'
+import HarmonicEntryComponent from './harmonic_entry'
 import {
   newPSet,
   validateMeter,
@@ -37,8 +37,8 @@ import {
   nextNonEmptyMeasure,
   prevNonEmptyMeasure,
   nextStave,
-} from "../lib/utils"
-import { fetchPSet, updatePSet } from "../lib/api"
+} from '../lib/utils'
+import { fetchPSet, updatePSet } from '../lib/api'
 
 export default class PSetInstructorComponent extends React.Component {
   constructor(props) {
@@ -51,7 +51,7 @@ export default class PSetInstructorComponent extends React.Component {
         top: 0,
         bottom: 0,
       },
-      keySignature: "",
+      keySignature: '',
       posting: false,
       errors: [],
     }
@@ -177,10 +177,10 @@ export default class PSetInstructorComponent extends React.Component {
       //   alert('Measure has too few beats! Please go back and correct it.');
       // } else
       if (meterCheck < 0) {
-        alert("Measure has too many beats! Please go back and correct it.")
+        alert('Measure has too many beats! Please go back and correct it.')
         return
       } else if (meterCheck > 0 && increment) {
-        alert("Measure has too few beats! Please go back and correct it.")
+        alert('Measure has too few beats! Please go back and correct it.')
         return
       }
     }
@@ -201,7 +201,7 @@ export default class PSetInstructorComponent extends React.Component {
 
   saveAndRender() {
     alert(
-      "Mind our dust! Thanks for completing the exercise. Please leave any feedback in the survey!"
+      'Mind our dust! Thanks for completing the exercise. Please leave any feedback in the survey!'
     )
   }
 
@@ -240,7 +240,7 @@ export default class PSetInstructorComponent extends React.Component {
       const $error = $(this.errorModalEl)
       $error.foundation()
       this.showError = false
-      $error.foundation("open")
+      $error.foundation('open')
     }
 
     if (!_.isUndefined(this.containerEl)) {
@@ -340,7 +340,7 @@ export default class PSetInstructorComponent extends React.Component {
 
     const errors = this.state.errors.map((e, i) => <li key={i}>{e}</li>)
     const showIf = (cond) => {
-      return cond ? {} : { display: "none" }
+      return cond ? {} : { display: 'none' }
     }
 
     let audios = _.flatMap(
@@ -355,18 +355,18 @@ export default class PSetInstructorComponent extends React.Component {
       }
     )
 
-    const mode = this.rhythmic ? "rhythm" : "melody"
+    const mode = this.rhythmic ? 'rhythm' : 'melody'
     return (
       <div className="small-12 columns" ref={(el) => (this.containerEl = el)}>
         <div className="row">
           <div className="small-10 columns">
             <h3>
-              {this.state.vexData.name}:{" "}
+              {this.state.vexData.name}:{' '}
               {this.rhythmic
-                ? "Rhythmic"
+                ? 'Rhythmic'
                 : this.melodic
-                ? "Melodic"
-                : "Harmonic"}{" "}
+                ? 'Melodic'
+                : 'Harmonic'}{' '}
               Entry
             </h3>
           </div>
@@ -408,7 +408,7 @@ export default class PSetInstructorComponent extends React.Component {
               </fieldset>
               <div>
                 <button className="button" onClick={this.postUpdate.bind(this)}>
-                  {this.state.posting ? "Saving..." : "Save"}
+                  {this.state.posting ? 'Saving...' : 'Save'}
                 </button>
               </div>
             </div>
