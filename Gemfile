@@ -44,6 +44,13 @@ gem 'webpacker', '~> 5.2'
 
 group :development, :test do
   gem 'byebug', platform: :mri
+
+  gem 'rubocop', '~> 1.7', require: false
+  gem 'rubocop-md', require: false
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
+  gem 'standard'
 end
 
 group :development do
