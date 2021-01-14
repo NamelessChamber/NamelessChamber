@@ -7,25 +7,42 @@
 # Ignore bundler config.
 /.bundle
 
-# Ignore the default SQLite database.
-/db/*.sqlite3
-/db/*.sqlite3-journal
-
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
 !/log/.keep
 !/tmp/.keep
 
-# Ignore Byebug command history file.
-.byebug_history
-/public/packs
-/node_modules
-public
+# Ignore pidfiles, but keep the directory.
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
 
-/public/packs
-/public/packs-test
-/node_modules
-/yarn-error.log
+# Ignore uploaded files in development.
+/storage/*
+!/storage/.keep
+
+# Frontend
+yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+node_modules/**/*
+npm-debug.*
+/public/packs
+/public/assets
+/public/uploads
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+
+# Environment variables
+.env
+.env.development
+.env.test
+.env.production
+
+# Specs
+spec/examples.txt
+
+# Other
+.byebug_history
