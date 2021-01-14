@@ -18,17 +18,17 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import React from "react"
-import PropTypes from "prop-types"
-import { Link } from "react-router-dom"
-import _ from "lodash"
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import _ from 'lodash'
 import {
   nextNonEmptyMeasure,
   prevNonEmptyMeasure,
   changeAudioPlayerState,
   playA,
   clickSave,
-} from "../lib/utils"
+} from '../lib/utils'
 
 export default class HarmonicEntryComponent extends React.Component {
   constructor(props) {
@@ -58,7 +58,7 @@ export default class HarmonicEntryComponent extends React.Component {
   }
 
   getMeasures(stave) {
-    const key = this.props.instructor ? "solution" : "answer"
+    const key = this.props.instructor ? 'solution' : 'answer'
     return stave[key]
   }
 
@@ -126,10 +126,10 @@ export default class HarmonicEntryComponent extends React.Component {
   }
 
   getFocusedElement() {
-    return this.focused["harmony"]
-      ? "harmony"
-      : this.focused["inversion"]
-      ? "inversion"
+    return this.focused['harmony']
+      ? 'harmony'
+      : this.focused['inversion']
+      ? 'inversion'
       : null
   }
 
@@ -144,7 +144,7 @@ export default class HarmonicEntryComponent extends React.Component {
       return
     }
 
-    if (value === "") {
+    if (value === '') {
       delete note[key]
     } else {
       note[key] = value
@@ -159,19 +159,19 @@ export default class HarmonicEntryComponent extends React.Component {
 
   handleKeyDown(e) {
     switch (e.key) {
-      case " ":
+      case ' ':
         changeAudioPlayerState()
         break
-      case "ArrowRight":
+      case 'ArrowRight':
         this.setCurrentNote(true, e)
         break
-      case "ArrowLeft":
+      case 'ArrowLeft':
         this.setCurrentNote(false, e)
         break
-      case "A":
+      case 'A':
         playA()
         break
-      case "Enter":
+      case 'Enter':
         const key = this.getFocusedElement()
         this.updateKey(key, e)
     }
@@ -183,13 +183,13 @@ export default class HarmonicEntryComponent extends React.Component {
   }
 
   handleFocus(key, e) {
-    const other = key === "harmony" ? "inversion" : "harmony"
+    const other = key === 'harmony' ? 'inversion' : 'harmony'
     this.focused[key] = true
     this.focused[other] = false
   }
 
   handleBlur(key, e) {
-    const other = key === "harmony" ? "inversion" : "harmony"
+    const other = key === 'harmony' ? 'inversion' : 'harmony'
     setTimeout(() => {
       if (!this.focused[other]) {
         this.focused[key] = true
@@ -247,13 +247,13 @@ export default class HarmonicEntryComponent extends React.Component {
       </option>
     )
 
-    const currentHarmony = this.note ? this.note.harmony : ""
-    const currentInversion = this.note ? this.note.inversion : ""
+    const currentHarmony = this.note ? this.note.harmony : ''
+    const currentInversion = this.note ? this.note.inversion : ''
 
     const { instructor } = this.props
 
     const showIf = (cond) => {
-      return cond ? {} : { display: "none" }
+      return cond ? {} : { display: 'none' }
     }
 
     return (
@@ -282,11 +282,11 @@ export default class HarmonicEntryComponent extends React.Component {
           <legend>Harmony</legend>
           <select
             multiple
-            ref={(input) => (this.inputs["harmony"] = input)}
+            ref={(input) => (this.inputs['harmony'] = input)}
             onKeyDown={this.handleKeyDown.bind(this)}
-            onBlur={this.handleBlur.bind(this, "harmony")}
-            style={{ width: "85px", height: "230px" }}
-            onFocus={this.handleFocus.bind(this, "harmony")}
+            onBlur={this.handleBlur.bind(this, 'harmony')}
+            style={{ width: '85px', height: '230px' }}
+            onFocus={this.handleFocus.bind(this, 'harmony')}
           >
             {harmonyOptions}
           </select>
@@ -295,11 +295,11 @@ export default class HarmonicEntryComponent extends React.Component {
           <legend>Inversion</legend>
           <select
             multiple
-            ref={(input) => (this.inputs["inversion"] = input)}
+            ref={(input) => (this.inputs['inversion'] = input)}
             onKeyDown={this.handleKeyDown.bind(this)}
-            onBlur={this.handleBlur.bind(this, "inversion")}
-            style={{ width: "85px", height: "230px" }}
-            onFocus={this.handleFocus.bind(this, "inversion")}
+            onBlur={this.handleBlur.bind(this, 'inversion')}
+            style={{ width: '85px', height: '230px' }}
+            onFocus={this.handleFocus.bind(this, 'inversion')}
           >
             {inversionOptions}
           </select>

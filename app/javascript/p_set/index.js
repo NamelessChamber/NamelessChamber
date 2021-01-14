@@ -18,18 +18,18 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import React from "react"
-import ReactDOM from "react-dom"
-import { createBrowserHistory } from "history"
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { createBrowserHistory } from 'history'
 
-import PSetOptionsEditor from "./components/p_set_options_editor"
-import PSetStudentComponent from "./components/p_set_student"
-import PSetInstructorComponent from "./components/p_set_instructor"
-import PSetAnswerComponent from "./components/p_set_answer"
-import { Router, Route, Switch } from "react-router-dom"
+import PSetOptionsEditor from './components/p_set_options_editor'
+import PSetStudentComponent from './components/p_set_student'
+import PSetInstructorComponent from './components/p_set_instructor'
+import PSetAnswerComponent from './components/p_set_answer'
+import { Router, Route, Switch } from 'react-router-dom'
 
 function init() {
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener('DOMContentLoaded', () => {
     ReactDOM.render(
       <Router history={createBrowserHistory()}>
         <Switch>
@@ -75,7 +75,7 @@ function init() {
           />
         </Switch>
       </Router>,
-      document.getElementById("app-root")
+      document.getElementById('app-root')
     )
   })
 }

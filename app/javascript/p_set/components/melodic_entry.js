@@ -18,13 +18,13 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import React from "react"
-import PropTypes from "prop-types"
-import { Link } from "react-router-dom"
-import _ from "lodash"
-import ReactAudioPlayer from "react-audio-player"
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import _ from 'lodash'
+import ReactAudioPlayer from 'react-audio-player'
 
-import VexflowComponent from "./vexflow"
+import VexflowComponent from './vexflow'
 import {
   formatKey,
   nextNonEmptyMeasure,
@@ -34,22 +34,22 @@ import {
   changeAudioPlayerState,
   playA,
   clickSave,
-} from "../lib/utils"
+} from '../lib/utils'
 
 const diatonics = {
-  do: "d",
-  re: "r",
-  mi: "m",
-  fa: "f",
-  sol: "s",
-  la: "l",
-  ti: "t",
+  do: 'd',
+  re: 'r',
+  mi: 'm',
+  fa: 'f',
+  sol: 's',
+  la: 'l',
+  ti: 't',
 }
 
 const clefToOctave = (clef) => {
-  if (clef === "treble") {
+  if (clef === 'treble') {
     return 4
-  } else if (clef === "bass") {
+  } else if (clef === 'bass') {
     return 3
   }
 }
@@ -58,7 +58,7 @@ const staveComplete = (stave) => {
   return _.every(stave.answer, (measure) => {
     return _.every(measure.notes, (note) => {
       return (
-        _.endsWith(note.duration, "r") ||
+        _.endsWith(note.duration, 'r') ||
         (!_.isUndefined(note.solfege) && !_.isUndefined(note.octave))
       )
     })
@@ -196,7 +196,7 @@ export default class MelodicEntryComponent extends React.Component {
 
   handleDiatonic(e) {
     // Assumes the solfege selector is the 2nd select element on the page
-    const options = document.getElementsByTagName("select")[2].options
+    const options = document.getElementsByTagName('select')[2].options
     let diatonicPresent = false
     for (var i = 0; i < options.length; i++) {
       if (diatonics[options[i].value] == e.key) {
@@ -213,38 +213,38 @@ export default class MelodicEntryComponent extends React.Component {
 
   handleKeyDown(e) {
     switch (e.key) {
-      case "d":
-      case "r":
-      case "m":
-      case "f":
-      case "s":
-      case "l":
-      case "t":
+      case 'd':
+      case 'r':
+      case 'm':
+      case 'f':
+      case 's':
+      case 'l':
+      case 't':
         this.handleDiatonic(e)
         break
-      case "<":
-      case ">":
+      case '<':
+      case '>':
         this.props.changeStave(e, true)
         break
-      case " ":
+      case ' ':
         changeAudioPlayerState()
         break
-      case "ArrowUp":
+      case 'ArrowUp':
         this.setOctave(true, e)
         break
-      case "ArrowDown":
+      case 'ArrowDown':
         this.setOctave(false, e)
         break
-      case "ArrowRight":
+      case 'ArrowRight':
         this.setCurrentNote(true, e)
         break
-      case "ArrowLeft":
+      case 'ArrowLeft':
         this.setCurrentNote(false, e)
         break
-      case "A":
+      case 'A':
         playA()
         break
-      case "Enter":
+      case 'Enter':
         this.noteChange(e)
         break
     }
@@ -284,10 +284,10 @@ export default class MelodicEntryComponent extends React.Component {
       .filter(([_, v]) => v)
       .map(([v, _]) => v)
       .reverse()
-    let selectedSolfege = _.isUndefined(note) ? "" : note.solfege
+    let selectedSolfege = _.isUndefined(note) ? '' : note.solfege
     let octaveStr = this.state.octave.toString()
     if (this.state.octave > 0) {
-      octaveStr = "+" + octaveStr
+      octaveStr = '+' + octaveStr
     }
     let solfegeOptions = solfege.map((s) => {
       return (
@@ -315,13 +315,13 @@ export default class MelodicEntryComponent extends React.Component {
         )
       })
     keyOptions.unshift(
-      <option key={0} value={""}>
+      <option key={0} value={''}>
         -
       </option>
     )
     const { instructor } = this.props
     const showIf = (cond) => {
-      return cond ? {} : { display: "none" }
+      return cond ? {} : { display: 'none' }
     }
 
     return (
@@ -373,7 +373,7 @@ export default class MelodicEntryComponent extends React.Component {
               ref={(input) => (this.solfegeInput = input)}
               onBlur={(e) => e.target.focus()}
               onKeyDown={this.handleKeyDown.bind(this)}
-              style={{ width: "75px", height: "230px" }}
+              style={{ width: '75px', height: '230px' }}
             >
               {solfegeOptions}
             </select>

@@ -18,18 +18,18 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import React from "react"
-import PropTypes from "prop-types"
-import _ from "lodash"
+import React from 'react'
+import PropTypes from 'prop-types'
+import _ from 'lodash'
 
-import VexflowComponent from "./vexflow"
+import VexflowComponent from './vexflow'
 
-import { fetchPSetAnswerAdmin, fetchPSet } from "../lib/api"
+import { fetchPSetAnswerAdmin, fetchPSet } from '../lib/api'
 import {
   getAnswerErrors,
   keyOptionToSignature,
   currentPage,
-} from "../lib/utils"
+} from '../lib/utils'
 
 export default class PSetAnswerComponent extends React.Component {
   constructor(props) {
@@ -39,6 +39,10 @@ export default class PSetAnswerComponent extends React.Component {
       submission: 0,
       measure: 0,
     }
+  }
+
+  static propTypes = {
+    match: PropTypes.object.isRequired,
   }
 
   componentDidMount() {
@@ -91,7 +95,7 @@ export default class PSetAnswerComponent extends React.Component {
     const staveErrors = getAnswerErrors(
       pSet.staves,
       submission.staves,
-      "harmony"
+      'harmony'
     )
 
     const measures = pSet.measures

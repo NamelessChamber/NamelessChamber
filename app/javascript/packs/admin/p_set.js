@@ -18,6 +18,6 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import PSet from "p_set"
+import PSet from 'p_set'
 
 PSet.init()

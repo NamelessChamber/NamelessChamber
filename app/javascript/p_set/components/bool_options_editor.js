@@ -18,8 +18,8 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import React from "react"
-import PropTypes from "prop-types"
+import React from 'react'
+import PropTypes from 'prop-types'
 
 export default class BoolOptionsEditor extends React.Component {
   constructor(props) {
@@ -54,7 +54,7 @@ export default class BoolOptionsEditor extends React.Component {
   render() {
     const checkboxes = this.props.options.map((pair) => {
       let [option, value] = pair
-      const optionStyle = { display: "inline-block" }
+      const optionStyle = { display: 'inline-block' }
       const id = `${this.props.name}_${option}`
       return (
         <div style={optionStyle} key={id}>

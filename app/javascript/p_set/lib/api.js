@@ -18,18 +18,18 @@
 //Contact Information: garo@mit.edu
 //Source Code: https://github.com/NamelessChamber/NamelessChamber
 
-import { newPSet } from "./utils"
+import { newPSet } from './utils'
 
 function railsFetch(url, options) {
-  const token = $('meta[name="csrf-token"]').attr("content")
+  const token = $('meta[name="csrf-token"]').attr('content')
   options = _.merge(
     {
-      mode: "cors",
-      credentials: "same-origin",
+      mode: 'cors',
+      credentials: 'same-origin',
       headers: {
-        "X-Requested-With": "XMLHttpRequest",
-        "X-CSRF-Token": token,
-        "Content-Type": "application/json",
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-Token': token,
+        'Content-Type': 'application/json',
       },
     },
     options
@@ -42,9 +42,9 @@ function railsFetch(url, options) {
     queryParams = _.map((v, k, i) => {
       v = encodeURIComponent(v)
       return `${k}=${v}`
-    }).join("&")
+    }).join('&')
 
-    if (url.indexOf("?") > -1) {
+    if (url.indexOf('?') > -1) {
       url = `${url}&${queryParams}`
     } else {
       url = `${url}?${queryParams}`
@@ -59,9 +59,9 @@ function railsFetch(url, options) {
 }
 
 export function fetchPSet(id, admin) {
-  const prefix = admin ? "/admin" : ""
+  const prefix = admin ? '/admin' : ''
   const url = `${prefix}/p_sets/${id}.json`
-  return railsFetch(url, { method: "GET" }).then((data) => {
+  return railsFetch(url, { method: 'GET' }).then((data) => {
     return data.json().then((pSet) => {
       if (admin && _.isEmpty(pSet.data)) {
         pSet.data = newPSet()
@@ -74,7 +74,7 @@ export function fetchPSet(id, admin) {
 
 export function updatePSet(id, pSet, admin) {
   // boolify it
-  const prefix = admin ? "/admin" : ""
+  const prefix = admin ? '/admin' : ''
   const url = `${prefix}/p_sets/${id}.json`
   const data = {
     p_set: {
@@ -83,14 +83,14 @@ export function updatePSet(id, pSet, admin) {
     },
   }
   return railsFetch(url, {
-    method: "PUT",
+    method: 'PUT',
     body: data,
   }).then((data) => data.json())
 }
 
 export function fetchPSetAnswer(id) {
   const url = `/p_sets/${id}/answer.json`
-  return railsFetch(url, { method: "GET" }).then((data) => {
+  return railsFetch(url, { method: 'GET' }).then((data) => {
     return data.json().then(({ answer }) => answer)
   })
 }
@@ -101,17 +101,17 @@ export function updatePSetAnswer(id, answer, submission, completed) {
   const url = `/p_sets/${id}/answer.json`
   const data = { answer, completed, submission }
   return railsFetch(url, {
-    method: "PUT",
+    method: 'PUT',
     body: data,
   }).then((data) => data.json())
 }
 
 export function fetchPSetAnswerAdmin(id) {
   const url = `/admin/p_set_answers/${id}.json`
-  return railsFetch(url, { method: "GET" }).then((data) => data.json())
+  return railsFetch(url, { method: 'GET' }).then((data) => data.json())
 }
 
 export function deletePSetAudio(pSetId, pSetAudioId) {
   const url = `/admin/p_sets/${pSetId}/audios/${pSetAudioId}.json`
-  return railsFetch(url, { method: "DELETE" }).then((data) => data.json())
+  return railsFetch(url, { method: 'DELETE' }).then((data) => data.json())
 }
