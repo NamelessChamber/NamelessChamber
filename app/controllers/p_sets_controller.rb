@@ -1,25 +1,24 @@
-#"Nameless Chamber" - a music dictation web application.
-#"Copyright 2020 Massachusetts Institute of Technology"
+# frozen_string_literal: true
 
-#This file is part of "Nameless Chamber"
-    
-#"Nameless Chamber" is free software: you can redistribute it and/or modify
-#it under the terms of the GNU Affero General Public License as published by #the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# "Nameless Chamber" - a music dictation web application.
+# "Copyright 2020 Massachusetts Institute of Technology"
 
-#"Nameless Chamber" is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU Affero General Public License for more details.
+# This file is part of "Nameless Chamber"
 
-#You should have received a copy of the GNU Affero General Public License
-#along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
+# "Nameless Chamber" is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by #the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#Contact Information: garo@mit.edu 
-#Source Code: https://github.com/NamelessChamber/NamelessChamber
+# "Nameless Chamber" is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
 
+# You should have received a copy of the GNU Affero General Public License
+# along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
 
-
+# Contact Information: garo@mit.edu
+# Source Code: https://github.com/NamelessChamber/NamelessChamber
 
 class PSetsController < ApplicationController
   before_action :find_p_set, except: [:index]
@@ -34,15 +33,15 @@ class PSetsController < ApplicationController
     @p_set_answer = p_set_answer
 
     if @p_set_answer.nil?
-      if User.joins(:classrooms => {:classroom_psets => :p_set})
-        .where(p_sets: {id: params[:p_set_id]}).exists?
+      if User.joins(classrooms: { classroom_psets: :p_set })
+             .where(p_sets: { id: params[:p_set_id] }).exists?
         @p_set_answer = PSetAnswer.create(
           user: current_user,
           p_set: @p_set,
-          data: {answer: nil, submissions: []}
+          data: { answer: nil, submissions: [] }
         )
       else
-        error = {error: 'User not enrolled in class'}
+        error = { error: 'User not enrolled in class' }
         render json: error, status: :unauthorized
         return
       end
@@ -50,7 +49,7 @@ class PSetsController < ApplicationController
 
     answer = @p_set_answer.data['answer']
     respond_to do |format|
-      format.json { render json: {answer: answer} }
+      format.json { render json: { answer: answer } }
     end
   end
 
@@ -61,17 +60,13 @@ class PSetsController < ApplicationController
       head :not_found
     else
       answer = params[:answer]
-      answer['created_at'] = Time.now
+      answer['created_at'] = Time.zone.now
       @p_set_answer.data['answer'] = answer
 
-      if params[:submission]
-        @p_set_answer.data['submissions'].push(answer)
-      end
+      @p_set_answer.data['submissions'].push(answer) if params[:submission]
 
-      if !params[:completed].nil?
-        if !@p_set_answer.completed && params[:completed]
-          @p_set_answer.completed = params[:completed]
-        end
+      if !params[:completed].nil? && !@p_set_answer.completed && params[:completed]
+        @p_set_answer.completed = params[:completed]
       end
 
       @p_set_answer.save

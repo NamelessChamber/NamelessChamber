@@ -1,23 +1,24 @@
-#"Nameless Chamber" - a music dictation web application.
-#"Copyright 2020 Massachusetts Institute of Technology"
+# frozen_string_literal: true
 
-#This file is part of "Nameless Chamber"
-    
-#"Nameless Chamber" is free software: you can redistribute it and/or modify
-#it under the terms of the GNU Affero General Public License as published by #the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# "Nameless Chamber" - a music dictation web application.
+# "Copyright 2020 Massachusetts Institute of Technology"
 
-#"Nameless Chamber" is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU Affero General Public License for more details.
+# This file is part of "Nameless Chamber"
 
-#You should have received a copy of the GNU Affero General Public License
-#along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
+# "Nameless Chamber" is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by #the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#Contact Information: garo@mit.edu 
-#Source Code: https://github.com/NamelessChamber/NamelessChamber
+# "Nameless Chamber" is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
 
+# You should have received a copy of the GNU Affero General Public License
+# along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
+
+# Contact Information: garo@mit.edu
+# Source Code: https://github.com/NamelessChamber/NamelessChamber
 
 class DeviseCreateUsers < ActiveRecord::Migration[5.0]
   def change
@@ -25,8 +26,8 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.0]
       t.string :firstname
       t.string :lastname
       ## Database authenticatable
-      t.string :email,              null: false, default: ""
-      t.string :encrypted_password, null: false, default: ""
+      t.string :email,              null: false, default: ''
+      t.string :encrypted_password, null: false, default: ''
 
       ## Recoverable
       t.string   :reset_password_token
@@ -52,7 +53,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.0]
       # t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
       # t.string   :unlock_token # Only if unlock strategy is :email or :both
       # t.datetime :locked_at
-
 
       t.timestamps null: false
     end
