@@ -5,15 +5,15 @@
 }
 
 @font-face {
-  font-family: "Bravura";
-  src: url("../fonts/Bravura.eot");
-  src: url("../fonts/Bravura.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/Bravura.svg#bravuraregular") format("svg"),
-    url("../fonts/Bravura.woff") format("woff");
+  font-family: 'Bravura';
+  src: url('../fonts/Bravura.eot');
+  src: url('../fonts/Bravura.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/Bravura.svg#bravuraregular') format('svg'),
+    url('../fonts/Bravura.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
 
 .beat-select {
-  font-family: "Bravura";
+  font-family: 'Bravura';
 }
