@@ -2,7 +2,7 @@
 #"Copyright 2020 Massachusetts Institute of Technology"
 
 #This file is part of "Nameless Chamber"
-    
+
 #"Nameless Chamber" is free software: you can redistribute it and/or modify
 #it under the terms of the GNU Affero General Public License as published by #the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
@@ -15,7 +15,7 @@
 #You should have received a copy of the GNU Affero General Public License
 #along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
 
-#Contact Information: garo@mit.edu 
+#Contact Information: garo@mit.edu
 #Source Code: https://github.com/NamelessChamber/NamelessChamber
 
 
@@ -76,7 +76,7 @@ class Admin::PSetsController < ApplicationController
 
     fields = ['data', 'name']
     p_set = params[:p_set].to_unsafe_h.select { |k| fields.include?(k) }
-    @p_set.update_attributes(p_set)
+    @p_set.update!(p_set)
 
     respond_to do |format|
       format.json { render json: @p_set }
@@ -123,7 +123,7 @@ class Admin::PSetsController < ApplicationController
     rescue ActiveRecord::RecordNotFound
       not_found
     end
-    
+
     p_set_to_audio = PSetToAudio.where(
       p_set_id: params[:p_set_id],
       p_set_audio_id: params[:p_set_audio_id]

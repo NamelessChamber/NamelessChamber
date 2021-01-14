@@ -2,7 +2,7 @@
 #"Copyright 2020 Massachusetts Institute of Technology"
 
 #This file is part of "Nameless Chamber"
-    
+
 #"Nameless Chamber" is free software: you can redistribute it and/or modify
 #it under the terms of the GNU Affero General Public License as published by #the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
@@ -15,9 +15,8 @@
 #You should have received a copy of the GNU Affero General Public License
 #along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
 
-#Contact Information: garo@mit.edu 
+#Contact Information: garo@mit.edu
 #Source Code: https://github.com/NamelessChamber/NamelessChamber
-
 
 # Files in the config/locales directory are used for internationalization
 # and are automatically loaded by Rails. If you want to use locales other
@@ -37,8 +36,18 @@
 #
 # This would use the information in config/locales/es.yml.
 #
+# The following keys must be escaped otherwise they will not be retrieved by
+# the default I18n backend:
+#
+# true, false, on, off, yes, no
+#
+# Instead, surround them with single quotes.
+#
+# en:
+#   'true': 'foo'
+#
 # To learn more, please read the Rails Internationalization guide
-# available at http://guides.rubyonrails.org/i18n.html.
+# available at https://guides.rubyonrails.org/i18n.html.
 
 en:
   hello: "Hello world"

@@ -1,45 +1,5 @@
-//"Nameless Chamber" - a music dictation web application.
-//"Copyright 2020 Massachusetts Institute of Technology"
+process.env.NODE_ENV = process.env.NODE_ENV || 'production'
 
-//This file is part of "Nameless Chamber"
-    
-//"Nameless Chamber" is free software: you can redistribute it and/or modify
-//it under the terms of the GNU Affero General Public License as published by //the Free Software Foundation, either version 3 of the License, or
-//(at your option) any later version.
+const environment = require('./environment')
 
-//"Nameless Chamber" is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU Affero General Public License for more details.
-
-//You should have received a copy of the GNU Affero General Public License
-//along with "Nameless Chamber".  If not, see	<https://www.gnu.org/licenses/>.
-
-//Contact Information: garo@mit.edu 
-//Source Code: https://github.com/NamelessChamber/NamelessChamber
-
-
-
-
-
-// Note: You must restart bin/webpack-dev-server for changes to take effect
-
-/* eslint global-require: 0 */
-
-const webpack = require('webpack')
-const merge = require('webpack-merge')
-const CompressionPlugin = require('compression-webpack-plugin')
-const sharedConfig = require('./shared.js')
-
-module.exports = merge(sharedConfig, {
-  output: { filename: '[name]-[chunkhash].js' },
-
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin(),
-    new CompressionPlugin({
-      asset: '[path].gz[query]',
-      algorithm: 'gzip',
-      test: /\.(js|css|svg|eot|ttf|woff|woff2)$/
-    })
-  ]
-})
+module.exports = environment.toWebpackConfig()
