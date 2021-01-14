@@ -7,17 +7,17 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'active_model_serializers'
-
+gem 'rails', '~> 6.1'
 gem 'pg'
 gem 'puma'
-gem 'rails', '~> 6.1'
-gem 'sass-rails'
-gem 'uglifier'
-
+gem 'active_model_serializers'
 gem 'carrierwave'
 gem 'devise'
 gem 'fog-aws'
+
+# Assets
+gem 'sass-rails'
+gem 'uglifier'
 gem 'foundation-rails'
 gem 'jbuilder'
 gem 'jquery-rails'
@@ -25,6 +25,11 @@ gem 'react-rails'
 gem 'webpacker', '~> 5.2'
 
 group :development, :test do
+  gem 'dotenv-rails'
+  gem 'pry-rails'
+
+  gem 'factory_bot_rails', '~> 6.0'
+  gem 'rspec-rails', '~> 4.0'
 
   gem 'rubocop', '~> 1.7', require: false
   gem 'rubocop-md', require: false
@@ -40,3 +45,8 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
+group :test do
+  gem 'database_cleaner', '~> 1.8'
+  gem 'faker', '~> 2'
+  gem 'shoulda-matchers', '~> 4'
+end
