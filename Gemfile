@@ -7,21 +7,21 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'rails', '~> 6.1'
-gem 'pg'
-gem 'puma'
 gem 'active_model_serializers'
 gem 'carrierwave'
 gem 'devise'
 gem 'fog-aws'
+gem 'pg'
+gem 'puma'
+gem 'rails', '~> 6.1'
 
 # Assets
-gem 'sass-rails'
-gem 'uglifier'
 gem 'foundation-rails'
 gem 'jbuilder'
 gem 'jquery-rails'
 gem 'react-rails'
+gem 'sass-rails'
+gem 'uglifier'
 gem 'webpacker', '~> 5.2'
 
 group :development, :test do
