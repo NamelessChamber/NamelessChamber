@@ -27,6 +27,8 @@ gem 'webpacker', '~> 5.2'
 group :development, :test do
   gem 'dotenv-rails'
   gem 'pry-rails'
+  gem 'better_errors'
+  gem 'binding_of_caller'
 
   gem 'factory_bot_rails', '~> 6.0'
   gem 'rspec-rails', '~> 4.0'
