@@ -15,17 +15,22 @@ module Admin
     end
 
     def create
-      exercise_category = ExerciseCategory.create(
-        params.require(:exercise_category).permit(:name)
-      )
+      ExerciseCategory.create!(exercise_category_params)
 
       redirect_to admin_exercise_categories_path
     end
 
     def destroy
       @exercise_category = ExerciseCategory.find(params[:id])
-      @exercise_category.destroy
+      @exercise_category.destroy!
+
       redirect_to admin_exercise_categories_path
+    end
+
+    private
+
+    def exercise_category_params
+      params.require(:exercise_category).permit(:name)
     end
   end
 end

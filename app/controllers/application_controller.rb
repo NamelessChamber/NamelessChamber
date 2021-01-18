@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
   before_action :prefetch_admin_status
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+
   protected
 
   def configure_permitted_parameters
@@ -18,12 +20,6 @@ class ApplicationController < ActionController::Base
       format.json { head :not_found }
       format.any  { head :not_found }
     end
-  end
-
-  def find_or_404
-    yield
-  rescue ActiveRecord::RecordNotFound
-    not_found
   end
 
   def assert_course_admin!

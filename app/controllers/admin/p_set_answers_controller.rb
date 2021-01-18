@@ -8,12 +8,7 @@ module Admin
         return
       end
 
-      begin
-        @p_set_answer = PSetAnswer.find(params[:id])
-      rescue ActiveRecord::RecordNotFoundError
-        head :not_found
-        return
-      end
+      @p_set_answer = PSetAnswer.find(params[:id])
 
       @user = @p_set_answer.user
       @p_set = @p_set_answer.p_set
@@ -27,7 +22,8 @@ module Admin
     def destroy
       @answer = PSetAnswer.find(params[:id])
       @student = User.find(@answer.user_id)
-      @answer.destroy
+      @answer.destroy!
+
       redirect_to admin_user_p_set_answers_path(@student)
     end
   end

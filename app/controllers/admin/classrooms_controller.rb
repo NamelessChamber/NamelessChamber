@@ -2,14 +2,15 @@
 
 module Admin
   class ClassroomsController < ApplicationController
-    before_action :find_course
+    before_action :set_course
     before_action :assert_course_admin!
 
     def remove_student
       @user_id = params[:user_id]
       @classroom_id = params[:classroom_id]
       @classroom_user = ClassroomUser.where(user_id: @user_id, classroom_id: @classroom_id)[0]
-      @classroom_user.destroy
+      @classroom_user.destroy!
+
       redirect_to admin_course_classroom_path(@course, @classroom_id)
     end
 
@@ -35,22 +36,18 @@ module Admin
     end
 
     def create
-      p = params[:classroom].permit(
-        :name
-      ).merge(course: @course)
-      classroom = Classroom.create(p)
+      classroom = Classroom.create!(classroom_params.merge(course: @course))
       redirect_to admin_course_classroom_path(@course, classroom)
     end
 
     def edit
-      find_or_404 do
-        @classroom = Classroom.find(params[:id])
-      end
+      @classroom = Classroom.find(params[:id])
     end
 
     def destroy
       @classroom = Classroom.find(params[:id])
-      @classroom.destroy
+      @classroom.destroy!
+
       redirect_to admin_course_classrooms_path(@course.id)
     end
 
@@ -71,10 +68,12 @@ module Admin
 
     private
 
-    def find_course
-      find_or_404 do
-        @course = Course.find(params[:course_id])
-      end
+    def classroom_params
+      params.require(:classroom).permit(:name)
+    end
+
+    def set_course
+      @course = Course.find(params[:course_id])
     end
   end
 end

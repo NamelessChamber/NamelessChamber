@@ -5,7 +5,6 @@ class ClassroomsController < ApplicationController
 
   def index
     @classrooms = current_user.classrooms.includes(:course)
-    # @old_classrooms = current_user.classrooms.includes(:course)
   end
 
   def show
@@ -14,7 +13,7 @@ class ClassroomsController < ApplicationController
                  .includes(:course)
                  .where(users: { id: current_user.id })
                  .where(id: params[:id])
-                 .first
+                 .first!
 
     @classroom_psets = ClassroomPset
                        .where(classroom: @classroom)
@@ -43,21 +42,13 @@ class ClassroomsController < ApplicationController
   # form for joining a class
   def register
     @classroom = Classroom.find(params[:classroom_id])
-    if @classroom.nil?
-      not_found
-      nil
-    end
   end
 
   # post handler for joining a class
   def signup
     @classroom = Classroom.find(params[:classroom_id])
-    if @classroom.nil?
-      not_found
-      return
-    end
 
-    @classroom.classroom_users.create(user: current_user)
+    @classroom.classroom_users.create!(user: current_user)
     redirect_to classroom_path(@classroom.id)
   end
 end

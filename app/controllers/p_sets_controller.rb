@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class PSetsController < ApplicationController
-  before_action :find_p_set, except: [:index]
+  before_action :set_p_set
+  before_action :set_p_set_answer, only: %i[show_answer update_answer]
 
   def show
     respond_to do |format|
@@ -10,12 +11,10 @@ class PSetsController < ApplicationController
   end
 
   def show_answer
-    @p_set_answer = p_set_answer
-
     if @p_set_answer.nil?
       if User.joins(classrooms: { classroom_psets: :p_set })
              .where(p_sets: { id: params[:p_set_id] }).exists?
-        @p_set_answer = PSetAnswer.create(
+        @p_set_answer = PSetAnswer.create!(
           user: current_user,
           p_set: @p_set,
           data: { answer: nil, submissions: [] }
@@ -34,8 +33,6 @@ class PSetsController < ApplicationController
   end
 
   def update_answer
-    @p_set_answer = p_set_answer
-
     if @p_set_answer.nil?
       head :not_found
     else
@@ -49,7 +46,7 @@ class PSetsController < ApplicationController
         @p_set_answer.completed = params[:completed]
       end
 
-      @p_set_answer.save
+      @p_set_answer.save!
 
       respond_to do |format|
         format.json { render json: answer }
@@ -59,18 +56,14 @@ class PSetsController < ApplicationController
 
   private
 
-  def p_set_answer
-    id = params[:p_set_id] || params[:id]
-    PSetAnswer.find_by(
+  def set_p_set_answer
+    @p_set_answer = PSetAnswer.find_by(
       user_id: current_user.id,
-      p_set_id: id
+      p_set_id: params[:p_set_id] || params[:id]
     )
   end
 
-  def find_p_set
-    find_or_404 do
-      id = params[:p_set_id] || params[:id]
-      @p_set = PSet.find(id)
-    end
+  def set_p_set
+    @p_set = PSet.find(params[:p_set_id] || params[:id])
   end
 end
