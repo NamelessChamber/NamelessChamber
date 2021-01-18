@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class RegistrationKeyController < ApplicationController
-  include RegistrationKeyHelper
   def create
     RegistrationKey.destroy_all if RegistrationKey.all.length.positive?
     alpha = ('A'..'Z').to_a.concat(('a'..'z').to_a)
@@ -20,6 +19,18 @@ class RegistrationKeyController < ApplicationController
       redirect_to new_user_registration_path
     else
       redirect_to registration_key_show_path
+    end
+  end
+
+  private
+
+  def check_key(key)
+    keys = RegistrationKey.where(key: key)
+    if keys.exists?
+      key = keys[0]
+      Time.zone.now - key.created_at < 86_400
+    else
+      false
     end
   end
 end
