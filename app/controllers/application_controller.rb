@@ -31,9 +31,9 @@ class ApplicationController < ActionController::Base
   end
 
   def prefetch_admin_status
-    unless current_user.nil?
-      @current_user_is_admin = current_user.admin
-      @current_user_is_enrolled = current_user.classrooms.count.positive?
-    end
+    return if current_user.nil?
+
+    @current_user_is_admin = current_user.admin
+    @current_user_is_enrolled = current_user.classrooms.count.positive?
   end
 end
