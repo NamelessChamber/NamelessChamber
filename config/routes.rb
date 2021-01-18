@@ -18,11 +18,11 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :exercise_categories do
-      resources :exercise_subcategories
+    resources :exercise_categories, only: %i[index new create destroy] do
+      resources :exercise_subcategories, only: %i[new create destroy]
     end
 
-    resources :p_sets do
+    resources :p_sets, only: %i[show new create edit destroy] do
       get 'options', to: 'home#index'
       get 'rhythm', to: 'home#index'
       get 'melody', to: 'home#index'
@@ -38,7 +38,7 @@ Rails.application.routes.draw do
   get 'registration_key_show', to: 'registration_key#show'
   post 'registration_key_check', to: 'registration_key#check'
 
-  resources :p_sets do
+  resources :p_sets, only: %i[show] do
     get 'rhythm', to: 'home#index'
     get 'melody', to: 'home#index'
     get 'harmony', to: 'home#index'
@@ -48,7 +48,8 @@ Rails.application.routes.draw do
   end
 
   get 'classrooms/register', to: 'classrooms#registrar'
-  resources :classrooms do
+
+  resources :classrooms, only: %i[index show] do
     get 'register', to: 'classrooms#register'
     post 'register', to: 'classrooms#signup'
   end
