@@ -196,7 +196,6 @@ export default class PSetStudentComponent extends React.Component {
         }
       })
       .catch((e) => {
-        console.log('error', e)
         this.setState({ [postingKey]: false })
       })
   }

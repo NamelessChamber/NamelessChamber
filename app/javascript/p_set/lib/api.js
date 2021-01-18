@@ -1,5 +1,16 @@
 import { newPSet } from './utils'
 
+// Handles HTTP responses
+function checkStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response
+  } else {
+    var error = new Error(response.statusText)
+    error.response = response
+    throw error
+  }
+}
+
 function railsFetch(url, options) {
   options = _.merge(
     {
@@ -32,7 +43,7 @@ function railsFetch(url, options) {
     options.body = JSON.stringify(options.body)
   }
 
-  return fetch(url, options)
+  return fetch(url, options).then(checkStatus)
 }
 
 export function fetchPSet(id, admin) {

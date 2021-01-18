@@ -113,7 +113,6 @@ export default class PSetInstructorComponent extends React.Component {
         })
       })
       .catch((e) => {
-        console.log(e.status)
         this.setState({ posting: false })
       })
   }
@@ -188,18 +187,14 @@ export default class PSetInstructorComponent extends React.Component {
 
   componentDidMount() {
     const { p_set_id } = this.props.match.params
-    fetchPSet(p_set_id, true)
-      .then((pSet) => {
-        const stave = this.harmonic ? pSet.data.staves.length - 1 : 0
-        let currentMeasure = 0
-        if (!this.rhythmic) {
-          currentMeasure = nextNonEmptyMeasure(pSet.data.staves[stave].solution)
-        }
-        this.setState({ vexData: pSet, stave, currentMeasure })
-      })
-      .catch((e) => {
-        console.log(e.status)
-      })
+    fetchPSet(p_set_id, true).then((pSet) => {
+      const stave = this.harmonic ? pSet.data.staves.length - 1 : 0
+      let currentMeasure = 0
+      if (!this.rhythmic) {
+        currentMeasure = nextNonEmptyMeasure(pSet.data.staves[stave].solution)
+      }
+      this.setState({ vexData: pSet, stave, currentMeasure })
+    })
 
     if (!_.isUndefined(this.containerEl)) {
       $(this.containerEl).foundation()
