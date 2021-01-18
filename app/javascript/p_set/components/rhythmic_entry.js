@@ -11,8 +11,6 @@ import {
 } from '../lib/utils'
 import { DH_UNABLE_TO_CHECK_GENERATOR } from 'constants'
 
-require('../styles/rhythmic_entry.css')
-
 export default class RhythmicEntryComponent extends React.Component {
   constructor(props) {
     super(props)

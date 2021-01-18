@@ -14,8 +14,6 @@ import {
 } from '../lib/utils'
 import { fetchPSet, updatePSet, deletePSetAudio } from '../lib/api'
 
-import '../styles/p_set_options_editor.css'
-
 export default class PSetOptionsEditor extends React.Component {
   constructor(props) {
     super(props)

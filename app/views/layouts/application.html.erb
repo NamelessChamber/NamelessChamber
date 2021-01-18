@@ -6,8 +6,9 @@
 
     <title><%= content_for?(:title) ? yield(:title) : "Nameless Chamber" %></title>
 
-    <%= stylesheet_link_tag    "application" %>
-    <%= javascript_include_tag "application", 'data-turbolinks-track' => true %>
+    <%# <%= stylesheet_link_tag    "application" %>
+    <%# javascript_include_tag "application", 'data-turbolinks-track' => true %>
+    <%= stylesheet_pack_tag "application" %>
     <%= javascript_pack_tag "application" %>
     <% unless @js_packs.nil? || @js_packs.empty? %>
       <% @js_packs.each do |pack| %>

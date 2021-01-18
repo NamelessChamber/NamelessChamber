@@ -1,14 +1,11 @@
 import { newPSet } from './utils'
 
 function railsFetch(url, options) {
-  const token = $('meta[name="csrf-token"]').attr('content')
   options = _.merge(
     {
-      mode: 'cors',
       credentials: 'same-origin',
       headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRF-Token': token,
+        'X-CSRF-Token': Rails.csrfToken(),
         'Content-Type': 'application/json',
       },
     },

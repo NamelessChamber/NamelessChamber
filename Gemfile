@@ -16,12 +16,7 @@ gem 'puma'
 gem 'rails', '~> 6.1'
 
 # Assets
-gem 'foundation-rails'
 gem 'jbuilder'
-gem 'jquery-rails'
-gem 'react-rails'
-gem 'sass-rails'
-gem 'uglifier'
 gem 'webpacker', '~> 5.2'
 
 group :development, :test do

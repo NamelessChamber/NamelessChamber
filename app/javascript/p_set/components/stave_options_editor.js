@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 
 import { newStave } from '../lib/utils'
 
-import '../styles/stave_options_editor.css'
-
 const STAVES = {
   treble: 'Treble',
   bass: 'Bass',
