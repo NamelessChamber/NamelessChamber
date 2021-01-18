@@ -2,16 +2,14 @@
 
 Rails.application.routes.draw do
   devise_for :users
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   namespace :admin do
     resources :classroom_psets, only: %i[create destroy show]
 
     resources :p_set_answers, only: %i[show destroy]
-
-    get 'users', to: 'users#show'
-    get 'users/:user_id', to: 'users#answers', as: 'user_p_set_answers'
-    delete 'users/:user_id', to: 'users#destroy', as: 'user'
+    resources :users, only: %i[index destroy] do
+      get :p_set_answers
+    end
 
     resources :courses do
       resources :classrooms do

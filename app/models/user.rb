@@ -15,8 +15,4 @@ class User < ApplicationRecord
   def whole_name
     "#{firstname} #{lastname}"
   end
-
-  def studentID
-    student_id.to_s
-  end
 end

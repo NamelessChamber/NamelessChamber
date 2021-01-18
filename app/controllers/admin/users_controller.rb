@@ -4,17 +4,18 @@ module Admin
   class UsersController < ApplicationController
     before_action :assert_course_admin!
 
-    def show
+    def index
       @users = User.where(admin: false)
     end
 
     def destroy
-      @user = User.find(params[:user_id])
+      @user = User.find(params[:id])
       @user.destroy!
+
       redirect_to admin_users_path
     end
 
-    def answers
+    def p_set_answers
       @student = User.find(params[:user_id])
       @answers = PSetAnswer
                  .where(user: @student)
