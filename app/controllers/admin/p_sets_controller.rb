@@ -43,7 +43,6 @@ module Admin
                               .includes(:exercise_category)
                               .first
       @exercise_category = @exercise_subcategory.exercise_category
-      @js_packs = ['admin/p_set']
     end
 
     def update

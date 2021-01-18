@@ -10,6 +10,10 @@ import { Router, Route, Switch } from 'react-router-dom'
 
 function init() {
   document.addEventListener('DOMContentLoaded', () => {
+    if (!document.getElementById('app-root')) {
+      return
+    }
+
     ReactDOM.render(
       <Router history={createBrowserHistory()}>
         <Switch>

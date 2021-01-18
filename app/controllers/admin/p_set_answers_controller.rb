@@ -18,8 +18,6 @@ module Admin
       @user = @p_set_answer.user
       @p_set = @p_set_answer.p_set
 
-      @js_packs = ['admin/p_set']
-
       respond_to do |format|
         format.json { render json: @p_set_answer }
         format.html { render }
