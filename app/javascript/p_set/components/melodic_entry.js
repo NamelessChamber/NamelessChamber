@@ -2,9 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import _ from 'lodash'
-import ReactAudioPlayer from 'react-audio-player'
 
-import VexflowComponent from './vexflow'
 import {
   formatKey,
   nextNonEmptyMeasure,

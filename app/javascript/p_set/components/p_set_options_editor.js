@@ -1,17 +1,12 @@
+import 'foundation-sites'
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 import _ from 'lodash'
 import ReactAudioPlayer from 'react-audio-player'
 
 import BoolOptionsEditor from './bool_options_editor'
 import StaveOptionsEditor from './stave_options_editor'
-import {
-  newPSet,
-  formatKey,
-  validateOptions,
-  durationString,
-} from '../lib/utils'
+import { formatKey, validateOptions, durationString } from '../lib/utils'
 import { fetchPSet, updatePSet, deletePSetAudio } from '../lib/api'
 
 export default class PSetOptionsEditor extends React.Component {

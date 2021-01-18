@@ -504,7 +504,7 @@ export default class VexflowComponent extends React.Component {
     return true
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.redrawVexflow(newProps)
   }
 

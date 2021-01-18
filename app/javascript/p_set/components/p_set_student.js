@@ -15,13 +15,11 @@ import {
   compareMeters,
   getAnswerErrors,
   nextNonEmptyMeasure,
-  prevNonEmptyMeasure,
   keyOptionToSignature,
   getVFScaleName,
   nextStave,
 } from '../lib/utils'
 import { fetchPSet, fetchPSetAnswer, updatePSetAnswer } from '../lib/api'
-import { type } from 'os'
 
 export default class PSetStudentComponent extends React.Component {
   constructor(props) {
@@ -274,7 +272,7 @@ export default class PSetStudentComponent extends React.Component {
     this.setState({ staveErrors, errors })
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (!this.isRhythmic(props)) {
       const { staves } = this.state.answer
       let { currentMeasure } = this.state

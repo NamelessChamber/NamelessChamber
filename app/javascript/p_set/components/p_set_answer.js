@@ -5,11 +5,7 @@ import _ from 'lodash'
 import VexflowComponent from './vexflow'
 
 import { fetchPSetAnswerAdmin, fetchPSet } from '../lib/api'
-import {
-  getAnswerErrors,
-  keyOptionToSignature,
-  currentPage,
-} from '../lib/utils'
+import { getAnswerErrors, keyOptionToSignature } from '../lib/utils'
 
 export default class PSetAnswerComponent extends React.Component {
   constructor(props) {

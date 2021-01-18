@@ -9,13 +9,9 @@ import RhythmicEntryComponent from './rhythmic_entry'
 import MelodicEntryComponent from './melodic_entry'
 import HarmonicEntryComponent from './harmonic_entry'
 import {
-  newPSet,
-  validateMeter,
   validateOptions,
-  currentPage,
   compareMeterAt,
   nextNonEmptyMeasure,
-  prevNonEmptyMeasure,
   nextStave,
 } from '../lib/utils'
 import { fetchPSet, updatePSet } from '../lib/api'
@@ -210,7 +206,7 @@ export default class PSetInstructorComponent extends React.Component {
     }
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (!this.isRhythmic(props)) {
       const { staves } = this.state.vexData.data
       let { currentMeasure } = this.state
@@ -241,7 +237,7 @@ export default class PSetInstructorComponent extends React.Component {
 
     let optionErrors = validateOptions(vexData)
     if (_.isArray(optionErrors)) {
-      optionErrors = optionErrors.map((e) => <li>{e}</li>)
+      optionErrors = optionErrors.map((e, i) => <li key={i}>{e}</li>)
 
       return (
         <div className="small-12 columns">
