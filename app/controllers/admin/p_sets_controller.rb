@@ -54,7 +54,8 @@ module Admin
     def create_audio
       @p_set = PSet.find(params[:p_set_id])
 
-      p_set_audio = PSetAudio.find_or_create_by_file(p_set_audio_params)
+      filename = PSetAudioUploader.filename(p_set_audio_params[:audio])
+      p_set_audio = PSetAudio.create_with(p_set_audio_params[:audio]).find_or_create_by(audio: filename)
 
       # TODO: use uniqueness validation
       if p_set_audio.p_set_to_audio.where(p_set_id: @p_set.id).empty?
