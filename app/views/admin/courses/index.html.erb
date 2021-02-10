@@ -30,7 +30,7 @@
             <% @courses.each do |c| %>
             <tr>
                 <td><%= link_to c.name, admin_course_path(c.id) %></td>
-                <td><%= fulldate(c.created_at) %></td>
+                <td><%= c.created_at.to_s(:db) %></td>
                 <td>
                     <%=  link_to 'Delete Course',
                     admin_course_path(c),

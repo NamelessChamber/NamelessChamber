@@ -21,7 +21,7 @@
       <% @users.each do |u| %>
       <tr>
         <td><%= u.whole_name %></td>
-        <td><%= fulldate(u.created_at) %></td>
+        <td><%= u.created_at.to_s(:db) %></td>
         <td><%= u.student_id %></td>
         <td>
           <%=  link_to 'Delete Student Account',

@@ -12,7 +12,7 @@
       <% @answers.each do |answer| %>
         <tr>
           <td><%= answer.user.whole_name %></td>
-          <td><%= fulldate(answer.updated_at) %></td>
+          <td><%= answer.updated_at.to_s(:db) %></td>
           <td><%= link_to 'submission', admin_p_set_answer_path(answer), class: 'button' %></td>
         </tr>
       <% end %>

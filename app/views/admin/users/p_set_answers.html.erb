@@ -20,7 +20,7 @@
       <% @answers.each do |a| %>
       <tr>
         <td><%= a.name %></td>
-        <td><%= fulldate(a.updated_at) %></td>
+        <td><%= a.updated_at.to_s(:db) %></td>
         <td>
           <%=  link_to 'Delete Submission',
           admin_p_set_answer_path(a),
