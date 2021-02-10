@@ -5,4 +5,5 @@ class PSetAudio < ApplicationRecord
   has_many :p_set_to_audio
   has_many :p_sets, through: :p_set_to_audio
 
+  validates :name, presence: true
 end

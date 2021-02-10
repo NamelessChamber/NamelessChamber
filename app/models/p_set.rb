@@ -8,4 +8,6 @@ class PSet < ApplicationRecord
   has_many :p_set_answers # TODO: Should we delete answers?
   has_many :p_set_to_audio, dependent: :destroy
   has_many :p_set_audios, through: :p_set_to_audio
+
+  validates :name, presence: true
 end

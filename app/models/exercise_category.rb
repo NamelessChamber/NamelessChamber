@@ -2,4 +2,5 @@
 
 class ExerciseCategory < ApplicationRecord
   has_many :exercise_subcategories, dependent: :destroy
+  validates :name, presence: true
 end

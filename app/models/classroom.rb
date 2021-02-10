@@ -10,4 +10,6 @@ class Classroom < ApplicationRecord
   # scope :active, -> { where('start_date < ? AND end_date >= ?',
   #                          Date.today, Date.today) }
   # scope :inactive, -> { where('end_date < ?', Date.today) }
+
+  validates :name, presence: true
 end
