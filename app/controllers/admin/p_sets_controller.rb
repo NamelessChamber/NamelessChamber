@@ -2,7 +2,7 @@
 
 module Admin
   class PSetsController < ApplicationController
-    before_action :assert_course_admin!
+    before_action :authenticate_user!
 
     def show
       @p_set = PSet.find(params[:id])

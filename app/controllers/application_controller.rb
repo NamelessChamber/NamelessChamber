@@ -3,7 +3,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   # protect_from_forgery unless: -> { request.format.json? }
-  before_action :prefetch_admin_status
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
@@ -20,16 +19,5 @@ class ApplicationController < ActionController::Base
       format.json { head :not_found }
       format.any  { head :not_found }
     end
-  end
-
-  def assert_course_admin!
-    redirect_to root_path if current_user.nil?
-  end
-
-  def prefetch_admin_status
-    return if current_user.nil?
-
-    @current_user_is_admin = current_user.admin
-    @current_user_is_enrolled = current_user.classrooms.count.positive?
   end
 end

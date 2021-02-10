@@ -3,7 +3,7 @@
 module Admin
   class ClassroomsController < ApplicationController
     before_action :set_course
-    before_action :assert_course_admin!
+    before_action :authenticate_user!
 
     def remove_student
       @user_id = params[:user_id]

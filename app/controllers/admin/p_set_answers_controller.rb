@@ -3,7 +3,7 @@
 module Admin
   class PSetAnswersController < ApplicationController
     def show
-      unless @current_user_is_admin
+      unless current_user && current_user.admin
         head :unauthorized
         return
       end

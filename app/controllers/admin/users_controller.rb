@@ -2,7 +2,7 @@
 
 module Admin
   class UsersController < ApplicationController
-    before_action :assert_course_admin!
+    before_action :authenticate_user!
 
     def index
       @users = User.where(admin: false)
