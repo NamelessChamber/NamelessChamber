@@ -34,9 +34,7 @@ class ClassroomsController < ApplicationController
   # index for finding a class to join
   def registrar
     @classrooms = current_user.classrooms.includes(:course)
-    enrolled_ids = @classrooms.map(&:id)
-    @joinable_classrooms = Classroom.all
-    @joinable_classrooms = @joinable_classrooms.where('id NOT IN (?)', enrolled_ids) unless enrolled_ids.empty?
+    @joinable_classrooms = Classroom.where.not(id: @classrooms.ids)
   end
 
   # form for joining a class

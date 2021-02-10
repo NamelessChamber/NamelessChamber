@@ -60,7 +60,7 @@ module Admin
 
       @classroom = Classroom.find(params[:classroom_id])
 
-      unless params[:p_set_id].nil?
+      if params[:p_set_id]
         @p_set = PSet.find(params[:p_set_id])
         @classroom_pset = ClassroomPset.new(p_set: @p_set, classroom: @classroom)
       end
