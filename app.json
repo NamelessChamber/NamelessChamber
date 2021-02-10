@@ -1,0 +1,40 @@
+{
+  "name": "Nameless Chamber",
+  "description": "A music dictation web application.",
+  "keywords": ["music"],
+  "website": "http://github.com/namelessChamber/NamelessChamber",
+  "repository": "http://github.com/namelessChamber/NamelessChamber",
+  "env": {
+    "AWS_ACCESS_KEY_ID": {
+      "required": true
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "required": true
+    }
+  },
+  "formation": [
+      {
+        "web": {
+        "quantity": 1,
+        "size": "standard-1x"
+      }
+    }
+  ],
+  "addons": [
+    {
+      "plan": "heroku-postgresql"
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/ruby"
+    }
+  ],
+  "environments": {
+    "test": {
+      "scripts": {
+        "test": "bundle exec rspec"
+      }
+    }
+  }
+}

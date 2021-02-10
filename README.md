@@ -1,11 +1,15 @@
-# README
+# Nameless Chamber
 
-"Nameless Chamber" - a music dictation web application.
+A music dictation web application.
 
 Nameless Chamber was designed as an application with a specific process
 for teaching dictation skills through moveable-do solfege. This core concept needs
 further functionality and bug-fixing (see list below) and we welcome any help with this
 or suggestions for additional functionality.
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/heroku/node-js-getting-started)
+
+---
 
 Please look under the github Issues tab for the most recent bugs, and future
 functionality for frontend/backend.
