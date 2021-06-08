@@ -9,6 +9,28 @@ or suggestions for additional functionality.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/heroku/node-js-getting-started)
 
+### Develop
+
+Start the backend server:
+
+```bash
+bundle exec rails server
+```
+
+Start watching assets and compile:
+
+```bash
+bin/webpack-dev-server
+```
+
+### Test
+
+Run the backend test suite:
+
+```bash
+bundle exec rspec
+```
+
 ---
 
 Please look under the github Issues tab for the most recent bugs, and future
