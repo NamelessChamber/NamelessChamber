@@ -2,6 +2,8 @@
 
 source 'https://rubygems.org'
 
+ruby "2.7.2"
+
 git_source(:github) do |repo_name|
   repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
   "https://github.com/#{repo_name}.git"
@@ -20,10 +22,10 @@ gem 'jbuilder'
 gem 'webpacker', '~> 5.2'
 
 group :development, :test do
-  gem 'dotenv-rails'
-  gem 'pry-rails'
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'dotenv-rails'
+  gem 'pry-rails'
 
   gem 'factory_bot_rails', '~> 6.0'
   gem 'rspec-rails', '~> 4.0'
