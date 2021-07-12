@@ -9,6 +9,41 @@ or suggestions for additional functionality.
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/heroku/node-js-getting-started)
 
+
+### dev install
+
+#### general notes
+
+- assumes that postgres server is running locally
+
+- post-successful installation of rbenv and ruby 2.7.2 (see below if you're having openssl-related trouble on macos):
+-- run `gem install bundler` and make sure that it's the rbenv 2.7.2 ruby version that's installing the gem (you'll get an error if it's the wrong ruby version that's attempting to install the gem)
+
+- you may have to run `bundle update mimemagic` before any other commands as the mimemagic version specified in the Gemfile.lock is not available anymore
+
+#### post-install steps
+
+- create db: `bundle exec rails db:create`
+-- check that database has been created locally in postgres
+- migrate db: `bundle exec rails db:migrate`
+- seed db: `bundle exec rails db:seed`
+
+- frontend: run `npm install`
+-- check that `bin/webpack-dev-server` runs normally
+
+#### random notes from a difficult installation on macos:
+
+- `brew uninstall ruby ruby-build rbenv` before proceeding
+- `brew cleanup`, `brew update`, `brew upgrade` everything
+- `sudo rm -rf ~/.gem` sub-directories before running `rbenv install 2.7.2`
+-- see https://github.com/rbenv/ruby-build/issues/1483
+- run `rbenv init` and follow installation instructions into `~/.bash_profile`
+- also run rbenv doctor and follow advice?
+-- curl -fsSL https://github.com/rbenv/rbenv-installer/raw/main/bin/rbenv-doctor | bash
+- when successful, set `rbenv local 2.7.2` and `rbenv global 2.7.2`
+- use `ruby --version` when necessary to check current ruby binary version
+
+
 ### Develop
 
 Start the backend server:

@@ -56,6 +56,8 @@ module.exports = function(api) {
           loose: true
         }
       ],
+      // instructed to add this by warning when running bin/webpack-dev-server
+      ['@babel/plugin-proposal-private-methods', { loose: true }],
       [
         '@babel/plugin-proposal-object-rest-spread',
         {
