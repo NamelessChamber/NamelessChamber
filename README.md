@@ -63,7 +63,16 @@ Run the backend test suite:
 bundle exec rspec
 ```
 
----
+### misc notes
+
+- in development, to clear the database and insert the seed data again, run:
+```ruby
+bundle exec rails db:reset
+bundle exec rails db:migrate
+```
+-- `db:reset` runs `db:seed` -- see https://stackoverflow.com/a/10302357
+
+### misc
 
 Please look under the github Issues tab for the most recent bugs, and future
 functionality for frontend/backend.

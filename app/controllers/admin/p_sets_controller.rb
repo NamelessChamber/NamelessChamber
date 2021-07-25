@@ -99,7 +99,7 @@ module Admin
     end
 
     def p_set_params
-      params.require(:p_set).permit(:exercise_subcategory_id)
+      params.require(:p_set).permit(:exercise_subcategory_id, :name)
     end
   end
 end

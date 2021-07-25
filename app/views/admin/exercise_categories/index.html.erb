@@ -32,6 +32,7 @@
           </h5>
           <%= form_for PSet.new, url: admin_p_sets_path do |f| %>
             <%= f.hidden_field :exercise_subcategory_id, value: subcategory.id %>
+            <%= f.hidden_field :name, value: 'Untitled PSet' %>
             <%= f.submit 'add pset', class: 'button' %>
           <% end %>
           <% if subcategory.p_sets.count > 0 %>

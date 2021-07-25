@@ -22,7 +22,7 @@ Rails.application.routes.draw do
       resources :exercise_subcategories, only: %i[new create destroy]
     end
 
-    resources :p_sets, only: %i[show new create edit destroy] do
+    resources :p_sets, only: %i[show update new create edit destroy] do
       get 'options', to: 'home#index'
       get 'rhythm', to: 'home#index'
       get 'melody', to: 'home#index'
