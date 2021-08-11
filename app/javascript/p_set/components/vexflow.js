@@ -144,14 +144,6 @@ const getAccidentalToRender = ({ scale, measureTNotes, noteIndex, score }) => {
 
   */
 
-  const scaleNotes = scale.notes();
-
-  measureTNotes.forEach(tNote => {
-    if (tNote === null) {
-      return;
-    }
-  })
-
 
   const note = measureTNotes[noteIndex];
 
@@ -159,36 +151,31 @@ const getAccidentalToRender = ({ scale, measureTNotes, noteIndex, score }) => {
     _.find(scale.notes(), _.bind(noteRelEq, this, note))
   )
 
-  const noPriorInstanceOfLetterName = () => {
-    for (let i = 0; i < noteIndex; i++) {
-      if (measureTNotes[i].name() === note.name()) {
-        return false
-      }
+
+  let isPreviousInstanceOfSameLetterIsSamePitch = false;
+  let indexOfPreviousInstance = null;
+  for (let i = 0; i < noteIndex; i++) {
+    if (measureTNotes[i].name() === note.name()) {
+      indexOfPreviousInstance = i;
     }
-    return true;
+  }
+  if (indexOfPreviousInstance !== null && measureTNotes[indexOfPreviousInstance].key() === note.key()) {
+    isPreviousInstanceOfSameLetterIsSamePitch = true;
   }
 
 
-  const previousInstanceOfSameLetterIsSamePitch = () => {
-    let indexOfPreviousInstance = null;
-    for (let i = 0; i < noteIndex; i++) {
-      if (measureTNotes[i].name() === note.name()) {
-        indexOfPreviousInstance = i;
-      }
+  let noPriorInstanceOfLetterName = true;
+  for (let i = 0; i < noteIndex; i++) {
+    if (measureTNotes[i].name() === note.name()) {
+      noPriorInstanceOfLetterName = false
     }
-    if (indexOfPreviousInstance !== null && measureTNotes[indexOfPreviousInstance].key() === note.key()) {
-      return true;
-    }
-    return false;
   }
 
-  const isPreviousInstanceOfSameLetterIsSamePitch = previousInstanceOfSameLetterIsSamePitch();
 
-  // move 'else if' statement into first condition?
-  if (isInScale && (noPriorInstanceOfLetterName() || isPreviousInstanceOfSameLetterIsSamePitch)) {
-    return null
+  if (isInScale && (noPriorInstanceOfLetterName || isPreviousInstanceOfSameLetterIsSamePitch)) {
+    return null;
   } else if (isPreviousInstanceOfSameLetterIsSamePitch) {
-    return null
+    return null;
   } else {
     const accidental = note.accidental()
     if (accidental === '') {
