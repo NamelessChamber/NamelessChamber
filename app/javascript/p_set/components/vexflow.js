@@ -62,6 +62,9 @@ const noteEq = (n1, n2) => {
   return _.isEqual(n1.coord, n2.coord)
 }
 
+// equates notes regardless of the octave they're in
+// i.e. tNote of G4 and tNote G5 are 'relatively equivalent'
+// i.e. noteRelEq would return true
 const noteRelEq = (n1, n2) => {
   const [n1o, n1f] = n1.coord
   const [n2o, n2f] = n2.coord
@@ -81,21 +84,105 @@ const getNote = (tonic, octave, solfege, minor) => {
   return note.interval(interval)
 }
 
-const getAccidentalToRender = (scale, note) => {
-  const simpleNoteName = note.name() + note.accidental()
-  const notInScale = _.isUndefined(
+const getAccidentalToRender = ({ scale, measureTNotes, noteIndex, score }) => {
+  /*
+    for each note:
+      example:
+
+      * we are in a key in which F is sharp i.e. F# is IN the scale *
+
+      nF #F F F
+      3rd and 4th F do not have an accidental because the 2nd F
+      had already the accidental
+
+      the 'octave rule':
+      nF #F4 bF5 F4
+      the last F4 has no accidental due to the preceeding bF5,
+      because bF5 is not in the same octave as F4, hence F4
+      is affected by the #F4
+
+      some more example:
+
+      G G G F
+
+      G #G G nG
+
+      in the key of D where #F #C
+      #D D nD D
+
+      // TODO/FIXME -- would not work with rules below (but maybe it's ok)
+      nF5 F4 #F5 F5
+      
+
+      // TODO: convert rules below to code
+      // TODO: add tests that validate all of our thinking
+      // TODO MAYBE: figure out octave rule that works ((maybe not necessary))
+
+
+      previousInstanceOfSameLetterIsSamePitch = (
+        the previous instance of the same letter name in that octave is the same pitch
+        (i.e. piano key i.e. same midi note number i.e. same frequency)
+      )
+
+      if
+          in the scale:
+        AND
+          (
+          there is no instance of that same letter name earlier in the measure
+            OR
+          previousInstanceOfSameLetterIsSamePitch
+          )
+        THEN
+          NO accidental
+      else:
+        // NOT in the scale
+        if (previousInstanceOfSameLetterIsSamePitch)
+          NO accidental
+        else 
+          accidental
+          
+
+  */
+
+
+  const note = measureTNotes[noteIndex];
+
+  const isInScale = !_.isUndefined(
     _.find(scale.notes(), _.bind(noteRelEq, this, note))
   )
 
-  if (notInScale) {
+
+  let isPreviousInstanceOfSameLetterIsSamePitch = false;
+  let indexOfPreviousInstance = null;
+  for (let i = 0; i < noteIndex; i++) {
+    if (measureTNotes[i].name() === note.name()) {
+      indexOfPreviousInstance = i;
+    }
+  }
+  if (indexOfPreviousInstance !== null && measureTNotes[indexOfPreviousInstance].key() === note.key()) {
+    isPreviousInstanceOfSameLetterIsSamePitch = true;
+  }
+
+
+  let noPriorInstanceOfLetterName = true;
+  for (let i = 0; i < noteIndex; i++) {
+    if (measureTNotes[i].name() === note.name()) {
+      noPriorInstanceOfLetterName = false
+    }
+  }
+
+
+  if (isInScale && (noPriorInstanceOfLetterName || isPreviousInstanceOfSameLetterIsSamePitch)) {
+    return null;
+  } else if (isPreviousInstanceOfSameLetterIsSamePitch) {
+    return null;
+  } else {
     const accidental = note.accidental()
     if (accidental === '') {
       return 'n'
     } else {
-      return accidental
+      return accidental;
     }
-  } else {
-    return null
   }
 }
 
@@ -184,7 +271,22 @@ export default class VexflowComponent extends React.Component {
     }
   }
 
-  convertNote(props, error, highlight, editing, stave, renderMode, note, i) {
+  getMeasureTNote({ stave, note }) {
+    const { solfege, octave } = note
+
+    if (_.isUndefined(solfege) || _.isUndefined(octave)) {
+      return null;
+    }
+
+    return getNote(
+      stave.tonic,
+      octave,
+      solfege,
+      stave.scale === 'minor'
+    )
+  }
+
+  convertNote(props, error, highlight, editing, stave, renderMode, note, i, score, measureTNotes) {
     const { type, harmony, inversion } = note
     const { mode } = props
 
@@ -197,21 +299,21 @@ export default class VexflowComponent extends React.Component {
       !_.isUndefined(solfege) &&
       !_.isUndefined(octave)
     ) {
-      const tNote = getNote(
-        stave.tonic,
-        octave,
-        solfege,
-        stave.scale === 'minor'
-      )
-      const scale = teoria.scale(tonicStr(stave.tonic), stave.scale)
+      const scale = teoria.scale(tonicStr(stave.tonic), stave.scale);
+
+      accidental = getAccidentalToRender({ scale, measureTNotes, noteIndex: i, score });
+
+      const tNote = measureTNotes[i];
       keys = [`${tNote.name()}/${tNote.octave()}`]
-      accidental = getAccidentalToRender(scale, tNote)
     }
 
     // Stave notes dont support tuplets
     // Instructor should not include triplets in psets yet
     let staveNote = new VF.StaveNote({
       duration: duration,
+      // 'keys' is the actual note(s) e.g., 'd/4' as the D of the 4th octave
+      // it's an array since it could have more than one 'note head' if this was a chord
+      // see https://github.com/0xfe/vexflow/wiki/The-VexFlow-Tutorial
       keys: keys,
       clef: stave.clef,
     })
@@ -292,33 +394,31 @@ export default class VexflowComponent extends React.Component {
     voice.setMode(VF.Voice.Mode.SOFT)
 
     let notes = []
-    if (_.isUndefined(props.staveErrors)) {
-      notes = score.map(
-        this.convertNote.bind(
-          this,
-          props,
-          false,
-          highlight,
-          editing,
-          stave,
-          renderMode
-        )
+
+    const convertedTNotes = score.map((note) => this.getMeasureTNote({
+      stave,
+      note
+    }));
+
+    notes = score.map((n, i) => {
+      let error = false;
+      if (!_.isUndefined(props.staveErrors)) {
+        error = props.staveErrors[staveIndex][measureIndex][i]
+      }
+      return this.convertNote(
+        props,
+        error,
+        highlight,
+        editing,
+        stave,
+        renderMode,
+        n,
+        i,
+        score,
+        convertedTNotes
       )
-    } else {
-      notes = score.map((n, i) => {
-        const error = props.staveErrors[staveIndex][measureIndex][i]
-        return this.convertNote(
-          props,
-          error,
-          highlight,
-          editing,
-          stave,
-          renderMode,
-          n,
-          i
-        )
-      })
-    }
+    })
+
     const beams = VF.Beam.generateBeams(notes)
     voice.addTickables(notes)
     const formatter = new VF.Formatter()
