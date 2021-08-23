@@ -234,6 +234,14 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   componentDidMount() {
+    // NOTE: this.solfegeInput.focus() will only be called here
+    // ONCE for students, however, if students have not verified
+    // the measure or the key, the solfegeInput will actually
+    // be a display:none element... which will NOT get the focus.
+    // the focus matters on the solfegeInput, as ALL of the key
+    // handling of this component is done via a keyDown handler
+    // on the solfegeInput... e.g., if this focus() does not
+    // happen, there is no key handling...
     this.solfegeInput.focus()
     $(this.containerEl).foundation()
   }
@@ -243,6 +251,15 @@ export default class MelodicEntryComponent extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
+    // adding this focus here as well (in addition to the one
+    // in componentDidMount) as a student who JUST verified
+    // the key will finally see the solfegeInput (in contrast
+    // with the instructor who gets/sees the solfegeInput immediately).
+    // however, if the solfegeInput was initially hidden, the .focus()
+    // call in componentDidMount would have not done anything...
+    // hence, after verifying the key, we MUST call .focus() on solfegeInput
+    // for the key handling to work for the student.
+    this.solfegeInput.focus()
     this.solfegeInput.selectedIndex = snapshot
     $(this.containerEl).foundation()
   }
