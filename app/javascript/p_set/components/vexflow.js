@@ -155,6 +155,13 @@ const getAccidentalToRender = ({ scale, measureTNotes, noteIndex, score }) => {
   let isPreviousInstanceOfSameLetterIsSamePitch = false;
   let indexOfPreviousInstance = null;
   for (let i = 0; i < noteIndex; i++) {
+    // measureTNotes[i] will be null for rests
+    // rests are not converted in convertNote to tNotes
+    // and (obviously) should not be taken into account in the accidentals math
+    if(measureTNotes[i] === null) {
+      continue;
+    }
+
     if (measureTNotes[i].name() === note.name()) {
       indexOfPreviousInstance = i;
     }
@@ -166,6 +173,13 @@ const getAccidentalToRender = ({ scale, measureTNotes, noteIndex, score }) => {
 
   let noPriorInstanceOfLetterName = true;
   for (let i = 0; i < noteIndex; i++) {
+    // as above for the indexOfPreviousInstance check,
+    // measureTNotes[i] will be null for rests
+    // ignore these.
+    if(measureTNotes[i] === null) {
+      continue;
+    }
+
     if (measureTNotes[i].name() === note.name()) {
       noPriorInstanceOfLetterName = false
     }
@@ -310,6 +324,7 @@ export default class VexflowComponent extends React.Component {
     // Stave notes dont support tuplets
     // Instructor should not include triplets in psets yet
     let staveNote = new VF.StaveNote({
+      // 'duration' will be '8' for an eigth note and '8r' for an eigth rest
       duration: duration,
       // 'keys' is the actual note(s) e.g., 'd/4' as the D of the 4th octave
       // it's an array since it could have more than one 'note head' if this was a chord
