@@ -7,6 +7,8 @@ import _ from 'lodash'
 import { currentPage, getVFScaleName, tonicStr } from '../lib/utils'
 
 const VF = Vex.Flow
+console.log('VF.Accidental', VF.Accidental);
+Vex.Flow.Accidental.DEBUG = true;
 
 // lifted from teoria... sadly not exposed
 const intervalSolfege = {
@@ -81,10 +83,17 @@ const getNote = (tonic, octave, solfege, minor) => {
   }
 
   note.coord[0] += octave
-  return note.interval(interval)
+  const res = note.interval(interval)
+  console.log('solfege', solfege, res.toString())
+  return res;
 }
 
 const getAccidentalToRender = ({ scale, measureTNotes, noteIndex, score }) => {
+  console.log('scale', scale);
+  console.log('measureTNotes', measureTNotes);
+  console.log('noteIndex', noteIndex);
+  console.log('score', score);
+
   /*
     for each note:
       example:
@@ -166,6 +175,7 @@ const getAccidentalToRender = ({ scale, measureTNotes, noteIndex, score }) => {
       indexOfPreviousInstance = i;
     }
   }
+
   if (indexOfPreviousInstance !== null && measureTNotes[indexOfPreviousInstance].key() === note.key()) {
     isPreviousInstanceOfSameLetterIsSamePitch = true;
   }
@@ -184,6 +194,9 @@ const getAccidentalToRender = ({ scale, measureTNotes, noteIndex, score }) => {
       noPriorInstanceOfLetterName = false
     }
   }
+
+
+
 
 
   if (isInScale && (noPriorInstanceOfLetterName || isPreviousInstanceOfSameLetterIsSamePitch)) {
@@ -315,11 +328,13 @@ export default class VexflowComponent extends React.Component {
     ) {
       const scale = teoria.scale(tonicStr(stave.tonic), stave.scale);
 
-      accidental = getAccidentalToRender({ scale, measureTNotes, noteIndex: i, score });
+      // accidental = getAccidentalToRender({ scale, measureTNotes, noteIndex: i, score });
 
       const tNote = measureTNotes[i];
-      keys = [`${tNote.name()}/${tNote.octave()}`]
+      keys = [`${tNote.name()}${tNote.accidental()}/${tNote.octave()}`];
     }
+
+    console.log('keys', keys);
 
     // Stave notes dont support tuplets
     // Instructor should not include triplets in psets yet
@@ -381,9 +396,9 @@ export default class VexflowComponent extends React.Component {
       _.times(note.dots, () => staveNote.addDotToAll())
     }
 
-    if (!_.isNull(accidental)) {
-      staveNote.addAccidental(0, new VF.Accidental(accidental))
-    }
+    // if (!_.isNull(accidental)) {
+    //   staveNote.addAccidental(0, new VF.Accidental(accidental))
+    // }
 
     return staveNote
   }
@@ -436,6 +451,21 @@ export default class VexflowComponent extends React.Component {
 
     const beams = VF.Beam.generateBeams(notes)
     voice.addTickables(notes)
+
+
+    // FIXME not C!! the stave.tonic.pitch ??????????
+    // FIXME not C!! the stave.tonic.pitch ??????????
+    // FIXME not C!! the stave.tonic.pitch ??????????
+    // FIXME not C!! the stave.tonic.pitch ??????????
+    // FIXME not C!! the stave.tonic.pitch ??????????
+    // FIXME not C!! the stave.tonic.pitch ??????????
+    // FIXME not C!! the stave.tonic.pitch ??????????
+    // FIXME not C!! the stave.tonic.pitch ??????????
+    // FIXME not C!! the stave.tonic.pitch ??????????
+    // FIXME not C!! the stave.tonic.pitch ??????????
+    VF.Accidental.applyAccidentals([voice], 'C');
+
+
     const formatter = new VF.Formatter()
       .joinVoices([voice])
       .format([voice], width)
@@ -444,6 +474,8 @@ export default class VexflowComponent extends React.Component {
   }
 
   redrawVexflow(props) {
+    console.log('redrawVexflow', 'props', props);
+
     const context = this.renderer.getContext()
     context.clear()
 
@@ -634,6 +666,8 @@ export default class VexflowComponent extends React.Component {
 
     window.addEventListener('resize', this.updateDimensionsDebounced)
     this.updateDimensions()
+
+    console.log('getNote', getNote({pitch: 'C', octave: 3}, 1, 'ra', false).toString())
   }
 
   render() {
