@@ -25,7 +25,7 @@ or suggestions for additional functionality.
   - check that database has been created locally in postgres
 - migrate db: `bundle exec rails db:migrate`
 - seed db: `bundle exec rails db:seed`
-- frontend: run `npm install`
+- frontend: run `npm install` (using npm v15 -- see below for npm version notes)
   - check that `bin/webpack-dev-server` runs normally
 
 #### random notes from a difficult installation on macos:
@@ -40,6 +40,11 @@ or suggestions for additional functionality.
 - when successful, set `rbenv local 2.7.2` and `rbenv global 2.7.2`
 - use `ruby --version` when necessary to check current ruby binary version
 
+#### npm / nvm note
+
+- as the official docs of npm [say](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), "We strongly recommend using a Node version manager like nvm to install Node.js and npm"
+- do install nvm by following the instructions [here](https://github.com/nvm-sh/nvm) -- typically, the `curl ... | bash` should work / be enough
+- DO run npm version 15 when running this project. npm version 16 is proven to not work (seemingly related to node-gyp -- maybe).
 
 ### Develop
 
