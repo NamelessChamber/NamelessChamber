@@ -150,22 +150,30 @@ export default class RhythmicEntryComponent extends React.Component {
   handleNumber(e) {
     const options = document.getElementsByClassName('beat-select')[0].options
     let numberPresent = false
+    let keyPressedValue = e.key;
+
+    if (keyPressedValue == 6) {
+      keyPressedValue = "16";
+    } else if (keyPressedValue == 3) {
+      keyPressedValue = "32"
+    }
+
     for (var i = 0; i < options.length; i++) {
-      if (options[i].value == e.key) {
+      if (options[i].value == keyPressedValue) {
         numberPresent = true
         options.selectedIndex = i
         break
       }
     }
+
     if (!numberPresent) {
       return
     }
 
-    let duration = e.key
 
     const newNote = {
       type: 'note',
-      duration: duration,
+      duration: keyPressedValue,
       dots: 0,
       tied: false,
     }
@@ -183,6 +191,7 @@ export default class RhythmicEntryComponent extends React.Component {
     switch (e.key) {
       case '1':
       case '2':
+      case '3':
       case '4':
       case '6':
       case '8':
