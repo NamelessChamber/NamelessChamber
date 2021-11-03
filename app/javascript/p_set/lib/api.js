@@ -1,4 +1,5 @@
 import { newPSet } from './utils'
+import _ from 'lodash'
 
 // Handles HTTP responses
 function checkStatus(response) {

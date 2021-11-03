@@ -44,7 +44,8 @@ or suggestions for additional functionality.
 
 - as the official docs of npm [say](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm), "We strongly recommend using a Node version manager like nvm to install Node.js and npm"
 - do install nvm by following the instructions [here](https://github.com/nvm-sh/nvm) -- typically, the `curl ... | bash` should work / be enough
-- DO run npm version 15 when running this project. npm version 16 is proven to not work (seemingly related to node-gyp -- maybe).
+- DO run npm version 15 when running this project. npm version 16 is proven to not work (seemingly related to node-gyp -- maybe):
+`nvm use 15`
 
 ### Develop
 

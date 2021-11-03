@@ -19,7 +19,9 @@ gem 'rails', '~> 6.1'
 
 # Assets
 gem 'jbuilder'
-gem 'webpacker', '~> 5.4'
+# gem 'webpacker', '~> 5.4'
+
+gem 'vite_rails'
 
 group :development, :test do
   gem 'better_errors'
