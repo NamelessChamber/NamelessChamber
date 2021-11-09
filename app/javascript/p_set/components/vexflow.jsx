@@ -446,12 +446,15 @@ export default class VexflowComponent extends React.Component {
     const context = this.renderer.getContext()
     context.clear()
 
-    function scoreLength(score) {
+    function getWidthOfMeasureNotes(score) {
       return score.reduce((acc, item) => {
         if (item.type === 'note') {
+
+          console.log('item', item)
+
           return acc + 1 + (item.dots || 0) * 0.2
         } else if (item.type === 'beam') {
-          return acc + scoreLength(item.notes)
+          return acc + getWidthOfMeasureNotes(item.notes)
         }
       }, 0)
     }
@@ -473,10 +476,11 @@ export default class VexflowComponent extends React.Component {
     const numMeasures = page.length
     const firstStave = props.staves[0]
     const lastMeasure = Math.min(props.measures, startMeasure + numMeasures)
+    // FIXME remove! as width is calculated automatically
     const measureWidths = _.range(startMeasure, lastMeasure).map((i) => {
       return props.staves.reduce((m, x) => {
         const measure = x[props.render][i]
-        const measureLength = scoreLength(measure.notes)
+        const measureLength = getWidthOfMeasureNotes(measure.notes)
         return Math.max(m, measureLength)
       }, 0)
     })
@@ -487,6 +491,9 @@ export default class VexflowComponent extends React.Component {
         : props.staves
 
     staves.forEach((stave, e) => {
+      console.log('stave', stave)
+      console.log('e', e)
+
       let editing = e === props.editing
       let widthOffset = 5
 
@@ -498,6 +505,9 @@ export default class VexflowComponent extends React.Component {
       } else if (!editing && staveComplete(stave, props.render)) {
         renderMode = RENDER_MODES.MELODIC
       }
+
+      console.log('startMeasure', startMeasure)
+      console.log('lastMeasure', lastMeasure)
 
       const scoreSlice = _.slice(
         stave[this.props.render],
@@ -513,10 +523,17 @@ export default class VexflowComponent extends React.Component {
 
         const { notes } = score
         allNotes = allNotes.concat(notes)
+
+        console.log('allNotes', allNotes)
+
+        console.log('measureWidths[i]', measureWidths[i])
+
         let width = measureWidths[i] * 45
+
         if (width === 0) {
           width = 70
         }
+
         let offsetIncrement = width
 
         if (index === 0) {
@@ -524,7 +541,12 @@ export default class VexflowComponent extends React.Component {
           offsetIncrement += 115
         }
 
+        console.log('widthOffset', widthOffset)
+        console.log('yOffset', yOffset)
+        console.log('offsetIncrement', offsetIncrement)
+
         const staveObj = new VF.Stave(widthOffset, yOffset, offsetIncrement)
+        // const staveObj = new VF.Stave(0, 0, 1000)
         staveObj.setContext(context)
 
         if (score.endBar) {
@@ -553,6 +575,10 @@ export default class VexflowComponent extends React.Component {
           }
         }
 
+        // draw the stave before drawing the notes,
+        // otherwise the notes will be drawn 'under' the stave lines
+        // staveObj.draw()
+
         const [voice, beams, vfNotes] = this.scoreToVoice(
           props,
           index,
@@ -565,12 +591,23 @@ export default class VexflowComponent extends React.Component {
           renderMode
         )
         voice.draw(context, staveObj)
+
+        console.log('voice.getBoundingBox()', voice.getBoundingBox())
+        let actualMeasureWidth = voice.getBoundingBox()['w'] + 22;
+
+        if(index === 0) {
+          // TODO -- best case: measure clef + possible key signature + time signature width
+          // alternatively: have hardcoded value when key signature present and another value when no key signature
+          actualMeasureWidth += 90;
+        }
+
+        staveObj.setWidth(actualMeasureWidth);
+        staveObj.draw()
+
         beams.forEach((b) => b.setContext(context).draw())
         allVFNotes = allVFNotes.concat(vfNotes)
 
-        staveObj.draw()
-
-        widthOffset += offsetIncrement
+        widthOffset += actualMeasureWidth;
         this.staves.push(staveObj)
 
         if (index === 0) {

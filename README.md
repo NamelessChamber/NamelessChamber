@@ -26,7 +26,7 @@ or suggestions for additional functionality.
 - migrate db: `bundle exec rails db:migrate`
 - seed db: `bundle exec rails db:seed`
 - frontend: run `npm install` (using npm v15 -- see below for npm version notes)
-  - check that `bin/webpack-dev-server` runs normally
+  - check that `bin/vite dev` runs normally
 
 #### random notes from a difficult installation on macos:
 
@@ -58,7 +58,7 @@ bundle exec rails server
 Start watching assets and compile:
 
 ```bash
-bin/webpack-dev-server
+bin/vite dev
 ```
 
 ### Test
