@@ -450,8 +450,6 @@ export default class VexflowComponent extends React.Component {
       return score.reduce((acc, item) => {
         if (item.type === 'note') {
 
-          console.log('item', item)
-
           return acc + 1 + (item.dots || 0) * 0.2
         } else if (item.type === 'beam') {
           return acc + getWidthOfMeasureNotes(item.notes)
@@ -491,9 +489,6 @@ export default class VexflowComponent extends React.Component {
         : props.staves
 
     staves.forEach((stave, e) => {
-      console.log('stave', stave)
-      console.log('e', e)
-
       let editing = e === props.editing
       let widthOffset = 5
 
@@ -505,9 +500,6 @@ export default class VexflowComponent extends React.Component {
       } else if (!editing && staveComplete(stave, props.render)) {
         renderMode = RENDER_MODES.MELODIC
       }
-
-      console.log('startMeasure', startMeasure)
-      console.log('lastMeasure', lastMeasure)
 
       const scoreSlice = _.slice(
         stave[this.props.render],
@@ -524,10 +516,6 @@ export default class VexflowComponent extends React.Component {
         const { notes } = score
         allNotes = allNotes.concat(notes)
 
-        console.log('allNotes', allNotes)
-
-        console.log('measureWidths[i]', measureWidths[i])
-
         let width = measureWidths[i] * 45
 
         if (width === 0) {
@@ -540,10 +528,6 @@ export default class VexflowComponent extends React.Component {
           // clef
           offsetIncrement += 115
         }
-
-        console.log('widthOffset', widthOffset)
-        console.log('yOffset', yOffset)
-        console.log('offsetIncrement', offsetIncrement)
 
         const staveObj = new VF.Stave(widthOffset, yOffset, offsetIncrement)
         // const staveObj = new VF.Stave(0, 0, 1000)
@@ -575,9 +559,16 @@ export default class VexflowComponent extends React.Component {
           }
         }
 
-        // draw the stave before drawing the notes,
-        // otherwise the notes will be drawn 'under' the stave lines
-        // staveObj.draw()
+        // we would prefer to draw the stave first,
+        // and then to draw the notes (i.e. the voice),
+        // however, to call getBoundingBox on the voice,
+        // the voice needs to be drawn...
+        // however, if we draw the voice first and the stave second,
+        // the stave appears to be on top of the notes...
+        // hacky solution for now:
+        // draw the voice (to measure it),
+        // then the stave, then the voice again so that it appears on top
+        // of the stave.
 
         const [voice, beams, vfNotes] = this.scoreToVoice(
           props,
@@ -592,7 +583,6 @@ export default class VexflowComponent extends React.Component {
         )
         voice.draw(context, staveObj)
 
-        console.log('voice.getBoundingBox()', voice.getBoundingBox())
         let actualMeasureWidth = voice.getBoundingBox()['w'] + 22;
 
         if(index === 0) {
@@ -603,6 +593,10 @@ export default class VexflowComponent extends React.Component {
 
         staveObj.setWidth(actualMeasureWidth);
         staveObj.draw()
+
+        // TODO this is a hack to make sure that the notes do appear on top of
+        // the stave. in an ideal world, we would not have to do this.
+        voice.draw(context, staveObj)
 
         beams.forEach((b) => b.setContext(context).draw())
         allVFNotes = allVFNotes.concat(vfNotes)
