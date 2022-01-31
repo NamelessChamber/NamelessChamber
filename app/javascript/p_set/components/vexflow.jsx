@@ -83,122 +83,6 @@ const getNote = (tonic, octave, solfege, minor) => {
   return note.interval(interval)
 }
 
-const getAccidentalToRender = ({ scale, measureTNotes, noteIndex, score }) => {
-  /*
-    for each note:
-      example:
-
-      * we are in a key in which F is sharp i.e. F# is IN the scale *
-
-      nF #F F F
-      3rd and 4th F do not have an accidental because the 2nd F
-      had already the accidental
-
-      the 'octave rule':
-      nF #F4 bF5 F4
-      the last F4 has no accidental due to the preceeding bF5,
-      because bF5 is not in the same octave as F4, hence F4
-      is affected by the #F4
-
-      some more example:
-
-      G G G F
-
-      G #G G nG
-
-      in the key of D where #F #C
-      #D D nD D
-
-      // TODO/FIXME -- would not work with rules below (but maybe it's ok)
-      nF5 F4 #F5 F5
-      
-
-      // TODO: convert rules below to code
-      // TODO: add tests that validate all of our thinking
-      // TODO MAYBE: figure out octave rule that works ((maybe not necessary))
-
-
-      previousInstanceOfSameLetterIsSamePitch = (
-        the previous instance of the same letter name in that octave is the same pitch
-        (i.e. piano key i.e. same midi note number i.e. same frequency)
-      )
-
-      if
-          in the scale:
-        AND
-          (
-          there is no instance of that same letter name earlier in the measure
-            OR
-          previousInstanceOfSameLetterIsSamePitch
-          )
-        THEN
-          NO accidental
-      else:
-        // NOT in the scale
-        if (previousInstanceOfSameLetterIsSamePitch)
-          NO accidental
-        else 
-          accidental
-          
-
-  */
-
-
-  const note = measureTNotes[noteIndex];
-
-  const isInScale = !_.isUndefined(
-    _.find(scale.notes(), _.bind(noteRelEq, this, note))
-  )
-
-
-  let isPreviousInstanceOfSameLetterIsSamePitch = false;
-  let indexOfPreviousInstance = null;
-  for (let i = 0; i < noteIndex; i++) {
-    // measureTNotes[i] will be null for rests
-    // rests are not converted in convertNote to tNotes
-    // and (obviously) should not be taken into account in the accidentals math
-    if(measureTNotes[i] === null) {
-      continue;
-    }
-
-    if (measureTNotes[i].name() === note.name()) {
-      indexOfPreviousInstance = i;
-    }
-  }
-  if (indexOfPreviousInstance !== null && measureTNotes[indexOfPreviousInstance].key() === note.key()) {
-    isPreviousInstanceOfSameLetterIsSamePitch = true;
-  }
-
-
-  let noPriorInstanceOfLetterName = true;
-  for (let i = 0; i < noteIndex; i++) {
-    // as above for the indexOfPreviousInstance check,
-    // measureTNotes[i] will be null for rests
-    // ignore these.
-    if(measureTNotes[i] === null) {
-      continue;
-    }
-
-    if (measureTNotes[i].name() === note.name()) {
-      noPriorInstanceOfLetterName = false
-    }
-  }
-
-
-  if (isInScale && (noPriorInstanceOfLetterName || isPreviousInstanceOfSameLetterIsSamePitch)) {
-    return null;
-  } else if (isPreviousInstanceOfSameLetterIsSamePitch) {
-    return null;
-  } else {
-    const accidental = note.accidental()
-    if (accidental === '') {
-      return 'n'
-    } else {
-      return accidental;
-    }
-  }
-}
-
 const staveComplete = (stave, render) => {
   return _.every(stave[render], (measure) => {
     return _.every(measure.notes, (note) => {
@@ -306,7 +190,6 @@ export default class VexflowComponent extends React.Component {
     const { solfege, octave, duration } = note
 
     let keys = this.defaultLineForStave(stave.clef)
-    let accidental = null
     if (
       renderMode === RENDER_MODES.MELODIC &&
       !_.isUndefined(solfege) &&
@@ -314,10 +197,8 @@ export default class VexflowComponent extends React.Component {
     ) {
       const scale = teoria.scale(tonicStr(stave.tonic), stave.scale);
 
-      accidental = getAccidentalToRender({ scale, measureTNotes, noteIndex: i, score });
-
       const tNote = measureTNotes[i];
-      keys = [`${tNote.name()}/${tNote.octave()}`]
+      keys = [`${tNote.name()}${tNote.accidental()}/${tNote.octave()}`]
     }
 
     // Stave notes dont support tuplets
@@ -380,10 +261,6 @@ export default class VexflowComponent extends React.Component {
       _.times(note.dots, () => staveNote.addDotToAll())
     }
 
-    if (!_.isNull(accidental)) {
-      staveNote.addAccidental(0, new VF.Accidental(accidental))
-    }
-
     return staveNote
   }
 
@@ -435,6 +312,9 @@ export default class VexflowComponent extends React.Component {
 
     const beams = VF.Beam.generateBeams(notes)
     voice.addTickables(notes)
+
+    VF.Accidental.applyAccidentals([voice], stave.tonic.pitch);
+
     const formatter = new VF.Formatter()
       .joinVoices([voice])
       .format([voice], width)
@@ -608,6 +488,7 @@ export default class VexflowComponent extends React.Component {
           firstStaves.push(staveObj)
         }
       })
+
       _.zip(allNotes, _.tail(allNotes), allVFNotes, _.tail(allVFNotes))
         .filter(([n1, n2, ,]) => !_.isUndefined(n2) && n1.tied)
         .forEach(([, , n1, n2]) => {
