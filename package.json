@@ -23,7 +23,7 @@
     "regenerator-runtime": "^0.13.7",
     "sass-loader": "^10.1.1",
     "teoria": "^2.2.2",
-    "vexflow": "github:0xfe/vexflow#55f2df24f4d3e79dec293a4533de8ac3c628ef49",
+    "vexflow": "4.0.0",
     "webpack": "^4.46.0",
     "webpack-cli": "^3.3.12"
   },
