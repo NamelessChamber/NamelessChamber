@@ -323,7 +323,7 @@ export default class VexflowComponent extends React.Component {
     // Stave notes dont support tuplets
     // Instructor should not include triplets in psets yet
     let staveNote = new VF.StaveNote({
-      // 'duration' will be '8' for an eigth note and '8r' for an eigth rest
+      // 'duration' will be '8' for an eighth note and '8r' for an eighth rest
       duration: duration,
       // 'keys' is the actual note(s) e.g., 'd/4' as the D of the 4th octave
       // it's an array since it could have more than one 'note head' if this was a chord
@@ -360,7 +360,7 @@ export default class VexflowComponent extends React.Component {
       const annotation = new VF.Annotation(annStr).setVerticalJustification(
         VF.Annotation.VerticalJustify.BOTTOM
       )
-      staveNote.addModifier(0, annotation)
+      staveNote.addModifier(annotation, 0)
     }
 
     if (
@@ -372,7 +372,7 @@ export default class VexflowComponent extends React.Component {
         const annotation = new VF.Annotation('▲').setVerticalJustification(
           VF.Annotation.VerticalJustify.BOTTOM
         )
-        staveNote.addModifier(0, annotation)
+        staveNote.addModifier(annotation, 0)
       }
     }
 
