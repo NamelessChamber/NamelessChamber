@@ -315,9 +315,11 @@ export default class VexflowComponent extends React.Component {
 
     VF.Accidental.applyAccidentals([voice], stave.tonic.pitch);
 
-    const formatter = new VF.Formatter()
-      .joinVoices([voice])
-      .format([voice], width)
+    if(!!notes.length) {
+      const formatter = new VF.Formatter()
+        .joinVoices([voice])
+        .format([voice], width)
+    }
 
     return [voice, beams, notes]
   }
@@ -460,10 +462,13 @@ export default class VexflowComponent extends React.Component {
           editing,
           stave,
           renderMode
-        )
-        voice.draw(context, staveObj)
+        );
+        voice.draw(context, staveObj);
 
-        let actualMeasureWidth = voice.getBoundingBox()['w'] + 22;
+        let actualMeasureWidth = 100;
+        if(!!notes.length) {
+          actualMeasureWidth = voice.getBoundingBox()['w'] + 22;
+        }
 
         if(index === 0) {
           // TODO -- best case: measure clef + possible key signature + time signature width
